@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<script type="application/json" id="colorbox-skill-usage">
+{
+  "skills": [
+    "colorbox-auth-get-user-info",
+    "colorbox-cloud-request",
+    "colorbox-oss-upload-file",
+    "colorbox-request-activity-get-vote-detail",
+    "colorbox-request-activity-submit-vote",
+    "colorbox-request-bbs-open-post-editor",
+    "colorbox-security-check-audit",
+    "colorbox-track-report",
+    "colorbox-vatask-complete-reward-video",
+    "colorbox-vatask-get-activity-task-state",
+    "user-feedback"
+  ]
+}
+</script><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>意难平：这一局我改了</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:#e9e2cd}
+body{max-width:430px;margin:0 auto;background:#e9e2cd;font-family:"Noto Sans CJK SC","PingFang SC",sans-serif;color:#262219;-webkit-tap-highlight-color:transparent}
+.page{background:#f4eedd;min-height:100vh;padding:22px 20px 34px;position:relative;
+ background-image:radial-gradient(#d9d0b2 0.6px,transparent 0.7px);background-size:22px 22px}
+.top{display:flex;justify-content:space-between;font-size:11px;letter-spacing:2px;color:#7a6f52;border-bottom:2px solid #262219;padding-bottom:8px}
+h1{font-family:"Noto Serif CJK SC","Songti SC",serif;font-size:31px;font-weight:900;letter-spacing:2px;margin-top:14px;line-height:1.28}
+h1 .red{color:#b23a26}
+.sub{margin-top:7px;font-size:12.5px;color:#5c543d;letter-spacing:4px}
+.tagline{margin-top:9px;font-size:13px;color:#262219;letter-spacing:1px;border-left:3px solid #b23a26;padding-left:9px;line-height:1.6}
+h2.sec{font-family:"Noto Serif CJK SC",serif;font-size:18px;font-weight:900;letter-spacing:2px;margin-top:24px;border-top:2px solid #262219;padding-top:14px}
+.case{margin-top:18px;border:1.5px solid #262219;padding:14px 16px;position:relative;background:#f8f3e3}
+.case .no{position:absolute;top:-10px;left:12px;background:#f4eedd;padding:0 8px;font-size:11px;letter-spacing:2px;color:#b23a26;font-weight:700}
+.case .t{font-family:"Noto Serif CJK SC",serif;font-size:18.5px;font-weight:700;line-height:1.45}
+.case .m{margin-top:6px;font-size:12.5px;color:#5c543d;line-height:1.75}
+.tag{display:inline-block;border:1px solid #b23a26;color:#b23a26;font-size:11px;padding:1px 7px;margin-right:6px;letter-spacing:1px}
+.tag.grey{border-color:#a99c72;color:#7a6f52}
+.btn{display:block;width:100%;margin-top:14px;padding:13px 0;text-align:center;font-size:16px;font-weight:800;letter-spacing:3px;
+ background:#262219;color:#f4eedd;border:none;cursor:pointer;font-family:inherit}
+.btn.red{background:#b23a26}
+.btn.ghost{background:transparent;color:#262219;border:1.5px solid #262219}
+.btn.small{padding:9px 0;font-size:13.5px;letter-spacing:2px}
+.btn:disabled{opacity:.45;cursor:default}
+.modeRow{display:flex;gap:10px;margin-top:14px}
+.modeRow .mode{flex:1;border:1.5px solid #a99c72;background:#f8f3e3;padding:10px 0;text-align:center;cursor:pointer}
+.modeRow .mode.sel{border:2px solid #b23a26;background:#fdf3e3}
+.modeRow .mode .mn{font-family:"Noto Serif CJK SC",serif;font-weight:900;font-size:16px}
+.modeRow .mode .md{font-size:11px;color:#7a6f52;margin-top:2px}
+.epCard{margin-top:14px;border:1.5px solid #262219;background:#fbf7ea;padding:14px 16px;cursor:pointer;position:relative}
+.epCard.locked{border-color:#a99c72;background:#efe8d2;cursor:default;color:#6d6248}
+.epCard .et{font-family:"Noto Serif CJK SC",serif;font-size:17px;font-weight:800;line-height:1.4}
+.epCard .em{font-size:12px;color:#7a6f52;margin-top:4px;line-height:1.6}
+.epCard .estat{position:absolute;top:12px;right:14px;font-size:11px;color:#b23a26;font-weight:700;letter-spacing:1px}
+.epCard.locked .estat{color:#a99c72}
+.profile{margin-top:18px;border:1.5px solid #262219;background:#f8f3e3;padding:13px 16px;position:relative}
+.profile .no{position:absolute;top:-10px;left:12px;background:#f4eedd;padding:0 8px;font-size:11px;letter-spacing:2px;color:#b23a26;font-weight:700}
+.profile .nick{font-family:"Noto Serif CJK SC",serif;font-size:18px;font-weight:900}
+.profile .nickEdit{font-size:11px;color:#b23a26;border:1px solid #b23a26;padding:0 6px;margin-left:8px;cursor:pointer;letter-spacing:1px}
+.profile .rankline{margin-top:5px;font-size:12.5px;color:#5c543d}
+.profile .rankline b{color:#b23a26}
+.rankTrack{height:8px;border:1.5px solid #262219;margin-top:8px;background:#efe7cf;position:relative}
+.rankFill{position:absolute;left:0;top:0;bottom:0;background:#b23a26}
+.archiveRow{display:flex;gap:8px;margin-top:10px}
+.arcSlot{flex:1;border:1px dashed #a99c72;padding:8px 4px;text-align:center;font-size:11.5px;color:#a99c72;background:#f8f3e3}
+.arcSlot.got{border:1.5px solid #b23a26;color:#262219;background:#fdf3e3}
+.arcSlot .an{font-weight:800;font-size:12.5px}
+.arcSlot .ad{font-size:10.5px;margin-top:2px;color:#7a6f52}
+.arcEpName{font-size:12px;color:#5c543d;margin-top:12px;letter-spacing:1px}
+.affixBanner{margin-top:16px;border:2px solid #262219;background:#262219;color:#f4eedd;padding:11px 14px}
+.affixBanner .al{font-size:10.5px;letter-spacing:3px;color:#d9cfa8}
+.affixBanner .an2{font-family:"Noto Serif CJK SC",serif;font-size:17px;font-weight:900;margin-top:2px}
+.affixBanner .ad2{font-size:12px;margin-top:3px;line-height:1.6;color:#e8e0c4}
+.bar{margin-top:16px;padding-bottom:16px}
+.bar .lab{display:flex;justify-content:space-between;font-size:12px;color:#5c543d;letter-spacing:1px}
+.track{height:10px;border:1.5px solid #262219;margin-top:6px;position:relative;background:#efe7cf}
+.fill{position:absolute;top:0;bottom:0;background:#b23a26}
+.mark{position:absolute;top:-5px;width:2px;height:18px;background:#262219}
+.markLab{position:absolute;top:15px;font-size:10px;color:#262219;transform:translateX(-50%);white-space:nowrap}
+.hand{margin-top:20px}
+.hand .n{font-family:"Noto Serif CJK SC",serif;font-size:22px;font-weight:900;white-space:nowrap}
+.hand .d{display:block;margin-top:4px;font-size:12.5px;color:#5c543d;letter-spacing:.5px;line-height:1.7}
+.modeNote{margin-top:10px;font-size:11.5px;color:#b23a26;letter-spacing:1px}
+.opt{margin-top:12px;border:1.5px solid #262219;background:#fbf7ea;padding:13px 15px;cursor:pointer}
+.opt:active{background:#fdf3e3}
+.opt .r1{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.opt .name{font-size:16px;font-weight:700;line-height:1.45}
+.rate{font-family:"Noto Serif CJK SC",serif;font-weight:900;font-size:15px;white-space:nowrap}
+.rate.steady{color:#3f6212}.rate.risky{color:#a16207}.rate.gamble{color:#b23a26}
+.opt .eff{margin-top:5px;font-size:12.5px;color:#44402c}
+.opt .cond{margin-top:4px;font-size:11.5px;color:#8a7c58}
+.opt .cond b{color:#b23a26;font-weight:700}
+.resultBox{margin-top:16px;border:2px solid #b23a26;background:#fdf3e3;padding:14px 16px}
+.resultBox.fail{border-color:#262219;background:#f8f3e3}
+.resultBox .rh{font-family:"Noto Serif CJK SC",serif;font-size:18px;font-weight:900}
+.resultBox .rh .dpos{color:#b23a26}.resultBox .rh .dneg{color:#262219}
+.resultBox .rt{margin-top:6px;font-size:13px;line-height:1.8;color:#44402c}
+.vs{margin-top:22px;border-top:2px solid #262219;padding-top:14px;position:relative}
+.vs .h{font-family:"Noto Serif CJK SC",serif;font-size:17px;font-weight:900;letter-spacing:2px}
+.cols{display:flex;gap:10px;margin-top:10px}
+.col{flex:1;border:1px solid #a99c72;padding:10px 12px;font-size:12.5px;line-height:1.75;background:#f8f3e3}
+.col.mine{border:1.5px solid #b23a26;background:#fdf3e3}
+.col .ch{font-size:11px;letter-spacing:2px;color:#7a6f52;margin-bottom:4px}
+.col.mine .ch{color:#b23a26;font-weight:700}
+.col .big{font-family:"Noto Serif CJK SC",serif;font-size:15.5px;font-weight:900;line-height:1.5}
+.col .sm{font-size:11.5px;color:#5c543d;line-height:1.7;margin-top:5px}
+.seal{position:absolute;right:2px;top:2px;width:84px;height:84px;border:3px solid #b23a26;border-radius:6px;color:#b23a26;
+ font-family:"Noto Serif CJK SC",serif;font-weight:900;font-size:18px;line-height:1.3;text-align:center;padding-top:13px;
+ transform:rotate(-11deg);opacity:.9;letter-spacing:3px;background:rgba(244,238,221,.55);pointer-events:none}
+.seal.grey{border-color:#6d6248;color:#6d6248}
+.seal.small{width:64px;height:64px;font-size:13px;padding-top:10px;top:16px;right:110px}
+.stampBand{position:relative;height:98px;margin-top:4px}
+.logList{margin-top:12px}
+.logItem{border-left:3px solid #a99c72;padding:7px 0 7px 12px;margin-top:8px;font-size:12.5px;line-height:1.7;color:#44402c}
+.logItem.ok{border-left-color:#b23a26}
+.logItem .lh{font-weight:800;color:#262219}
+.logItem .affixNote{color:#b23a26;font-size:11.5px}
+.pickRow{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.pick{border:1.5px solid #262219;background:#fbf7ea;padding:11px 14px;font-size:14px;cursor:pointer;line-height:1.6}
+.pick.sel{border:2px solid #b23a26;background:#fdf3e3}
+.pick .pl{font-size:10.5px;letter-spacing:2px;color:#b23a26;font-weight:800}
+.signLine{margin-top:16px;font-size:13px;color:#5c543d;letter-spacing:1px}
+.signLine b{font-family:"Noto Serif CJK SC",serif;color:#262219;font-size:15px}
+.hookRow{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.hookBtn{flex:1;min-width:100px;border:1px dashed #7a6f52;background:transparent;color:#5c543d;font-size:12px;padding:8px 4px;cursor:pointer;font-family:inherit;letter-spacing:1px}
+.hookBtn:disabled{opacity:.4}
+.foot{margin-top:20px;font-size:11px;color:#8a7c58;letter-spacing:1px;line-height:1.8}
+.introText{font-size:13.5px;line-height:1.95;color:#3d382a;margin-top:12px}
+.goal{margin-top:14px;border:1.5px solid #b23a26;background:#fdf3e3;padding:11px 14px;font-size:13.5px}
+input.nickInput{width:100%;margin-top:10px;padding:10px 12px;font-size:15px;border:1.5px solid #262219;background:#fbf7ea;font-family:inherit;color:#262219}
+#toast{position:fixed;left:50%;bottom:38px;transform:translateX(-50%);background:#262219;color:#f4eedd;font-size:13px;
+ padding:10px 18px;letter-spacing:1px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:99;max-width:86vw;text-align:center}
+#toast.show{opacity:.95}
+.posterDeluxe .vs{border:3px double #b23a26;padding:14px 12px 12px;background:#fdf6e0}
+</style></head>
+<body>
+<script>
+/* 平台部署配置（2026-11-05 部署回写）：网关 BASE 与环境 ID，适配器经 _apiBase()/_envId() 读取。 */
+window.ACTIVITY_API_BASE = "https://app-df28170f12-d1gufumhm7e6ed332-1252166086.ap-shanghai.app.tcloudbase.com";
+window.ACTIVITY_ENV_ID = "app-df28170f12-d1gufumhm7e6ed332";
+</script>
+<div class="page" id="app"></div>
+<div id="toast"></div>
+<script>
+"use strict";
+/* ============================================================
+   《意难平：这一局我改了》首版
+   结构：数据层(EPISODES/AFFIXES/RANKS/AD_HOOKS) → 引擎层(纯函数,无DOM)
+        → 表现层(UI) → 平台适配器(文件末尾，真接入，特性探测降级)
+   引擎与数据位于 ENGINE 标记之间，test.js 直接抽取执行。
+   ============================================================ */
+// === ENGINE START ===
+/* ---------- 配置：概率档 ---------- */
+const TIERS = [
+  { key: "steady", label: "稳", prob: 70 },
+  { key: "risky",  label: "险", prob: 45 },
+  { key: "risky_h", label: "险", prob: 30 },  // 台阶项：仅供困难模式降档落点（计划书 §2.4 困难档表 险 30），选项不直接使用
+  { key: "gamble", label: "搏", prob: 25 },
+  { key: "gamble_h", label: "搏", prob: 15 }, // 台阶项：仅供困难模式降档落点（计划书 §2.4 困难档表 搏 15），选项不直接使用
+  { key: "desperate", label: "绝", prob: 10 } // 仅作困难模式降档触底，不直接出现在选项上
+];
+/* ---------- 配置：模式 ---------- */
+const MODES = {
+  normal: { key: "normal", label: "普通", threshold: 30, probShift: 0 },
+  hard:   { key: "hard",   label: "困难", threshold: 31, probShift: 1 }
+};
+/* ---------- 配置：暗流词缀池（开局随机抽 1，全程生效，引擎只读） ----------
+   mods 通用修正字段：
+     probBonus{tierKey:+n} 按档加概率；probBonusByHand{handId:+n} 按手加概率
+     successBonus{tierKey:+n} 成功时额外优势；failDeltaBonus{tierKey:+n} 失败时优势修正
+     handDeltaScale{handId:factor} 某手成败优势变化乘系数（四舍五入）        */
+const AFFIXES = [
+  { id: "rain", name: "雨夜鏖战", desc: "搏档成功率 +10%。天越黑，越有人想拼命。",
+    mods: { probBonus: { gamble: 10 } } },
+  { id: "injury", name: "主将带伤", desc: "「借」手的优势收益减半。英雄咬着牙上场，能借的力只有一半。",
+    mods: { handDeltaScale: { borrow: 0.5 } } },
+  { id: "home", name: "主场山呼", desc: "稳档成功时额外 +2 优势。全场都在喊你们的名字。",
+    mods: { successBonus: { steady: 2 } } },
+  { id: "longpause", name: "长暂停余温", desc: "「停」手所有选项成功率 +15%。那段漫长的暂停，还没凉透。",
+    mods: { probBonusByHand: { pause: 15 } } }
+];
+/* ---------- 配置：改命者段位（累计改命分 → 段位） ---------- */
+const RANKS = [
+  { min: 0,   name: "见习卷宗" },
+  { min: 60,  name: "执笔改命" },
+  { min: 150, name: "案头推演" },
+  { min: 300, name: "名局克星" },
+  { min: 550, name: "改写历史者" },
+  { min: 900, name: "改命宗师" }
+];
+/* ---------- 配置：广告钩子点位（实现见文件末尾适配器） ---------- */
+const AD_HOOKS = {
+  intel:         { key: "intel",         label: "情报",     dailyLimit: 3 },
+  earlyEpisode:  { key: "earlyEpisode",  label: "抢先卷",   dailyLimit: 1 },
+  posterDeluxe:  { key: "posterDeluxe",  label: "精装海报", dailyLimit: 3 },
+  rewindLastHand:{ key: "rewindLastHand",label: "续命一手", dailyLimit: 1 }
+};
+/* ---------- 配置：下期投票（全局） ---------- */
+const VOTE_OPTIONS = [
+  { id: "w16g7",  text: "2016 总决赛抢七 · 执勇士，改写 73 胜的最后一场" },
+  { id: "wc22",   text: "2022 世界杯决赛 · 执法国，改写姆巴佩的帽子戏法之夜" },
+  { id: "friday", text: "本周五之夜 · BLG vs DK 的败者那一局（赛后加更）" }
+];
+/* ---------- 数据层：EPISODES ----------
+   一局一对象，引擎零硬编码剧情。hands 顺序固定为借/换/改/停/决（第五手 id 仍为 gamble，显示 verb 已按审计 F6 改「决」）。
+   选项字段：name 选项名 / tier 档位键 / cond 成立条件 / okDelta failDelta 成败优势
+             actor 功臣归属 / okText failText 成败归因句                        */
+const EPISODES = [
+  {
+    id: "ep1", no: "001", status: "playable",
+    title: "S16 八强 · TES vs IG 第四局",
+    listDesc: "赛点局 · 你执 TES，五手牌，赢下这一局，把系列赛拖进决胜局。",
+    tags: ["赛点局", "执 TES"],
+    startAdv: -12,
+    intro: [
+      "2026 年 11 月 4 日，S16 全球总决赛八强首日。这轮系列赛开打的日子，恰逢 IG 夺得 S8 冠军八周年——八年前，TheShy、Rookie 和 JackeyLove 穿着同一件队服捧杯；八年后，JackeyLove 站到了他们的对面。",
+      "前三局战罢，TES 1 : 2 落后。第四局再输，这个赛季就到此为止。"
+    ],
+    goal: "赢下第四局，把系列赛拖进 2 : 2 的决胜局。",
+    realHistory: {
+      ending: "TES 1 : 3 出局，止步八强",
+      turning: "第四局，Wei 多次针对上路，TheShy 的奎桑提连续击杀 369 的剑魔。TES 曾靠小龙团打出一换三追回劣势，但 IG 拿下大龙与龙魂后，在龙魂团战打出一换四，推平基地。",
+      hero: "Wei —— 系列赛 POM，第四局纳亚菲利 5 / 2 / 6",
+      footnote: "赛后，Zhuo 在采访里说：自己打得太急躁，没发挥好，对队友们感到很抱歉。"
+    },
+    rewriteEndings: {
+      success: "TES 拿下第四局，2 : 2 —— 决胜局见",
+      honor:   "TES 拼到最后一波，仍以一线之差落败",
+      history: "TES 1 : 3 出局 —— 与真实历史殊途同归"
+    },
+    declarations: {
+      blame:      { label: "甩锅", text: "输的那一把，节奏从第一波上路就被带偏了。这不全是我的问题——但这一把，是我改的。" },
+      god:        { label: "封神", text: "八周年又如何？TheShy 和 Rookie 的剧本，今天由我来写结局。" },
+      versailles: { label: "凡尔赛", text: "也没做什么。就是五次选择，都恰好选对了而已。" }
+    },
+    hands: [
+      { id: "borrow", verb: "借", title: "借一手招牌",
+        snapshot: "开局不久，Wei 已经数次出现在上路。真实历史里，369 的剑魔就是这样被一点点抓崩的。",
+        options: [
+          { name: "借 Wei 的野区路线图，装给 Tian", tier: "steady",
+            cond: "Tian 前两组野怪不被反掉", okDelta: 3, failDelta: -4, actor: "Tian",
+            okText: "Tian 提前在河道口落眼，Wei 的第一波入侵扑了个空，TES 上野第一次对上了暗号。",
+            failText: "路线图背得再熟，Wei 还是从没视野的草里钻了出来——好在 Tian 交闪保命，只亏了一组野怪。" },
+          { name: "借 TheShy 的对线压制，装给 369", tier: "risky",
+            cond: "369 囤住两波兵线再换血", okDelta: 23, failDelta: -7, actor: "369",
+            okText: "369 不再急着证明自己，奎桑提的每一次上前都撞在兵线墙上，上路第一次传来捷报。",
+            failText: "压制是把双刃剑：369 压得太深，Wei 正好绕后，剑魔再次倒在塔前。" },
+          { name: "借 Rookie 的岩雀封路，装给 Creme", tier: "gamble",
+            cond: "中路河道两侧视野全清", okDelta: 27, failDelta: -7, actor: "Creme",
+            okText: "岩雀的墙第一次为 TES 而立，正好把 IG 的阵型切成两段，Creme 打出了整个系列赛最果断的一波。",
+            failText: "墙放歪了半寸，反而把自家后排隔在了外面，TES 付出两个人头的学费。" }
+        ] },
+      { id: "swap", verb: "换", title: "换位止损",
+        snapshot: "上路的窟窿还在漏风，第一条小龙即将刷新。真实历史里，TES 正是在小龙团找到过一次机会。",
+        options: [
+          { name: "上下换线，369 避开奎桑提的强势期", tier: "steady",
+            cond: "下路双人组提前回城补给", okDelta: 3, failDelta: -4, actor: "369",
+            okText: "换线让 369 喘了口气，剑魔在下路吃到了完整的发育时间。",
+            failText: "换线慢了半拍，一塔还是先掉——但至少止住了连续阵亡。" },
+          { name: "Creme 换去边路单带，JackeyLove 中路接管线权", tier: "risky",
+            cond: "中路视野不被岩雀大招封死", okDelta: 22, failDelta: -7, actor: "JackeyLove",
+            okText: "中路的线权一换手，IG 的转线节奏第一次慢了下来。",
+            failText: "边路单带被抓，TES 被迫提前抱团，节奏又回到 IG 手里。" },
+          { name: "双人组直接住上路，三人强压奎桑提", tier: "gamble",
+            cond: "TheShy 的闪现还在冷却", okDelta: 27, failDelta: -7, actor: "Zhuo",
+            okText: "三人越塔强杀奎桑提，全场第一次响起给 TES 的欢呼——上路的天，变了。",
+            failText: "越塔被反蹲，Wei 姗姗来迟却正好收割，三换一，窟窿更大了。" }
+        ] },
+      { id: "tactics", verb: "改", title: "改战术",
+        snapshot: "中段将至。真实历史里，TES 曾靠 Tian 抢下小龙打出一换三——这支队伍缺的从来不是机会，是把机会延续下去的人。",
+        options: [
+          { name: "围绕小龙打拉扯，只接有把握的团", tier: "steady",
+            cond: "Tian 的惩戒保持健康状态", okDelta: 3, failDelta: -4, actor: "Tian",
+            okText: "又是一波一换三。TES 把真实历史里唯一的高光，打成了常态。",
+            failText: "拉扯拉到最后，龙还是丢了，只换到对方一个辅助的人头——这笔交换，TES 终究是亏的。" },
+          { name: "强开岩雀，逼 Rookie 先交大招", tier: "risky",
+            cond: "Zhuo 的开团角度不被烬的架枪封锁", okDelta: 22, failDelta: -7, actor: "Zhuo",
+            okText: "岩雀的墙先一步哑火，IG 的团战阵型散了架。",
+            failText: "强开被岩雀反手封路隔开，TES 阵型脱节，先倒两人。" },
+          { name: "放龙换大龙视野，准备偷龙", tier: "gamble",
+            cond: "IG 全员在下半区露头超过十秒", okDelta: 27, failDelta: -7, actor: "全队",
+            okText: "大龙在 IG 回防之前轰然倒地，经济差第一次被抹平。",
+            failText: "偷龙被视野发现，IG 包抄过来——龙没拿到，后排还被留住。" }
+        ] },
+      { id: "pause", verb: "停", title: "停一停",
+        snapshot: "节奏已经乱了。真实历史里，Zhuo 赛后承认：整个 BO5，自己打得太急躁。这一手，先把呼吸放慢。",
+        options: [
+          { name: "全队语音复盘，只定下一波的纪律", tier: "steady",
+            cond: "五个人把话说完再出门", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "出门后的 TES 像换了一支队伍：不贪、不追、不上头。",
+            failText: "复盘变成了互相安慰，纪律只维持了三分钟——好在没再送出人头。" },
+          { name: "Zhuo 接管开团指挥权，打慢速阵地战", tier: "risky",
+            cond: "Zhuo 不再抢第一手开团时机", okDelta: 23, failDelta: -7, actor: "Zhuo",
+            okText: "那个赛后说着对不起的人，在这一局里，把每一次开团都等到了最后一秒。",
+            failText: "慢速战被岩雀的封路一点点蚕食，TES 还是丢了中一塔。" },
+          { name: "故意放慢节奏拖时间，打乱 IG 的进攻手感", tier: "gamble",
+            cond: "IG 耐不住性子先动手", okDelta: 27, failDelta: -7, actor: "全队",
+            okText: "IG 第一次显得急躁，Wei 的入侵撞进了 TES 提前布好的口袋。",
+            failText: "拖时间拖成了慢性失血，经济差还是被拉开了一千。" }
+        ] },
+      { id: "gamble", verb: "决", title: "最后一波",
+        snapshot: "龙魂团将至。真实历史里，IG 正是在这一波打出一换四，推平了基地。这一次，剧本在你手里。",
+        options: [
+          { name: "放弃龙魂，换 IG 的上路高地", tier: "steady",
+            cond: "兵线提前送进 IG 半区", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "高地塔换龙魂，不亏。但离改命线，还差最后一步。",
+            failText: "高地没摸到，龙魂也丢了——TES 只能目送 IG 带着龙魂回城。" },
+          { name: "正面接龙魂团，Creme 先手开团", tier: "risky",
+            cond: "岩雀的大招先交在上一波拉扯里", okDelta: 23, failDelta: -7, actor: "Creme",
+            okText: "TES 打出了系列赛最好的一波团：一换四，攻守易形。",
+            failText: "一换四——只是这一次，倒下的还是 TES。历史在这一波重演了大半。" },
+          { name: "五人绕后包抄，打 IG 一个立足未稳", tier: "gamble",
+            cond: "绕后眼位没有被扫描照出来", okDelta: 24, failDelta: -11, actor: "全队",
+            okText: "绕后开团，团灭 IG！基地在欢呼声里被推平，第四局，属于 TES。",
+            failText: "绕后被烬的大招留住两人，这波团，成了系列赛的句号。" }
+        ] }
+    ]
+  },
+  {
+    id: "ep2", no: "002", status: "playable",
+    title: "S11 总决赛 · DK vs EDG 第五局",
+    listDesc: "决胜局 · 你执 DK，五手牌，改写 Khan 职业生涯的最后一局。",
+    tags: ["经典卷", "执 DK"],
+    startAdv: -12,
+    intro: [
+      "2021 年 11 月 6 日，冰岛雷克雅未克，S11 全球总决赛。卫冕冠军 DK 与 LPL 一号种子 EDG 战成 2 : 2，决赛被拖进决胜局。",
+      "对 DK 上单 Khan 来说，这一局还有另一重分量：他早已宣布赛季结束后退役、入伍服兵役。赢了，带着冠军离开；输了，这是他职业生涯的最后一场比赛。"
+    ],
+    goal: "赢下决胜局，让 DK 卫冕，也让 Khan 带着冠军退役。",
+    realHistory: {
+      ending: "DK 2 : 3 告负，卫冕失败，EDG 夺得队史首座召唤师杯",
+      turning: "决胜局 22 分 40 秒，Flandre 的凯南绕后开大，电晕辛德拉与巨魔，EDG 打出一换四并拿下小龙；29 分钟龙坑团，DK 再度被凯南大招笼罩、遭团灭；35 分钟远古龙团，Khan 的男枪几乎以一己之力翻盘，Jiejie 却用惩戒抢下远古龙。EDG 在 42 分钟终结比赛。",
+      hero: "Scout —— 决赛 FMVP；这一夜同样改写了剧本的，还有凯南 Flandre 与抢下远古龙的赵信 Jiejie",
+      footnote: "Khan 赛前曾说，想在决赛里选一次奥恩——那是他和一位朋友的约定。最终，他没能选，也没能赢。这一局之后，他宣布退役。"
+    },
+    rewriteEndings: {
+      success: "DK 拿下决胜局，3 : 2 —— 卫冕成功，Khan 带着冠军退役",
+      honor:   "DK 拼到最后一波团，仍以一线之差目送 EDG 捧杯",
+      history: "DK 2 : 3 告负 —— 与真实历史殊途同归"
+    },
+    declarations: {
+      blame:      { label: "甩锅", text: "留给 Canyon 的英雄池太薄了。这不全是我的问题——但这一把，是我改的。" },
+      god:        { label: "封神", text: "都说这一夜的剧本叫以下克上。今晚，卫冕冠军亲手把结局改了回来。" },
+      versailles: { label: "凡尔赛", text: "也没做什么。就是没让那只凯南，再绕后成功一次而已。" }
+    },
+    hands: [
+      { id: "borrow", verb: "借", title: "借一手招牌",
+        snapshot: "决胜局开局，Canyon 的巨魔三分钟就来到上路，逼出凯南的闪现和传送。真实历史里，DK 的开局并不差——差的是把优势延续下去的那口气。",
+        options: [
+          { name: "借 Jiejie 的反野路线，装给 Canyon", tier: "steady",
+            cond: "Canyon 的前两组野怪不被赵信反掉", okDelta: 3, failDelta: -4, actor: "Canyon",
+            okText: "赵信的锋喙鸟和石甲虫被 Canyon 提前收下，Jiejie 开局第一次扑了个空。",
+            failText: "路线背得再熟，赵信还是先到一步——好在 Canyon 及时撤开，只亏了一组野怪。" },
+          { name: "借 Scout 的佐伊气泡，装给 ShowMaker", tier: "risky",
+            cond: "辛德拉囤住一波兵线再出手推球", okDelta: 23, failDelta: -7, actor: "ShowMaker",
+            okText: "辛德拉的法球像长了眼睛，中路的线权第一次稳稳站在 DK 这边，佐伊的消耗再也压不住人。",
+            failText: "气泡的手感不是借来的：推空的法球让辛德拉丢了线权，佐伊反手把血线压了回来。" },
+          { name: "借 Viper 的厄斐琉斯团战输出，装给 Ghost", tier: "gamble",
+            cond: "吉格斯先攒够两件装备再接团", okDelta: 27, failDelta: -7, actor: "Ghost",
+            okText: "吉格斯的炸弹在团战里连成一片火海，Ghost 打出了整个系列赛最不讲道理的一波输出。",
+            failText: "输出装还没成型就被迫接团，炸弹扔得再多，也炸不开 EDG 的前排。" }
+        ] },
+      { id: "swap", verb: "换", title: "换位止损",
+        snapshot: "凯南的闪现和传送都交在了三分钟那波。真实历史里，DK 连拿两条先锋，却在小龙上步步退让，节奏的账，迟早要还。",
+        options: [
+          { name: "放掉小龙，Canyon 拿先锋撞中塔", tier: "steady",
+            cond: "中路兵线先一步推进塔下", okDelta: 3, failDelta: -4, actor: "Canyon",
+            okText: "先锋一头撞掉中一塔大半血量，DK 用一座塔的镀层，换回了地图的呼吸权。",
+            failText: "先锋撞是撞了，中塔却没掉——小龙也丢了，这笔置换只算不亏不赚偏亏。" },
+          { name: "Khan 男枪换去下路单带，吉格斯守中清线", tier: "risky",
+            cond: "吉格斯的大招只留着清兵线", okDelta: 22, failDelta: -7, actor: "Khan",
+            okText: "男枪的单带让 EDG 第一次被迫分人回防，DK 的边线终于有了声音。",
+            failText: "单带被赵信和凯南联手抓了一次，男枪的发育断了档。" },
+          { name: "双人组换上，三人强压没闪的凯南", tier: "gamble",
+            cond: "凯南的闪现还差最后十几秒转好", okDelta: 27, failDelta: -7, actor: "BeryL",
+            okText: "蕾欧娜的先手稳稳命中，凯南倒在自己的塔下——三分钟那笔账，连本带利讨了回来。",
+            failText: "越塔慢了半拍，凯南的闪现刚好转好，反手大招把三个人都留在了塔下。" }
+        ] },
+      { id: "tactics", verb: "改", title: "改战术",
+        snapshot: "中期将至。真实历史里，22 分 40 秒，凯南从草丛绕后开大，电晕辛德拉和巨魔，EDG 打出一换四——整局的转折点，就埋在接下来的几分钟里。",
+        options: [
+          { name: "河道两侧提前布满绕后眼，只接正面团", tier: "steady",
+            cond: "BeryL 先排掉草丛视野再布防", okDelta: 3, failDelta: -4, actor: "BeryL",
+            okText: "凯南的绕后路线被眼位照得一清二楚，EDG 最锋利的一把刀，暂时收回了鞘里。",
+            failText: "眼位被排掉了两个，防线只剩了个大概——好在这一波，凯南没有找到角度。" },
+          { name: "中野分开站位，蕾欧娜留反手，专等凯南进场", tier: "risky",
+            cond: "ShowMaker 的闪现留到凯南进场之后再交", okDelta: 22, failDelta: -7, actor: "ShowMaker",
+            okText: "凯南的大招只电到了前排，辛德拉反手推球晕住两人——22 分 40 秒的历史，在这一手被改写。",
+            failText: "站位是分开了，可巨魔还是被先手开到，DK 只能卖掉打野撤退。" },
+          { name: "卖个破绽引凯南开大，蕾欧娜大招预判落点反开", tier: "gamble",
+            cond: "凯南的传送落点被眼位提前照到", okDelta: 27, failDelta: -7, actor: "全队",
+            okText: "凯南刚落地就被日炎耀斑按在原地，EDG 的王牌开团，成了 DK 的反攻号角。",
+            failText: "破绽卖得太真：凯南的大招结结实实电满了五个人，这一波，又成了他的舞台。" }
+        ] },
+      { id: "pause", verb: "停", title: "停一停",
+        snapshot: "29 分钟，龙坑团的凯南大招，和 EDG 的水龙魂。真实历史的剧本里，卫冕冠军的王座正从这一刻开始倾斜。先把呼吸放慢。",
+        options: [
+          { name: "全队语音复盘，只定下一波的纪律", tier: "steady",
+            cond: "五个人把话说完再出门", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "出门后的 DK 像换了一支队伍：先清线、后接团，每一步都踩在点上。",
+            failText: "复盘变成了互相打气，纪律只维持了三分钟——好在水龙魂之后，没再送出人头。" },
+          { name: "BeryL 接管指挥，改打反手阵地战", tier: "risky",
+            cond: "BeryL 不再抢第一手开团时机", okDelta: 23, failDelta: -7, actor: "BeryL",
+            okText: "巨魔的柱子卡住河道口，吉格斯在后面把炸弹一颗颗扔过去——EDG 第一次觉得推进如此费力。",
+            failText: "阵地战被佐伊的远程消耗一点点磨穿，DK 还是丢了中二塔。" },
+          { name: "放慢节奏，男枪单带牵扯 EDG 的抱团", tier: "gamble",
+            cond: "Khan 的传送捏在手里等最后一刻", okDelta: 27, failDelta: -7, actor: "Khan",
+            okText: "EDG 被单带扯得首尾难顾，抱团的阵型第一次出现了裂缝，DK 抢回了大龙区的视野。",
+            failText: "牵扯变成了孤军深入，男枪被包掉，DK 被迫四打五守高地。" }
+        ] },
+      { id: "gamble", verb: "决", title: "最后一波",
+        snapshot: "35 分钟，远古龙团。真实历史里，Khan 的男枪几乎以一己之力打赢了这波团——可 Jiejie 的惩戒从 Canyon 手里抢走了远古龙。这一手，改写它。",
+        options: [
+          { name: "放弃远古龙，换 EDG 的上路高地", tier: "steady",
+            cond: "兵线提前送进 EDG 半区", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "高地塔换远古龙，不亏。但离改命线，还差最后一步。",
+            failText: "高地没摸到，远古龙也丢了——DK 只能目送 EDG 带着远古龙回城。" },
+          { name: "正面接团，辛德拉先手晕住赵信，不给他进坑拼惩", tier: "risky",
+            cond: "ShowMaker 的弱者退散留给赵信", okDelta: 23, failDelta: -7, actor: "ShowMaker",
+            okText: "赵信被晕在龙坑之外，Canyon 稳稳惩下远古龙——35 分钟的遗憾，在这一手被亲手填平。",
+            failText: "辛德拉的推球空了，赵信还是闪现进坑——历史在惩戒的光芒里，重演了大半。" },
+          { name: "Canyon 假打龙真开团，男枪绕后先秒厄斐琉斯", tier: "gamble",
+            cond: "男枪的绕后路线没有被扫描照出来", okDelta: 24, failDelta: -11, actor: "Khan",
+            okText: "男枪绕后，两枪点倒厄斐琉斯！DK 打赢远古团，一路推平基地——Khan 的最后一舞，以冠军作结。",
+            failText: "绕后被洛的盛大登场抬了起来，男枪倒在龙坑门口，这波团，成了告别的句号。" }
+        ] }
+    ]
+  },
+  {
+    id: "ep3", no: "003", status: "playable",
+    title: "2018 西决抢七 · 火箭 vs 勇士",
+    listDesc: "抢七之夜 · 你执火箭，五手牌，改写 27 连铁的那一夜。",
+    tags: ["跨项目卷", "执火箭"],
+    startAdv: -12,
+    intro: [
+      "2018 年 5 月 28 日，休斯顿丰田中心，西部决赛抢七。常规赛 65 胜的火箭，系列赛一度 3 : 2 领先勇士——距离总决赛，只差一场球。",
+      "但第五场最后时刻，保罗拉伤了右腿筋。抢七之夜，他只能穿着外套坐在替补席。哈登单核，迎战杜兰特、库里、克莱和格林——这一夜后来发生的事，成了 NBA 历史上最著名的『如果』之一。"
+    ],
+    goal: "赢下抢七，把火箭送进总决赛。",
+    realHistory: {
+      ending: "火箭 92 : 101 告负，3 : 4 出局，勇士晋级总决赛",
+      turning: "火箭半场 54 : 43 领先，却从次节中段起连续投失 27 记三分，创下 NBA 季后赛纪录；第三节又被勇士打出 33 : 15。等塔克在末节投进那记终结连铁的底角三分时，火箭早已从领先变成落后。",
+      hero: "杜兰特 34 分，库里 27 分 9 篮板 10 助攻；火箭这边，哈登独得 32 分，阿里扎三分 9 投全失",
+      footnote: "保罗在场边拍打座椅的画面，成了这轮系列赛最出名的镜头之一。那支 65 胜的火箭，是哈登时代离总冠军最近的一次。"
+    },
+    rewriteEndings: {
+      success: "火箭拿下抢七 —— 保罗从替补席站了起来，这一次，休斯顿进总决赛",
+      honor:   "火箭拼到最后一分钟，仍以一球之差目送勇士过关",
+      history: "火箭 92 : 101 告负 —— 与真实历史殊途同归"
+    },
+    declarations: {
+      blame:      { label: "甩锅", text: "战术板上写的是三分，那一晚篮筐偏偏盖了盖。这不全是我的问题——但这一把，是我改的。" },
+      god:        { label: "封神", text: "27 连铁又如何？抢七之夜的主人，今晚在休斯顿。" },
+      versailles: { label: "凡尔赛", text: "也没做什么。就是让该进的球，进了而已。" }
+    },
+    hands: [
+      { id: "borrow", verb: "借", title: "借一手招牌技术",
+        snapshot: "抢七开场。保罗穿着外套坐在替补席，第五场拉伤的右腿筋让他只能看着。真实历史里，火箭上半场靠拼劲和内线领先了 11 分——可外线的手感，从一开始就不对劲。",
+        options: [
+          { name: "借克莱的无球跑位，装给阿里扎", tier: "steady",
+            cond: "阿里扎借掩护兜出时不被克莱贴身跟住", okDelta: 3, failDelta: -4, actor: "阿里扎",
+            okText: "阿里扎借卡佩拉的掩护兜出底角，接球出手一气呵成——今晚的第一个三分，来得比历史上早得多。",
+            failText: "跑位是借来了，出手还是犹豫了半拍，球砸在篮筐前沿。好在篮板被卡佩拉点回，没让勇士打成转换。" },
+          { name: "借库里的超远三分手感，装给哈登", tier: "risky",
+            cond: "哈登借挡拆错开格林的贴防再出手", okDelta: 23, failDelta: -7, actor: "哈登",
+            okText: "刚过半场的 logo 三分应声入网！哈登对着主场球迷拍了拍胸口——今晚的手感，站在休斯顿这边。",
+            failText: "超远三分砸筐而出，勇士推起反击，杜兰特干拔命中。借来的手感，第一课是学费。" },
+          { name: "借杜兰特的无解干拔，装给戈登", tier: "gamble",
+            cond: "戈登替补登场后的第一次触球就果断出手", okDelta: 27, failDelta: -7, actor: "戈登",
+            okText: "戈登迎着克莱的长臂干拔命中，还造成犯规——替补席站起来一片，火箭的第二火力点提前开火。",
+            failText: "干拔偏得离谱，直接送了勇士一个长篮板，库里追身三分命中。这一手，把节奏送了出去。" }
+        ] },
+      { id: "swap", verb: "换", title: "换人调整",
+        snapshot: "轮换是德安东尼的老问题：真实历史里，他只用七八个人打满抢七，主力们的腿在第四节像灌了铅。这一手，提前把账算清楚。",
+        options: [
+          { name: "提前轮换，给哈登留两分钟喘息", tier: "steady",
+            cond: "戈登带替补阵容时不被勇士拉开分差", okDelta: 3, failDelta: -4, actor: "德安东尼",
+            okText: "哈登坐在场边大口喘气的那两分钟，戈登和塔克把分差咬住了。决战时刻的腿，先存下了。",
+            failText: "替补阵容还是丢了四分，哈登提前披挂上阵——喘息只喘了一半。" },
+          { name: "卡佩拉换下，摆五小阵容提速对攻", tier: "risky",
+            cond: "五小阵容先护住后场篮板再推速度", okDelta: 22, failDelta: -7, actor: "卡佩拉",
+            okText: "五小阵容跑起来了，塔克顶到五号位寸土不让，火箭用速度把勇士的阵地战搅成了一团乱麻。",
+            failText: "篮板被格林连抢了两个，勇士二次进攻打成，德安东尼赶紧把卡佩拉又换了回来。" },
+          { name: "阿里扎换防库里，哈登去对克莱保存体力", tier: "gamble",
+            cond: "换防后第一个回合不被杜兰特点名单打", okDelta: 27, failDelta: -7, actor: "阿里扎",
+            okText: "阿里扎的长臂罩住了库里的出手空间，哈登在弱侧叉着腰看完了一整个回合——这口体力，留到第四节再花。",
+            failText: "换防被勇士一眼看穿，杜兰特连续点名哈登单打，省体力的算盘落了空，还赔上六分。" }
+        ] },
+      { id: "tactics", verb: "改", title: "改打法",
+        snapshot: "次节中段开始，火箭的三分像被施了咒：一个、两个、十个……真实历史里，这个数字最后停在 27——连续 27 记三分打铁，NBA 季后赛前所未见。领先，正在被一点点蚕食。",
+        options: [
+          { name: "先停投三分，全队改攻篮下，拿稳稳的两分", tier: "steady",
+            cond: "卡佩拉在篮下要住一次深位", okDelta: 3, failDelta: -4, actor: "卡佩拉",
+            okText: "卡佩拉篮下吃饼得手，连铁的计数停在了个位数。两分不解渴，但先止血。",
+            failText: "篮下被格林提前卡位，球又回到了外线——出手还是铁，只多耗掉了十几秒。" },
+          { name: "哈登改打中距离与造犯规，戈登增加突破分球", tier: "risky",
+            cond: "哈登的体力还够撑三次强突", okDelta: 22, failDelta: -7, actor: "哈登",
+            okText: "哈登不再和篮筐较劲，一次抛投、两次造犯规，火箭用最『不火箭』的方式把分差稳住了。",
+            failText: "造犯规的哨子今晚格外吝啬，哈登摔倒在地，裁判没有响哨，勇士已经推过了半场。" },
+          { name: "继续投——就信手感总会回来，投开为止", tier: "gamble",
+            cond: "下一记三分，必须是完全空位", okDelta: 27, failDelta: -7, actor: "全队",
+            okText: "塔克的底角三分穿网而过！连铁在第九次就画上句号，丰田中心像赢了总冠军一样炸开了锅。",
+            failText: "没等来。第 15 铁、第 20 铁……篮筐上的盖子，今晚焊得格外结实。" }
+        ] },
+      { id: "pause", verb: "停", title: "叫暂停",
+        snapshot: "第三节，真实历史里最痛的一节：勇士单节 33 分，火箭只得 15 分，三分 14 投全失。54 : 43 的半场领先，三节打完变成 69 : 76 落后。德安东尼手里，还攥着暂停。",
+        options: [
+          { name: "叫暂停，只定一件事：接下来五次进攻全打篮下", tier: "steady",
+            cond: "五个人把战术听完再上场", okDelta: 3, failDelta: -4, actor: "德安东尼",
+            okText: "暂停回来，戈登突破、卡佩拉空接、哈登抛投——五次进攻四次打到篮下，分差重新咬住。",
+            failText: "暂停只换来了两次失误，纪律维持了三个回合——好在没让分差被拉开到两位数。" },
+          { name: "暂停回来摆联防，等勇士外线手感回落", tier: "risky",
+            cond: "联防第一次轮转不漏底角的克莱", okDelta: 23, failDelta: -7, actor: "全队",
+            okText: "联防站住了：库里被迫把球分出去，勇士连续三攻无功而返，火箭一点点把坑填了回来。",
+            failText: "联防的底角还是漏了，克莱的三分像针一样扎进来，德安东尼只能再叫一个暂停。" },
+          { name: "不叫暂停，让哈登用一记强投自己止血", tier: "gamble",
+            cond: "哈登迎着格林的贴防把球投进", okDelta: 27, failDelta: -7, actor: "哈登",
+            okText: "后撤步、迎封盖、球进哨响，还要加罚！哈登捶着胸口怒吼，整支球队的魂被这一球叫了回来。",
+            failText: "强投偏出，勇士抓下篮板三线快攻——不叫的这个暂停，成了赛后所有人追问的那一个。" }
+        ] },
+      { id: "gamble", verb: "决", title: "最后一攻",
+        snapshot: "第四节，塔克的底角三分终于终结了连铁，火箭追到 83 : 89。可杜兰特刚又投进一记跳投，时间只剩最后几分钟。真实历史的终场比分，是 92 : 101。这一手，改写它。",
+        options: [
+          { name: "稳扎稳打，每回合打到 24 秒将尽，交给哈登单打", tier: "steady",
+            cond: "哈登单打时弱侧不被提前包夹", okDelta: 3, failDelta: -4, actor: "哈登",
+            okText: "分差被磨到一个回合之内。但看看时钟——留给火箭的，也只剩最后一攻了。",
+            failText: "追分的节奏太稳了，勇士不慌不忙地耗着时间，分差始终隔着两三个回合。" },
+          { name: "对格林提前犯规，送他上罚球线换回合", tier: "risky",
+            cond: "格林两罚至多命中一球", okDelta: 23, failDelta: -7, actor: "全队",
+            okText: "格林两罚一中，火箭抢下篮板，戈登追身三分命中——分差只剩 2 分，丰田中心地动山摇。",
+            failText: "格林两罚全中，砍人战术砍在了自己脚上，回过头哈登的三分又没进。" },
+          { name: "连续三记三分搏命，投不进就地犯规", tier: "gamble",
+            cond: "第一记三分必须命中", okDelta: 24, failDelta: -11, actor: "全队",
+            okText: "哈登三分、戈登三分、塔克底角再中！三记三分像三把刀，火箭反超——抢七之夜，休斯顿改写了结局。",
+            failText: "第一记就砸在篮筐上。犯规、罚球、时间走完——27 连铁的剧本，在最后时刻合上了最后一页。" }
+        ] }
+    ]
+  }
+];
+/* ---------- 引擎：纯函数（无 DOM / 无存储依赖） ---------- */
+function getEpisode(epId) { return EPISODES.find(e => e.id === epId) || null; }
+function tierOf(tierKey) { return TIERS.find(t => t.key === tierKey); }
+function tierProb(tierKey, modeKey) {
+  const i = TIERS.findIndex(t => t.key === tierKey);
+  const j = Math.min(i + MODES[modeKey].probShift, TIERS.length - 1);
+  return TIERS[j].prob;
+}
+/* 含暗流修正后的实际成功率（5–95 钳制） */
+function effectiveProb(opt, hand, run) {
+  let p = tierProb(opt.tier, run.mode);
+  const m = (run.affix && run.affix.mods) || {};
+  if (m.probBonus && m.probBonus[opt.tier]) p += m.probBonus[opt.tier];
+  if (m.probBonusByHand && m.probBonusByHand[hand.id]) p += m.probBonusByHand[hand.id];
+  return Math.max(5, Math.min(95, p));
+}
+/* 含暗流修正后的实际优势变化，返回 {delta, affixNote} */
+function effectiveDelta(opt, hand, run, success) {
+  let d = success ? opt.okDelta : opt.failDelta;
+  const m = (run.affix && run.affix.mods) || {};
+  const notes = [];
+  if (success && m.successBonus && m.successBonus[opt.tier]) {
+    d += m.successBonus[opt.tier];
+    notes.push("暗流「" + run.affix.name + "」额外 " + (m.successBonus[opt.tier] > 0 ? "+" : "") + m.successBonus[opt.tier]);
+  }
+  if (!success && m.failDeltaBonus && m.failDeltaBonus[opt.tier]) {
+    d += m.failDeltaBonus[opt.tier];
+    notes.push("暗流「" + run.affix.name + "」修正 " + (m.failDeltaBonus[opt.tier] > 0 ? "+" : "") + m.failDeltaBonus[opt.tier]);
+  }
+  if (m.handDeltaScale && typeof m.handDeltaScale[hand.id] === "number") {
+    const scaled = Math.round(d * m.handDeltaScale[hand.id]);
+    if (scaled !== d) notes.push("暗流「" + run.affix.name + "」令本手收益减半：" + d + " → " + scaled);
+    d = scaled;
+  }
+  return { delta: d, affixNote: notes.join("；") };
+}
+/* 开局：抽暗流（rng 第一次调用决定词缀），建账本 */
+function newRun(ep, modeKey, rng) {
+  rng = rng || Math.random;
+  const affix = AFFIXES[Math.floor(rng() * AFFIXES.length) % AFFIXES.length];
+  return { epId: ep.id, mode: modeKey, adv: ep.startAdv, handIdx: 0, affix: affix, log: [], rewound: false, finished: false };
+}
+function currentHand(ep, run) { return run.handIdx < ep.hands.length ? ep.hands[run.handIdx] : null; }
+/* 出一手：掷档 → 记账本（单点写入） → 返回本手记录 */
+function choose(ep, run, optIdx, rng) {
+  rng = rng || Math.random;
+  const hand = currentHand(ep, run);
+  if (!hand) throw new Error("no hand left");
+  const opt = hand.options[optIdx];
+  if (!opt) throw new Error("bad option index");
+  const prob = effectiveProb(opt, hand, run);
+  const success = rng() * 100 < prob;
+  const eff = effectiveDelta(opt, hand, run, success);
+  const entry = {
+    handIdx: run.handIdx, handId: hand.id, verb: hand.verb, title: hand.title,
+    optName: opt.name, tier: opt.tier, prob: prob, success: success,
+    delta: eff.delta, advBefore: run.adv, advAfter: run.adv + eff.delta,
+    text: success ? opt.okText : opt.failText, actor: opt.actor,
+    affixNote: eff.affixNote || ""
+  };
+  run.adv = entry.advAfter;
+  run.log.push(entry);
+  run.handIdx += 1;
+  if (run.handIdx >= ep.hands.length) run.finished = true;
+  return entry;
+}
+/* 续命：撤回第五手，回到出牌前状态。本局标记 rewound —— 成绩标记「续命完成」，
+   不计最佳评级（排行榜完整性红线，见 applyResultToRecords 与 BUILD_NOTES）。 */
+function rewindRun(ep, run) {
+  if (!run.finished || run.log.length !== ep.hands.length) throw new Error("rewind only at settlement");
+  const last = run.log.pop();
+  run.adv = last.advBefore;
+  run.handIdx = ep.hands.length - 1;
+  run.finished = false;
+  run.rewound = true;
+  return last;
+}
+/* 判定：三档结局 + 评级，阈值全部来自 MODES 配置 */
+function judge(ep, run) {
+  const mode = MODES[run.mode];
+  const th = mode.threshold;
+  const adv = run.adv;
+  const tier = adv >= th ? "success" : (adv >= th - 20 ? "honor" : "history");
+  const rating = adv >= th + 18 ? "S" : (adv >= th ? "A" : (adv >= th - 20 ? "B" : "C"));
+  let key = null;
+  for (const e of run.log) if (!key || e.delta > key.delta) key = e;
+  return { tier: tier, rating: rating, adv: adv, threshold: th, keyHand: key };
+}
+/* 改命分：沉淀层累计口径（见 BUILD_NOTES）
+   审计修复批 F2（2026-11-05）：计划书 §7 定单局结算分＝max(0,终局优势)×模式系数
+   （普通 1／困难 2）＋档位加成。此前 computeScore 无模式入参，困难分与普通同值，
+   导向全反。系数独立成常量，不并入 MODES（不动模式阈值/降档等已冻结数值）。 */
+const MODE_SCORE_COEF = { normal: 1, hard: 2 };
+function computeScore(j, modeKey) {
+  const coef = MODE_SCORE_COEF[modeKey] || 1;
+  return Math.max(0, j.adv) * coef + (j.tier === "success" ? 20 : (j.tier === "honor" ? 8 : 0));
+}
+function rankFor(totalScore) {
+  let cur = RANKS[0], next = null;
+  for (let i = 0; i < RANKS.length; i++) {
+    if (totalScore >= RANKS[i].min) { cur = RANKS[i]; next = RANKS[i + 1] || null; }
+  }
+  return { current: cur, next: next };
+}
+/* 双历史线「我的改写」栏文本 */
+function rewriteSummary(ep, run, j) {
+  const k = j.keyHand;
+  return {
+    ending: ep.rewriteEndings[j.tier],
+    turning: k ? ("第" + (k.handIdx + 1) + "手「" + k.optName + "」" + (k.success ? "成功" : "虽败犹荣") + "，优势 " + (k.delta >= 0 ? "+" : "") + k.delta + "，是全场转折点。") : "",
+    hero: k ? (k.actor + " —— 本局改写功臣") : ""
+  };
+}
+/* 结算归因：逐手 + 暗流单列一行 */
+function settlementLines(ep, run) {
+  const lines = run.log.map(e => ({
+    head: "第" + (e.handIdx + 1) + "手 · " + e.title + "：" + e.optName,
+    body: (e.success ? "成功" : "失败") + "（" + tierOf(e.tier).label + "档 " + e.prob + "%）优势 " + (e.delta >= 0 ? "+" : "") + e.delta + " → " + e.advAfter + "。" + e.text,
+    affixNote: e.affixNote || ""
+  }));
+  if (run.affix) lines.push({ head: "暗流 · " + run.affix.name, body: run.affix.affixLine || run.affix.desc, affixNote: "", isAffix: true });
+  return lines;
+}
+/* ---------- 记录层：纯函数（输入输出均为普通对象，存储由表现层负责） ---------- */
+function emptyRecords() {
+  return { nickname: "无名改命者", totalScore: 0, episodes: {}, votes: {},
+    daily: { date: "", firstDone: false, adHooks: {} } };
+}
+function normalizeDaily(records, todayStr) {
+  if (!records.daily || records.daily.date !== todayStr) {
+    records.daily = { date: todayStr, firstDone: false, adHooks: {} };
+  }
+  if (!records.daily.adHooks) records.daily.adHooks = {};
+  return records;
+}
+/* 结算落账：档案册收集 / 累计分 / 最佳评级 / 每日首改
+   红线：run.rewound（续命完成）不计最佳评级与最佳优势，其余沉淀照常。 */
+function applyResultToRecords(records, ep, run, j, todayStr) {
+  normalizeDaily(records, todayStr);
+  const gained = computeScore(j, run.mode);
+  const rankBefore = rankFor(records.totalScore).current.name;
+  records.totalScore += gained;
+  const rankAfter = rankFor(records.totalScore).current.name;
+  if (!records.episodes[ep.id]) records.episodes[ep.id] = { plays: 0, bestRating: null, bestAdv: null, archive: {} };
+  const rec = records.episodes[ep.id];
+  rec.plays += 1;
+  let archiveNew = null;
+  if (!rec.archive[j.tier]) { rec.archive[j.tier] = { date: todayStr }; archiveNew = j.tier; }
+  if (!run.rewound) {
+    const order = { S: 4, A: 3, B: 2, C: 1 };
+    if (!rec.bestRating || order[j.rating] > order[rec.bestRating]) rec.bestRating = j.rating;
+    if (rec.bestAdv === null || j.adv > rec.bestAdv) rec.bestAdv = j.adv;
+  }
+  let firstRewrite = false;
+  if (!records.daily.firstDone) { records.daily.firstDone = true; firstRewrite = true; }
+  return { gained: gained, firstRewrite: firstRewrite, archiveNew: archiveNew,
+    rankBefore: rankBefore, rankAfter: rankAfter, countsForBest: !run.rewound };
+}
+// === ENGINE END ===
+</script>
+<script>
+/* ================= 表现层 ================= */
+const LS_KEY = "yinanyi_records_v1";
+const app = document.getElementById("app");
+const toastEl = document.getElementById("toast");
+function todayStr() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) { const s = JSON.parse(raw); return normalizeDaily(Object.assign(emptyRecords(), s), todayStr()); }
+  } catch (e) { /* 存档损坏时回落为空档，不阻塞游戏 */ }
+  return normalizeDaily(emptyRecords(), todayStr());
+}
+function saveStore() { try { localStorage.setItem(LS_KEY, JSON.stringify(store)); } catch (e) {} }
+let store = loadStore();
+const state = { screen: "home", mode: "normal", ep: null, run: null, phase: "pick",
+  lastEntry: null, settle: null, declaration: null, deluxe: false };
+function toast(msg) {
+  toastEl.textContent = msg; toastEl.classList.add("show");
+  clearTimeout(toast._t); toast._t = setTimeout(() => toastEl.classList.remove("show"), 2200);
+}
+/* 打点转发（适配器脚本在后面接线；未接线/无平台时静默）。act 只用 click/exposure，
+   同模块成对同 label，事件数据走 custom（施工书 §5.2 埋点表）。 */
+function trk(act, label, custom) { if (window.__yinanyiTrack) window.__yinanyiTrack(act, label, custom); }
+function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+function advPct(v) { return Math.max(0, Math.min(100, (v + 24) / 72 * 100)); }
+function topBar(no) {
+  return '<div class="top"><span>改命一手 · 名局重写计划</span><span>案卷 No.' + esc(no || "---") + "</span></div>";
+}
+function advBar(run) {
+  const mode = MODES[run.mode];
+  const adv = run.adv, th = mode.threshold;
+  const remain = th - adv;
+  return '<div class="bar"><div class="lab"><span>当前优势值 <b style="color:#b23a26">' + adv + '</b></span>' +
+    '<span>改命线 +' + th + (remain > 0 ? " · 还差 " + remain : " · 已越线") + '</span></div>' +
+    '<div class="track"><div class="fill" style="left:0;width:' + advPct(adv) + '%"></div>' +
+    '<div class="mark" style="left:' + advPct(th) + '%"><span class="markLab">改命线</span></div></div></div>';
+}
+/* ---------- 广告钩子本地计数（每日上限来自 AD_HOOKS 配置） ---------- */
+function hookUsed(key) { return (store.daily.adHooks && store.daily.adHooks[key]) || 0; }
+function canUseHook(key) { return hookUsed(key) < AD_HOOKS[key].dailyLimit; }
+function consumeHook(key) {
+  normalizeDaily(store, todayStr());
+  store.daily.adHooks[key] = hookUsed(key) + 1; saveStore();
+}
+/* ================= 屏幕：首页 ================= */
+function renderHome() {
+  state.screen = "home"; state.deluxe = false;
+  const rk = rankFor(store.totalScore);
+  const rankPct = rk.next ? Math.round((store.totalScore - rk.current.min) / (rk.next.min - rk.current.min) * 100) : 100;
+  let h = topBar("总卷") +
+    '<h1>意难平：<span class="red">这一局</span>我改了</h1>' +
+    '<div class="sub">历 史 名 局 · 由 你 重 审</div>' +
+    '<div class="tagline">五手牌改写一场真实名局，每手成败全明示</div>';
+  /* 改命者档案 */
+  h += '<div class="profile"><div class="no">改命者档案</div>' +
+    '<span class="nick">' + esc(store.nickname) + '</span><span class="nickEdit" id="nickEdit">改署名</span>' +
+    '<div class="rankline">段位 <b>' + rk.current.name + '</b> · 累计改命分 <b>' + store.totalScore + '</b>' +
+    (rk.next ? ' · 距「' + rk.next.name + '」还差 ' + (rk.next.min - store.totalScore) + " 分" : " · 已至绝巅") + '</div>' +
+    '<div class="rankTrack"><div class="rankFill" style="width:' + rankPct + '%"></div></div>' +
+    '<div id="nickEditor"></div></div>';
+  /* 模式 */
+  h += '<div class="modeRow">' +
+    ["normal", "hard"].map(k => {
+      const m = MODES[k];
+      return '<div class="mode' + (state.mode === k ? " sel" : "") + '" data-mode="' + k + '"><div class="mn">' + m.label + '</div>' +
+        '<div class="md">改命线 +' + m.threshold + (k === "hard" ? " · 概率整体降一档" : " · 标准概率") + "</div></div>";
+    }).join("") + "</div>";
+  /* 案卷列表 + 结局档案册 */
+  h += '<h2 class="sec">案 卷 列 表</h2>';
+  for (const ep of EPISODES) {
+    const rec = store.episodes[ep.id];
+    const locked = ep.status !== "playable";
+    h += '<div class="epCard' + (locked ? " locked" : "") + '" data-ep="' + ep.id + '">' +
+      (rec && rec.bestRating ? '<div class="estat">最佳评级 ' + rec.bestRating + "</div>" : (locked ? '<div class="estat">封存</div>' : "")) +
+      '<div class="et">' + esc(ep.title) + '</div><div class="em">' + esc(ep.listDesc) + "</div>" +
+      (locked && ep.hands && ep.hands.length > 0 ? '<button class="hookBtn" data-hook="earlyEpisode" style="margin-top:10px">看广告抢先翻开此卷 · 每日 ' + AD_HOOKS.earlyEpisode.dailyLimit + " 次</button>" : "") +
+      "</div>";
+    /* 结局档案册 */
+    const tiers = [["success", "改命成功"], ["honor", "虽败犹荣"], ["history", "历史照旧"]];
+    h += '<div class="arcEpName">结局档案册 · ' + esc(ep.title) + "</div>" + '<div class="archiveRow">' +
+      tiers.map(([tk, tn]) => {
+        const got = rec && rec.archive && rec.archive[tk];
+        return '<div class="arcSlot' + (got ? " got" : "") + '"><div class="an">' + tn + '</div><div class="ad">' + (got ? got.date + " 达成" : (locked ? "卷未启封" : "尚未达成")) + "</div></div>";
+      }).join("") + "</div>";
+  }
+  h += '<div class="foot">本作是模拟归因，不是真实预测。每一局的概率、阈值与归因全部公开，可自行复算。</div>';
+  app.innerHTML = h;
+  document.querySelectorAll(".mode").forEach(el => el.addEventListener("click", () => { state.mode = el.dataset.mode; renderHome(); }));
+  document.querySelectorAll(".epCard").forEach(el => el.addEventListener("click", ev => {
+    const ep = getEpisode(el.dataset.ep);
+    if (ep.status !== "playable") { toast("此卷尚未启封"); return; }
+    trk("click", "案卷架-期数列表", { ep: ep.id });
+    renderIntro(ep);
+  }));
+  document.querySelectorAll('[data-hook="earlyEpisode"]').forEach(el => el.addEventListener("click", ev => {
+    ev.stopPropagation();
+    if (!canUseHook("earlyEpisode")) { toast("今日抢先次数已用完"); return; }
+    PlatformAdapter.showRewardAd("earlyEpisode", res => {
+      if (!res || !res.ok) { toast((res && res.message) || "广告未完成，奖励未发放"); return; }
+      consumeHook("earlyEpisode"); toast("抢先翻卷即将开启，敬请期待");
+    });
+  }));
+  const ne = document.getElementById("nickEdit");
+  if (ne) ne.addEventListener("click", () => {
+    document.getElementById("nickEditor").innerHTML =
+      '<input class="nickInput" id="nickInput" maxlength="12" value="' + esc(store.nickname) + '">' +
+      '<button class="btn small" id="nickSave">存入档案</button>';
+    document.getElementById("nickSave").addEventListener("click", () => {
+      const input = document.getElementById("nickInput");
+      const saveBtn = document.getElementById("nickSave");
+      const candidate = (input && input.value.trim()) || "无名改命者";
+      if (saveBtn) saveBtn.disabled = true;
+      PlatformAdapter.checkAudit(candidate, result => {
+        if (!result || !result.ok) {
+          if (saveBtn) saveBtn.disabled = false;
+          if (result && result.blocked) toast("这个署名未通过内容安全检测，请换一个");
+          else if (result && result.loginRequired) toast("请先登录后再保存署名");
+          else toast("内容安全检测暂时不可用，请稍后再试");
+          return;
+        }
+        store.nickname = candidate; saveStore(); PlatformAdapter.cloudSaveMirror(); renderHome(); toast("署名已存档");
+      });
+    });
+  });
+  trk("exposure", "案卷架-期数列表");
+  window.scrollTo(0, 0);
+}
+/* ================= 屏幕：开卷 ================= */
+function renderIntro(ep) {
+  state.screen = "intro"; state.ep = ep;
+  let h = topBar(ep.no) +
+    '<div class="case"><div class="no">本 期 案 卷</div><div class="t">' + esc(ep.title) + "</div>" +
+    '<div class="m">' + ep.tags.map(t => '<span class="tag">' + esc(t) + "</span>").join("") + "</div></div>";
+  h += ep.intro.map(p => '<p class="introText">' + esc(p) + "</p>").join("");
+  h += '<div class="goal">本局任务：<b>' + esc(ep.goal) + '</b><br><span style="font-size:12px;color:#5c543d">模式：' +
+    MODES[state.mode].label + " · 改命线 +" + MODES[state.mode].threshold + " · 开局优势 " + ep.startAdv + " · 开卷后抽取一条「暗流」全程生效</span></div>";
+  h += '<button class="btn red" id="startBtn">开 卷 改 命</button>' +
+    '<button class="btn ghost" id="backBtn">回案卷列表</button>' +
+    '<div class="foot">真实历史存档：' + esc(ep.realHistory.footnote) + "</div>";
+  app.innerHTML = h;
+  document.getElementById("backBtn").addEventListener("click", renderHome);
+  document.getElementById("startBtn").addEventListener("click", () => {
+    state.run = newRun(ep, state.mode, Math.random);
+    state.phase = "pick"; state.lastEntry = null; state.settle = null; state.declaration = null; state.settleExposed = false;
+    renderAffix(ep, state.run);
+  });
+  window.scrollTo(0, 0);
+}
+/* ================= 屏幕：暗流揭示 ================= */
+function renderAffix(ep, run) {
+  state.screen = "affix";
+  const a = run.affix;
+  app.innerHTML = topBar(ep.no) +
+    '<h2 class="sec" style="border-top:none;margin-top:10px">开 卷 抽 暗 流</h2>' +
+    '<div class="affixBanner"><div class="al">本 局 暗 流 · 全 程 生 效</div><div class="an2">' + esc(a.name) + '</div><div class="ad2">' + esc(a.desc) + "</div></div>" +
+    '<p class="introText">暗流不是惩罚也不是恩赐，它是这一局的天气。五手牌怎么打，由你；结算时，它会单独记上一笔。</p>' +
+    '<button class="btn red" id="goBtn">进 入 第 一 手</button>';
+  document.getElementById("goBtn").addEventListener("click", () => renderHand(ep, run));
+  window.scrollTo(0, 0);
+}
+/* ================= 屏幕：出手 ================= */
+function renderHand(ep, run) {
+  state.screen = "hand";
+  const hand = currentHand(ep, run);
+  if (!hand) { renderSettlement(ep, run); return; }
+  const a = run.affix;
+  let h = topBar(ep.no) + advBar(run);
+  h += '<div class="affixBanner" style="margin-top:12px;padding:8px 12px"><div class="al">暗流 · ' + esc(a.name) + '</div><div class="ad2" style="margin-top:1px">' + esc(a.desc) + "</div></div>";
+  h += '<div class="hand"><span class="n">第' + "一二三四五"[run.handIdx] + "手 · " + esc(hand.title) + '</span><span class="d">局势快照：' + esc(hand.snapshot) + "</span></div>";
+  if (state.phase === "pick") {
+    if (run.mode === "hard") h += '<div class="modeNote">困难：全档概率已下调</div>';
+    h += hand.options.map((opt, i) => {
+      const prob = effectiveProb(opt, hand, run);
+      return '<div class="opt" data-opt="' + i + '"><div class="r1"><span class="name">' + tierOf(opt.tier).label + " · " + esc(opt.name) + '</span>' +
+        '<span class="rate ' + opt.tier + '">' + prob + '%</span></div>' +
+        '<div class="eff">成功 优势 ' + (opt.okDelta >= 0 ? "+" : "") + opt.okDelta + " · 失败 " + (opt.failDelta >= 0 ? "+" : "") + opt.failDelta + (run.affix.mods && run.affix.mods.handDeltaScale && run.affix.mods.handDeltaScale[hand.id] ? "（暗流修正后结算）" : "") + "</div>" +
+        '<div class="cond">成立条件：<b>' + esc(opt.cond) + "</b></div></div>";
+    }).join("");
+    h += '<button class="hookBtn" id="intelBtn" style="margin-top:14px;width:100%">情报 · 今日剩 ' + (AD_HOOKS.intel.dailyLimit - hookUsed("intel")) + ' 次</button>';
+  } else {
+    const e = state.lastEntry;
+    h += '<div class="resultBox' + (e.success ? "" : " fail") + '"><div class="rh">' + (e.success ? "这一手，成了" : "这一手，没成") +
+      ' <span class="' + (e.delta >= 0 ? "dpos" : "dneg") + '">优势 ' + (e.delta >= 0 ? "+" : "") + e.delta + " → " + e.advAfter + "</span></div>" +
+      '<div class="rt">' + esc(e.text) + (e.affixNote ? '<br><span style="color:#b23a26">' + esc(e.affixNote) + "</span>" : "") + "</div></div>" +
+      '<button class="btn red" id="nextBtn">' + (run.finished ? "看 结 算" : "下 一 手") + "</button>";
+  }
+  app.innerHTML = h;
+  if (state.phase === "pick") {
+    document.querySelectorAll(".opt").forEach(el => el.addEventListener("click", () => {
+      const entry = choose(ep, run, parseInt(el.dataset.opt, 10), Math.random);
+      state.lastEntry = entry; state.phase = "result"; renderHand(ep, run);
+    }));
+    const ib = document.getElementById("intelBtn");
+    if (ib) {
+      trk("exposure", "出手页-情报入口", { ep: ep.id });
+      ib.addEventListener("click", () => {
+        if (!canUseHook("intel")) { toast("今日情报次数已用完"); return; }
+        trk("click", "出手页-情报入口", { ep: ep.id });
+        PlatformAdapter.showRewardAd("intel", res => {
+          if (!res || !res.ok) { toast((res && res.message) || "广告未完成，情报未发放"); return; }
+          consumeHook("intel"); toast("已领取情报：本局每手概率均为精确值，出手前看清成立条件");
+        });
+      });
+    }
+  } else {
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      state.phase = "pick"; state.lastEntry = null;
+      if (run.finished) renderSettlement(ep, run); else renderHand(ep, run);
+    });
+  }
+  window.scrollTo(0, 0);
+}
+/* ================= 屏幕：结算 ================= */
+function commitSettle(ep, run, j) {
+  if (state.settle && state.settle.archived) return;
+  applyResultToRecords(store, ep, run, j, todayStr());
+  /* 续命局由适配器内部按红线拦截（rewound 直接不调用云端，裁决 C-5），此处照常传全 meta 供云端复核 */
+  PlatformAdapter.submitScore(computeScore(j, run.mode),
+    { epId: ep.id, mode: run.mode, adv: j.adv, tier: j.tier, rewound: run.rewound }, () => {});
+  saveStore();
+  PlatformAdapter.cloudSaveMirror();
+  if (state.settle) state.settle.archived = true;
+}
+function renderSettlement(ep, run) {
+  state.screen = "settle";
+  const j = judge(ep, run);
+  /* 先在副本上预览落账结果（首改印/新档案/得分），真正落账在离开结算时提交一次 */
+  const previewStore = JSON.parse(JSON.stringify(store));
+  const pv = applyResultToRecords(previewStore, ep, run, j, todayStr());
+  state.settle = { j: j, pv: pv, archived: false };
+  const rw = rewriteSummary(ep, run, j);
+  const sealText = j.tier === "success" ? "改命<br>成功" : (j.tier === "honor" ? "虽败<br>犹荣" : "历史<br>照旧");
+  const lines = settlementLines(ep, run);
+  let h = topBar(ep.no);
+  h += '<div class="' + (state.deluxe ? "posterDeluxe" : "") + '" id="posterWrap">';
+  h += '<div class="vs" style="border-top:none;margin-top:6px"><div class="h">双历史线 · 结算对照</div>' +
+    '<div class="stampBand">' +
+    '<div class="seal' + (j.tier === "success" ? "" : " grey") + '">' + sealText + "</div>" +
+    (pv.firstRewrite ? '<div class="seal small">今日<br>首改</div>' : "") +
+    "</div>" +
+    '<div class="cols"><div class="col"><div class="ch">真 实 历 史</div><div class="big">' + esc(ep.realHistory.ending) + '</div><div class="sm">' + esc(ep.realHistory.turning) + '</div><div class="sm">' + esc(ep.realHistory.hero) + "</div></div>" +
+    '<div class="col mine"><div class="ch">我 的 改 写</div><div class="big">' + esc(rw.ending) + '</div><div class="sm">' + esc(rw.turning) + '</div><div class="sm">' + esc(rw.hero) + "</div></div></div></div>";
+  h += '<div class="signLine">改命评级 <b>' + j.rating + "</b> · 最终优势 <b>" + j.adv + "</b> · 本局改命分 <b>+" + pv.gained + "</b>" +
+    (pv.rankAfter !== pv.rankBefore ? ' · 段位晋升：<b>' + pv.rankAfter + "</b>" : "") + "<br>改命者 <b>" + esc(store.nickname) + "</b>" +
+    (run.rewound ? ' · <span style="color:#b23a26;font-weight:700">续命完成（不计最佳评级）</span>' : "") +
+    (pv.archiveNew ? '<br><span style="color:#b23a26">结局档案册新页：「' + ({ success: "改命成功", honor: "虽败犹荣", history: "历史照旧" })[pv.archiveNew] + "」已存档</span>" : "") + "</div>";
+  h += "</div>"; /* /posterWrap */
+  /* 逐手归因 */
+  h += '<h2 class="sec">逐 手 归 因</h2><div class="logList">' +
+    lines.map(l => '<div class="logItem' + (l.isAffix ? "" : "") + '"><div class="lh">' + esc(l.head) + '</div>' + esc(l.body) + "</div>").join("") + "</div>";
+  /* 赛后宣言 */
+  h += '<h2 class="sec">赛 后 宣 言</h2><div class="pickRow">' +
+    Object.keys(ep.declarations).map(k => {
+      const d = ep.declarations[k];
+      return '<div class="pick' + (state.declaration === k ? " sel" : "") + '" data-decl="' + k + '"><span class="pl">' + d.label + "</span><br>" + esc(d.text) + "</div>";
+    }).join("") + "</div>";
+  /* 下期投票 */
+  h += '<h2 class="sec">下 一 期 · 你 来 定</h2><div class="pickRow">' +
+    VOTE_OPTIONS.map(v => '<div class="pick' + (store.votes && store.votes.choice === v.id ? " sel" : "") + '" data-vote="' + v.id + '">' + esc(v.text) + "</div>").join("") +
+    '</div><div class="foot" id="voteLine" style="margin-top:8px">投票记在本地档案，结果将在评价区公布，下期案卷按票数开卷。</div>';
+  /* 广告钩子行 */
+  h += '<div class="hookRow">' +
+    '<button class="hookBtn" id="posterBtn">精装海报 · 今日剩 ' + (AD_HOOKS.posterDeluxe.dailyLimit - hookUsed("posterDeluxe")) + " 次</button>" +
+    (j.tier !== "success" && !run.rewound ? '<button class="hookBtn" id="rewindBtn">续命一手 · 重打第五手（今日剩 ' + (AD_HOOKS.rewindLastHand.dailyLimit - hookUsed("rewindLastHand")) + " 次）</button>" : "") +
+    "</div>";
+  h += '<div id="statsLine" class="foot"></div>';
+  h += '<button class="btn ghost" id="shareBtn">把 这 一 卷 发 到 虎 扑</button>';
+  h += '<button class="btn red" id="againBtn">再 改 一 局</button><button class="btn ghost" id="homeBtn">归 档 · 回 案 卷 列 表</button>';
+  h += '<div class="foot">本作是模拟归因，不是真实预测。' + esc(ep.realHistory.footnote) + "</div>";
+  app.innerHTML = h;
+  if (!state.settleExposed) {
+    state.settleExposed = true;
+    trk("exposure", "结算页-宣言选择", { ep: ep.id, result: j.tier });
+  }
+  PlatformAdapter.getEpisodeStats(ep.id, stats => {
+    const el = document.getElementById("statsLine");
+    if (!el) return;
+    if (!stats) { el.textContent = "全站改命数据 · 统计中"; return; }
+    /* 显示诚信（补遗 F11）：本期参与 <50 人只显示人数与成功率，不显示百分位 */
+    if (stats.participants >= 50 && stats.percentile != null) {
+      el.textContent = "全站本期改命成功率 " + stats.rate + "% · 你超过了 " + stats.percentile + "% 的人";
+    } else {
+      el.textContent = "全站本期已有 " + stats.participants + " 人改命 · 成功率 " + stats.rate + "%";
+    }
+  });
+  PlatformAdapter.getVoteResult(vres => {
+    const el = document.getElementById("voteLine");
+    if (el && vres) {
+      el.textContent = "全站票数：" + VOTE_OPTIONS.map(v => v.text.split("·")[0].trim() + " " + (vres[v.id] || 0) + " 票").join(" · ");
+    }
+  });
+  document.querySelectorAll("[data-decl]").forEach(el => el.addEventListener("click", () => {
+    state.declaration = el.dataset.decl;
+    trk("click", "结算页-宣言选择", { ep: ep.id, result: j.tier, decl: el.dataset.decl });
+    renderSettlement(ep, run);
+  }));
+  document.querySelectorAll("[data-vote]").forEach(el => el.addEventListener("click", () => {
+    const key = el.dataset.vote;
+    store.votes = { choice: key, date: todayStr() }; saveStore();
+    PlatformAdapter.submitVote(key, r => {
+      if (r && r.remote && !r.ok) toast(r.message || "投票失败，请稍后再试");
+      else toast(r && r.remote ? "已投出你的一票" : "已记下你的一票");
+      renderSettlement(ep, run);
+    });
+  }));
+  const pb = document.getElementById("posterBtn");
+  if (pb) pb.addEventListener("click", () => {
+    if (!canUseHook("posterDeluxe")) { toast("今日精装次数已用完"); return; }
+    PlatformAdapter.showRewardAd("posterDeluxe", res => {
+      if (!res || !res.ok) { toast((res && res.message) || "广告未完成，海报未发放"); return; }
+      consumeHook("posterDeluxe"); state.deluxe = !state.deluxe; renderSettlement(ep, run);
+      toast(state.deluxe ? "已切换精装海报样式" : "已恢复普通样式");
+    });
+  });
+  const rb = document.getElementById("rewindBtn");
+  if (rb) rb.addEventListener("click", () => {
+    if (!canUseHook("rewindLastHand")) { toast("今日续命次数已用完"); return; }
+    PlatformAdapter.showRewardAd("rewindLastHand", res => {
+      if (!res || !res.ok) { toast((res && res.message) || "广告未完成，续命未发放"); return; }
+      consumeHook("rewindLastHand");
+      rewindRun(ep, run);
+      state.settle = null; state.phase = "pick"; state.lastEntry = null;
+      toast("续命一手：重打第五手。本局将标记「续命完成」");
+      renderHand(ep, run);
+    });
+  });
+  const sb = document.getElementById("shareBtn");
+  if (sb) sb.addEventListener("click", () => {
+    sb.disabled = true;
+    PlatformAdapter.postPoster(res => {
+      sb.disabled = false;
+      if (res && res.ok) toast("已唤起发帖编辑器");
+      else if (res && res.stage === "unavailable") toast("当前环境不支持发帖，可截图分享这一卷");
+      else toast((res && res.message) || "发帖失败，请稍后再试");
+    });
+  });
+  document.getElementById("againBtn").addEventListener("click", () => { commitSettle(ep, run, j); renderIntro(ep); });
+  document.getElementById("homeBtn").addEventListener("click", () => { commitSettle(ep, run, j); renderHome(); });
+  window.scrollTo(0, 0);
+}
+renderHome();
+</script>
+<script>
+"use strict";
+/* ============================================================
+   平台适配器 —— 虎扑平台 API 真接入（2026-11-05 后端接入批）。
+   图纸：~/workspace/yinanyi/后端接入施工书.md（含文末主开发裁决，冲突以裁决为准）。
+   全部平台调用先做特性探测：SDK 不存在（本地预览/站外/断网）时静默降级，
+   核心流程（一局完整对局）永不依赖平台返回值——这是红线，test.js 有整局回归。
+
+   口径要点：
+   · 成绩（submitScore）：单局最佳改命分上榜（裁决 C-3）；rewound 局直接不调用
+     云端（裁决 C-5），提交前本地按 SCORE_CAPS 自检；先走自建 /api/runs
+     （明细＋复核＋联动主榜），端点不存在时回退排行榜模板原生 submit。
+   · 广告（showRewardAd）：vatask 差量口径（裁决 C-1）——看前基线 B0、落 PENDING
+     标记、差量落定（count > max(B0, floor)）才发权益；未落定拦截 ≤3 分钟且
+     核对 ≤2 次，超时转后台队列续核、迟到落定转 credit；查询失败保留标记；
+     明确未完播（rewarded=false）才清标记、不发不补。服务端钩子计数
+     （/api/hooks/consume）为权威闸，云端不可达时以本地计数放行。
+   · 云存档：本地 localStorage 第一写入，云端 SDK 键值异步镜像（≥3 秒节流合并），
+     恢复只在云端时间戳更新时覆盖本地，失败不阻塞。
+   · 投票：平台活动未配置（PLATFORM_CONFIG.vote 为空）时降级本地投票＋打点。
+   · 内容安全（checkAudit，R-01）：署名保存前先检测，通过才落盘；不通过保留旧值。
+     无 SDK 时降级放行（本地模式无平台风控可调），SDK 在场时 401/500/异常均拦截本次保存。
+   · code 判定分链路：CloudBase 云函数成功 code 为 0（兼容 200），SDK 类为 200。
+   ============================================================ */
+// === ADAPTER START ===
+/* ---------- 部署配置（提审打包时回写；vote 由平台活动配置后回写） ---------- */
+const PLATFORM_CONFIG = {
+  /* vote: { activityId: 0, groupId: 0, items: { w16g7: 0, wc22: 0, friday: 0 } } */
+  vote: null
+};
+const CLOUD_SAVE_KEY = "yinanyi_records_v1";
+const AD_PENDING_KEY = "yinanyi_ad_pending_v1";
+const AD_QUEUE_KEY = "yinanyi_ad_queue_v1";
+const AD_CREDIT_KEY = "yinanyi_ad_credits_v1";
+const AD_FLOOR_KEY = "yinanyi_ad_floor_v1";
+const CLOUD_META_KEY = "yinanyi_cloud_meta_v1";
+const AD_BLOCK_MS = 180000; /* 未落定拦截上限 3 分钟（裁决 C-1 / v5.22 口径） */
+const AD_MAX_CHECKS = 2;    /* 未落定核对次数上限 */
+
+/* 分数上限（与 cloud/cloudfunctions/activity_api/caps.js 同值，
+   test.js 断言两份相等且与引擎数据推导值相等；逐局存表）。 */
+const SCORE_CAPS = {
+  ep1: { normal: 140, hard: 260 },
+  ep2: { normal: 140, hard: 260 },
+  ep3: { normal: 140, hard: 260 }
+};
+function scoreCapFor(epId, mode) {
+  const row = SCORE_CAPS[epId];
+  if (!row) return null;
+  return typeof row[mode] === "number" ? row[mode] : null;
+}
+
+/* ---------- 环境探测与存储 ---------- */
+function _cb() {
+  try { return (typeof window !== "undefined" && window.ColorboxAI) || null; } catch (e) { return null; }
+}
+/* 静态 API 路径声明：供技能使用扫描按各 SKILL.md 的 JS Path 识别真实调用面。
+   运行时仍由下方代码经 _cb() 特性探测后动态取用；本声明不触发调用，也不改变无 SDK 时的降级行为。 */
+const COLORBOX_API_PATHS = {
+  cloudAuth: "window.ColorboxAI.cloud.auth(params)",
+  cloudRequest: "window.ColorboxAI.cloud.request(params)",
+  cloudSaveGetValue: "window.ColorboxAI.cloudSave.getValue(params)",
+  cloudSaveSetValue: "window.ColorboxAI.cloudSave.setValue(params)",
+  authGetUserInfo: "window.ColorboxAI.auth.getUserInfo()",
+  vataskGetActivityTaskState: "window.ColorboxAI.vatask.getActivityTaskState()",
+  vataskCompleteRewardVideo: "window.ColorboxAI.vatask.completeRewardVideo()",
+  activitySubmitVote: "window.ColorboxAI.request.activity.submitVote(params)",
+  activityGetVoteDetail: "window.ColorboxAI.request.activity.getVoteDetail(params)",
+  ossUploadFile: "window.ColorboxAI.oss.uploadFile(params)",
+  bbsConfigGet: "window.ColorboxAI.bbsConfig.get()",
+  bbsOpenPostEditor: "window.ColorboxAI.request.bbs.openPostEditor(params)",
+  securityCheckAudit: "window.ColorboxAI.security.checkAudit(params)",
+  track: "window.ColorboxAI.track(params)"
+};
+function _apiBase() {
+  try { return (typeof window !== "undefined" && window.ACTIVITY_API_BASE) || ""; } catch (e) { return ""; }
+}
+function _envId() {
+  try { return (typeof window !== "undefined" && window.ACTIVITY_ENV_ID) || ""; } catch (e) { return ""; }
+}
+const _memStore = {};
+function _lsGet(k) {
+  try { const v = localStorage.getItem(k); return v == null ? null : v; }
+  catch (e) { return Object.prototype.hasOwnProperty.call(_memStore, k) ? _memStore[k] : null; }
+}
+function _lsSet(k, v) {
+  try { localStorage.setItem(k, v); } catch (e) { _memStore[k] = v; }
+}
+function _readJson(k, dflt) {
+  try { const s = _lsGet(k); return s ? JSON.parse(s) : dflt; } catch (e) { return dflt; }
+}
+function _writeJson(k, v) { _lsSet(k, JSON.stringify(v)); }
+function _log() {
+  try { if (window.console) window.console.log.apply(window.console, arguments); } catch (e) {}
+}
+function _call(fn) {
+  try { return Promise.resolve(fn()); } catch (e) { return Promise.reject(e); }
+}
+/* 永不 reject 的超时竞速：{t:true} 超时 / {t:false, v} 成功 / {t:false, e} 失败 */
+function _raceTimeout(p, ms) {
+  return new Promise(resolve => {
+    let over = false;
+    const to = setTimeout(() => { if (!over) { over = true; resolve({ t: true }); } }, ms);
+    Promise.resolve(p).then(
+      v => { if (!over) { over = true; clearTimeout(to); resolve({ t: false, v: v }); } },
+      e => { if (!over) { over = true; clearTimeout(to); resolve({ t: false, e: e }); } });
+  });
+}
+
+/* ---------- CloudBase 云请求（唯一入口，技能原文禁止手写 fetch 拼 Bearer） ---------- */
+let _authPromise = null, _cloudDead = false;
+function _ensureAuth() {
+  const cbx = _cb();
+  if (!cbx || !cbx.cloud || typeof cbx.cloud.request !== "function") return Promise.resolve(false);
+  if (!_apiBase() || !_envId() || _cloudDead) return Promise.resolve(false);
+  if (!_authPromise) {
+    if (typeof cbx.cloud.auth === "function") {
+      _authPromise = _call(() => cbx.cloud.auth({ envId: _envId() })).then(res => {
+        if (res && res.code !== 200) { _cloudDead = true; return false; }
+        return true;
+      }).catch(() => { _cloudDead = true; return false; });
+    } else {
+      _authPromise = Promise.resolve(true);
+    }
+  }
+  return _authPromise;
+}
+function _cloudOk(res) { return !!res && (res.code === 0 || res.code === 200); }
+/* cb(dataOrNull, rawResOrNull)：业务成功（code 0/200）才给 data */
+function _cloudReq(path, method, data, cb) {
+  _ensureAuth().then(ok => {
+    if (!ok) { cb(null, null); return; }
+    const cbx = _cb();
+    const params = { url: _apiBase() + path, envId: _envId(), auth: true };
+    if (method) params.method = method;
+    if (data !== undefined) params.data = data;
+    _call(() => cbx.cloud.request(params)).then(res => {
+      if (_cloudOk(res)) cb(res.data != null ? res.data : null, res);
+      else cb(null, res || null);
+    }).catch(() => cb(null, null));
+  });
+}
+function _hooksState(cb) {
+  _cloudReq("/api/hooks/state", "GET", undefined, data => cb(data || null));
+}
+/* 差量已落定后过服务端钩子计数闸：allowed===false 才拒；云端不可达以本地计数放行 */
+function _grantHook(hookKey, cb, via) {
+  _cloudReq("/api/hooks/consume", "POST", { hookKey: hookKey }, data => {
+    if (data && data.allowed === false) {
+      cb({ ok: false, via: via, serverDenied: true, message: "本钩子今日次数已用完" });
+      return;
+    }
+    cb({ ok: true, via: via });
+  });
+}
+
+/* ---------- vatask 差量状态机 ---------- */
+let _adInFlight = null;
+function _vatask() {
+  const cbx = _cb();
+  return (cbx && cbx.vatask) || null;
+}
+function _adFloor() {
+  const n = parseInt(_lsGet(AD_FLOOR_KEY) || "0", 10);
+  return isNaN(n) ? 0 : n;
+}
+function _setAdFloor(n) { if (n > _adFloor()) _lsSet(AD_FLOOR_KEY, String(n)); }
+function _taskState() {
+  const vt = _vatask();
+  if (!vt || typeof vt.getActivityTaskState !== "function") return Promise.resolve(null);
+  const p = _call(() => vt.getActivityTaskState())
+    .then(res => (res && res.code === 200 && res.data && typeof res.data.availableChanceCount === "number") ? res.data : null)
+    .catch(() => null);
+  return _raceTimeout(p, 10000).then(r => (r.t ? null : r.v));
+}
+function _freshAdFlow(hookKey, finish) {
+  const vt = _vatask();
+  _taskState().then(st => {
+    if (!st) { finish({ ok: false, message: "广告状态查询失败，请稍后再试" }); return; }
+    const rewardTask = (st.tasks || []).filter(t => t.taskCode === "reward")[0];
+    if (rewardTask && rewardTask.status === "completed") {
+      finish({ ok: false, message: "今日广告任务已完成" });
+      return;
+    }
+    const base = st.availableChanceCount;
+    _hooksState(hs => {
+      if (hs && hs.counts && hs.limits && typeof hs.counts[hookKey] === "number"
+          && hs.counts[hookKey] >= (hs.limits[hookKey] || 0)) {
+        finish({ ok: false, serverDenied: true, message: "本钩子今日次数已用完" });
+        return;
+      }
+      /* 先落 PENDING 再拉广告：回调丢失/进程被杀时标记仍在，可跨会话核对 */
+      const pendAll = _readJson(AD_PENDING_KEY, {});
+      pendAll[hookKey] = { base: base, at: Date.now(), checks: 0 };
+      _writeJson(AD_PENDING_KEY, pendAll);
+      _raceTimeout(_call(() => vt.completeRewardVideo()), PlatformAdapter._adTimeoutMs).then(r => {
+        if (r.t) { /* 原生回调超时未回：保留 PENDING，拦截由 finish 解除 */
+          finish({ ok: false, pending: true, timeout: true, message: "广告核对超时，已为你保留记录" });
+          return;
+        }
+        if (r.e) { /* 拉起抛错：无法确认未到账，保留 PENDING 按核对中处理 */
+          finish({ ok: false, pending: true, message: "奖励核对中，请稍后再试" });
+          return;
+        }
+        const res = r.v;
+        const rewarded = !!(res && res.code === 200 && res.data && res.data.rewarded === true);
+        if (!rewarded) { /* 明确未到账：清标记，不发不补（技能原文红线） */
+          const pa = _readJson(AD_PENDING_KEY, {});
+          delete pa[hookKey];
+          _writeJson(AD_PENDING_KEY, pa);
+          finish({ ok: false, message: (res && res.message) || "未完整观看，奖励未发放" });
+          return;
+        }
+        _taskState().then(st2 => {
+          if (!st2) { /* 查询失败保留标记 */
+            finish({ ok: false, pending: true, message: "奖励核对中，请稍后再试" });
+            return;
+          }
+          const now = st2.availableChanceCount;
+          if (now > Math.max(base, _adFloor())) { /* 差量落定才发权益 */
+            const pa = _readJson(AD_PENDING_KEY, {});
+            delete pa[hookKey];
+            _writeJson(AD_PENDING_KEY, pa);
+            _setAdFloor(now);
+            _grantHook(hookKey, g => { g.settled = "delta"; finish(g); }, "delta");
+            return;
+          }
+          /* 完播已确认但计数未动（迟到账）：保留标记，后台队列续核转 credit */
+          const pa = _readJson(AD_PENDING_KEY, {});
+          if (pa[hookKey]) { pa[hookKey].checks = (pa[hookKey].checks || 0) + 1; _writeJson(AD_PENDING_KEY, pa); }
+          finish({ ok: false, pending: true, message: "奖励到账核对中，落定后自动补记" });
+        });
+      });
+    });
+  });
+}
+
+/* ---------- 海报（Canvas）：与 DOM 精装海报同源数据（buildPosterLines） ---------- */
+function buildPosterLines(data) {
+  const ep = data.ep, j = data.j, rw = data.rw || {};
+  const lines = data.lines || [];
+  const affix = lines.filter(l => l.isAffix)[0];
+  return {
+    no: ep.no,
+    title: ep.title,
+    seal: j.tier === "success" ? "改命成功" : (j.tier === "honor" ? "虽败犹荣" : "历史照旧"),
+    sealColor: j.tier === "success" ? "#b23a26" : "#6d6248",
+    realEnding: ep.realHistory.ending, realTurning: ep.realHistory.turning, realHero: ep.realHistory.hero,
+    myEnding: rw.ending || "", myTurning: rw.turning || "", myHero: rw.hero || "",
+    rating: j.rating, adv: j.adv, gained: data.gained, nickname: data.nickname,
+    rewound: !!(data.run && data.run.rewound),
+    declaration: data.declaration || "",
+    hands: lines.filter(l => !l.isAffix).map(l => ({ head: l.head, body: l.body })),
+    affixBody: affix ? affix.body : "",
+    footnote: ep.realHistory.footnote || ""
+  };
+}
+function posterTitle(data) {
+  const p = buildPosterLines(data);
+  return "意难平 · " + p.title + " —— " + p.seal;
+}
+function posterContent(data) {
+  const p = buildPosterLines(data);
+  return "我在《意难平：这一局我改了》改写了「" + p.title + "」：改命评级 " + p.rating
+    + "，最终优势 " + p.adv + "，" + p.seal + "。本作是模拟归因，不是真实预测。";
+}
+function _wrapText(ctx, text, maxWidth) {
+  const out = [];
+  let line = "";
+  for (const ch of String(text == null ? "" : text)) {
+    const test = line + ch;
+    let w;
+    try { w = ctx.measureText(test).width; } catch (e) { w = test.length * 20; }
+    if (typeof w !== "number" || isNaN(w)) w = test.length * 20;
+    if (w > maxWidth && line) { out.push(line); line = ch; } else { line = test; }
+  }
+  if (line) out.push(line);
+  return out;
+}
+/* A 案卷档案风：纸 #f4eedd / 墨 #262219 / 朱红 #b23a26 / 次级字 #5c543d */
+function drawPosterCanvas(data) {
+  if (typeof document === "undefined" || typeof document.createElement !== "function") return null;
+  const p = buildPosterLines(data);
+  const W = 750, H = 1240;
+  const cv = document.createElement("canvas");
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext("2d");
+  if (!ctx) return null;
+  const INK = "#262219", RED = "#b23a26", SUB = "#5c543d", FAINT = "#7a6f52", LINE = "#a99c72";
+  const SERIF = '"Noto Serif CJK SC","Songti SC",serif';
+  const SANS = '"Noto Sans CJK SC","PingFang SC",sans-serif';
+  ctx.fillStyle = "#f4eedd"; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.strokeRect(24, 24, W - 48, H - 48);
+  ctx.lineWidth = 1; ctx.strokeRect(34, 34, W - 68, H - 68);
+  let y = 84;
+  ctx.fillStyle = FAINT; ctx.font = "22px " + SANS; ctx.textAlign = "left";
+  ctx.fillText("意 难 平 · 案 卷 第 " + p.no + " 号", 56, y);
+  ctx.fillStyle = RED; ctx.textAlign = "right";
+  ctx.fillText("改 命 者 档 案", W - 56, y);
+  ctx.textAlign = "left";
+  y += 26;
+  ctx.fillStyle = INK; ctx.fillRect(56, y, W - 112, 3);
+  y += 62;
+  ctx.fillStyle = INK; ctx.font = '900 39px ' + SERIF;
+  for (const ln of _wrapText(ctx, p.title, W - 300)) { ctx.fillText(ln, 56, y); y += 50; }
+  /* 印章（成功朱红 / 其余灰，不遮关键数字：置于标题右侧固定位） */
+  ctx.save();
+  ctx.translate(W - 148, 168); ctx.rotate(-11 * Math.PI / 180);
+  ctx.strokeStyle = p.sealColor; ctx.lineWidth = 5;
+  ctx.strokeRect(-62, -62, 124, 124);
+  ctx.fillStyle = p.sealColor; ctx.font = '900 30px ' + SERIF; ctx.textAlign = "center";
+  ctx.fillText(p.seal.slice(0, 2), 0, -8);
+  ctx.fillText(p.seal.slice(2), 0, 32);
+  ctx.restore();
+  ctx.textAlign = "left";
+  y += 8;
+  /* 双历史线两栏 */
+  const colW = (W - 112 - 18) / 2, colY = y, colH = 300;
+  function col(x, head, ending, turning, hero, mine) {
+    ctx.fillStyle = mine ? "#fdf3e3" : "#f8f3e3";
+    ctx.fillRect(x, colY, colW, colH);
+    ctx.strokeStyle = mine ? RED : LINE; ctx.lineWidth = mine ? 2.5 : 1.5;
+    ctx.strokeRect(x, colY, colW, colH);
+    let cy = colY + 38;
+    ctx.fillStyle = mine ? RED : FAINT; ctx.font = "20px " + SANS;
+    ctx.fillText(head, x + 18, cy);
+    cy += 40;
+    ctx.fillStyle = INK; ctx.font = '900 26px ' + SERIF;
+    for (const ln of _wrapText(ctx, ending, colW - 36).slice(0, 3)) { ctx.fillText(ln, x + 18, cy); cy += 34; }
+    cy += 6;
+    ctx.fillStyle = SUB; ctx.font = "20px " + SANS;
+    for (const ln of _wrapText(ctx, turning, colW - 36).slice(0, 3)) { ctx.fillText(ln, x + 18, cy); cy += 29; }
+    for (const ln of _wrapText(ctx, hero, colW - 36).slice(0, 2)) { ctx.fillText(ln, x + 18, cy); cy += 29; }
+  }
+  col(56, "真 实 历 史", p.realEnding, p.realTurning, p.realHero, false);
+  col(56 + colW + 18, "我 的 改 写", p.myEnding, p.myTurning, p.myHero, true);
+  y = colY + colH + 52;
+  /* 署名行（与 DOM 版 signLine 同源同值） */
+  ctx.fillStyle = INK; ctx.font = '900 27px ' + SERIF;
+  ctx.fillText("改命评级 " + p.rating + " · 最终优势 " + p.adv + " · 本局改命分 +" + p.gained, 56, y);
+  y += 38;
+  ctx.fillStyle = SUB; ctx.font = "23px " + SANS;
+  ctx.fillText("改命者 " + p.nickname + (p.rewound ? " · 续命完成（不计最佳评级）" : ""), 56, y);
+  y += 30;
+  ctx.fillStyle = INK; ctx.fillRect(56, y, W - 112, 2);
+  y += 48;
+  /* 逐手归因 */
+  ctx.fillStyle = INK; ctx.font = '900 26px ' + SERIF;
+  ctx.fillText("逐 手 归 因", 56, y);
+  y += 36;
+  ctx.font = "21px " + SANS;
+  for (const hd of p.hands) {
+    if (y > H - 190) break;
+    ctx.fillStyle = INK;
+    ctx.fillText(hd.head, 56, y);
+    y += 29;
+    ctx.fillStyle = SUB;
+    for (const ln of _wrapText(ctx, hd.body, W - 140).slice(0, 2)) { ctx.fillText(ln, 72, y); y += 28; }
+    y += 10;
+  }
+  if (p.declaration) {
+    if (y <= H - 170) {
+      ctx.fillStyle = RED; ctx.font = '900 23px ' + SERIF;
+      ctx.fillText("赛后宣言", 56, y);
+      y += 32;
+      ctx.fillStyle = INK; ctx.font = "22px " + SANS;
+      for (const ln of _wrapText(ctx, p.declaration, W - 112).slice(0, 2)) { ctx.fillText(ln, 56, y); y += 30; }
+    }
+  }
+  /* 页脚免责（与 DOM 版同文） */
+  ctx.fillStyle = FAINT; ctx.font = "19px " + SANS;
+  const foot = "本作是模拟归因，不是真实预测。" + p.footnote;
+  const fl = _wrapText(ctx, foot, W - 112).slice(0, 2);
+  fl.forEach((ln, i) => ctx.fillText(ln, 56, H - 76 + i * 27));
+  return cv;
+}
+
+/* ---------- 云存档镜像状态 ---------- */
+let _mirrorTimer = null, _mirrorPending = null, _mirrorLastAt = 0;
+let _mirrorLastRecordsJson = "", _mirrorStopped = false;
+function _flushMirror() {
+  _mirrorTimer = null;
+  const job = _mirrorPending;
+  _mirrorPending = null;
+  if (!job) return;
+  const cbx = _cb();
+  if (!cbx || !cbx.cloudSave || typeof cbx.cloudSave.setValue !== "function") {
+    job.cbs.forEach(f => f(null));
+    return;
+  }
+  _mirrorLastAt = Date.now();
+  _call(() => cbx.cloudSave.setValue({ key: CLOUD_SAVE_KEY, value: job.payload })).then(res => {
+    if (res && res.code === 200) {
+      _mirrorLastRecordsJson = job.recordsJson;
+      _lsSet(CLOUD_META_KEY, String(job.ts));
+      job.cbs.forEach(f => f({ ok: true, result: res.data && res.data.result }));
+    } else {
+      if (res && res.code === 204) _mirrorStopped = true; /* 被守卫静默丢弃：停止后续云存档调用 */
+      job.cbs.forEach(f => f(null));
+    }
+    if (_mirrorPending) _scheduleMirror();
+  }).catch(() => {
+    job.cbs.forEach(f => f(null));
+    if (_mirrorPending) _scheduleMirror();
+  });
+}
+function _scheduleMirror() {
+  if (_mirrorTimer) return;
+  const delay = Math.max(0, 3000 - (Date.now() - _mirrorLastAt));
+  _mirrorTimer = setTimeout(_flushMirror, delay);
+}
+
+const PlatformAdapter = {
+  _adTimeoutMs: AD_BLOCK_MS, /* 测试可覆盖；生产为 3 分钟看门狗 */
+  displayNameProvider: null,  /* 引导接线：() => 当前署名 */
+  recordsProvider: null,      /* 引导接线：() => 当前 records */
+  posterProvider: null,       /* 引导接线：() => 结算海报数据（无结算时 null） */
+  _displayName: function () {
+    try {
+      const v = PlatformAdapter.displayNameProvider ? PlatformAdapter.displayNameProvider() : "";
+      return (v && String(v).trim()) || "无名改命者";
+    } catch (e) { return "无名改命者"; }
+  },
+
+  /* 1) 提交成绩：单局最佳分上榜；rewound 直接不调用；本地 CAPS 自检 */
+  submitScore: function (score, meta, cb) {
+    cb = cb || function () {};
+    meta = meta || {};
+    if (meta.rewound) { _log("[适配器] 续命局不上报", score, meta); cb(null); return; }
+    if (meta.epId && meta.mode) {
+      const cap = scoreCapFor(meta.epId, meta.mode);
+      if (cap !== null && (!Number.isSafeInteger(score) || score < 0 || score > cap)) {
+        _log("[适配器] 分数超本地 CAPS 自检，拒提交", score, meta);
+        cb(null);
+        return;
+      }
+    }
+    if (!_cb() || !_apiBase()) { cb(null); return; } /* 无环境：本地已落账，静默降级 */
+    const name = PlatformAdapter._displayName();
+    const body = {
+      score: score, displayName: name,
+      episodeId: meta.epId, mode: meta.mode, adv: meta.adv, tier: meta.tier
+    };
+    _cloudReq("/api/runs", "POST", body, (data, res) => {
+      if (data) { cb(data); return; }
+      if (!res || res.code === 404) {
+        /* 自建端点未部署（如仅模板基线）：回退模板原生提交，分数仍可上榜 */
+        _cloudReq("/api/leaderboard/submit", "POST", { score: score, displayName: name },
+          d2 => cb(d2 || null));
+        return;
+      }
+      cb(null); /* 校验类失败（如 400）：不绕过云端复核 */
+    });
+  },
+
+  /* 2) 我的名次：无成绩/失败均 cb(null)，UI 保留本地展示 */
+  getMyRank: function (cb) {
+    cb = cb || function () {};
+    _cloudReq("/api/leaderboard/me", "GET", undefined, data => cb(data || null));
+  },
+
+  /* 3) 每期统计：归一化为 UI 形状 {rate, percentile, participants, myBest, totalRuns} */
+  getEpisodeStats: function (epId, cb) {
+    cb = cb || function () {};
+    _cloudReq("/api/episode-stats?episodeId=" + encodeURIComponent(epId), "GET", undefined, data => {
+      if (!data || data.successRate == null) { cb(null); return; }
+      cb({
+        rate: data.successRate,
+        percentile: data.myPercentile != null ? data.myPercentile : null,
+        participants: data.participants || 0,
+        myBest: data.myBest != null ? data.myBest : null,
+        totalRuns: data.totalRuns || 0
+      });
+    });
+  },
+
+  /* 4) 投票：平台活动未配置 → 本地降级＋打点；已配置 → 官方活动投票 */
+  submitVote: function (itemKey, cb) {
+    cb = cb || function () {};
+    const cfg = PLATFORM_CONFIG.vote;
+    const cbx = _cb();
+    const items = (cfg && cfg.items) || {};
+    if (!cfg || !cbx || !cbx.request || !cbx.request.activity
+        || typeof cbx.request.activity.submitVote !== "function"
+        || !Object.prototype.hasOwnProperty.call(items, itemKey)) {
+      PlatformAdapter.track("click", "结算页-下期投票", { vote: itemKey, mode: "local" });
+      cb({ ok: true, local: true, degraded: true });
+      return;
+    }
+    _call(() => cbx.request.activity.submitVote({
+      activityId: Number(cfg.activityId), groupId: Number(cfg.groupId),
+      itemId: Number(items[itemKey]), voteNum: 1
+    })).then(res => {
+      if (res && res.code === 200 && res.data && res.data.succeed === true) cb({ ok: true, remote: true });
+      else cb({ ok: false, remote: true, message: (res && res.message) || "投票失败" });
+    }).catch(() => cb({ ok: false, remote: true, message: "投票失败" }));
+  },
+
+  /* 5) 投票结果：归一化为 { itemKey: 票数 }；不可用 cb(null) */
+  getVoteResult: function (cb) {
+    cb = cb || function () {};
+    const cfg = PLATFORM_CONFIG.vote;
+    const cbx = _cb();
+    if (!cfg || !cbx || !cbx.request || !cbx.request.activity
+        || typeof cbx.request.activity.getVoteDetail !== "function") { cb(null); return; }
+    _call(() => cbx.request.activity.getVoteDetail({ activityId: String(cfg.activityId) }))
+      .then(res => {
+        if (!res || res.code !== 200 || !res.data) { cb(null); return; }
+        const byId = {};
+        for (const k in cfg.items) byId[cfg.items[k]] = k;
+        const out = {};
+        (function walk(groups) {
+          for (const g of groups || []) {
+            for (const it of g.items || []) {
+              const key = byId[it.id];
+              if (key) out[key] = it.voteNum == null ? 0 : it.voteNum;
+            }
+            if (g.subGroups) walk(g.subGroups);
+          }
+        })(res.data.groups);
+        cb(out);
+      }).catch(() => cb(null));
+  },
+
+  /* 6) 云存档镜像：节流 ≥3 秒合并；内容未变不重复写；204 后停写 */
+  cloudSaveMirror: function (cb) {
+    cb = cb || function () {};
+    const cbx = _cb();
+    if (!cbx || !cbx.cloudSave || typeof cbx.cloudSave.setValue !== "function" || _mirrorStopped) { cb(null); return; }
+    let rec = null;
+    try { rec = PlatformAdapter.recordsProvider ? PlatformAdapter.recordsProvider() : null; } catch (e) {}
+    if (!rec) { cb(null); return; }
+    const recordsJson = JSON.stringify(rec);
+    if (recordsJson === _mirrorLastRecordsJson && !_mirrorPending) { cb(null); return; }
+    const ts = Date.now();
+    const payload = JSON.stringify({ v: 1, updatedAt: ts, records: rec });
+    if (_mirrorPending) { _mirrorPending.payload = payload; _mirrorPending.ts = ts; _mirrorPending.recordsJson = recordsJson; _mirrorPending.cbs.push(cb); }
+    else _mirrorPending = { payload: payload, ts: ts, recordsJson: recordsJson, cbs: [cb] };
+    _scheduleMirror();
+  },
+
+  /* 7) 云存档恢复：cb(records, updatedAt)；无云档/失败 cb(null, null)，不覆盖本地 */
+  cloudSaveRestore: function (cb) {
+    cb = cb || function () {};
+    const cbx = _cb();
+    if (!cbx || !cbx.cloudSave || typeof cbx.cloudSave.getValue !== "function") { cb(null, null); return; }
+    _call(() => cbx.cloudSave.getValue({ key: CLOUD_SAVE_KEY })).then(res => {
+      if (res && res.code === 204) _mirrorStopped = true;
+      if (!res || res.code !== 200 || res.data == null) { cb(null, null); return; }
+      try {
+        const w = JSON.parse(res.data);
+        if (w && w.records) { cb(w.records, typeof w.updatedAt === "number" ? w.updatedAt : null); return; }
+      } catch (e) {}
+      cb(null, null);
+    }).catch(() => cb(null, null));
+  },
+  cloudSaveState: function () {
+    const ts = parseInt(_lsGet(CLOUD_META_KEY) || "0", 10);
+    return { lastTs: isNaN(ts) ? 0 : ts };
+  },
+  markRestored: function (ts) {
+    _lsSet(CLOUD_META_KEY, String(ts));
+    try {
+      const rec = PlatformAdapter.recordsProvider ? PlatformAdapter.recordsProvider() : null;
+      if (rec) _mirrorLastRecordsJson = JSON.stringify(rec);
+    } catch (e) {}
+  },
+
+  /* 8) 广告：vatask 差量口径（见文件头注释与裁决 C-1） */
+  showRewardAd: function (hookKey, cb) {
+    cb = cb || function () {};
+    let finished = false;
+    const done = r => { if (!finished) { finished = true; cb(r); } };
+    const finish = r => { if (_adInFlight === hookKey) _adInFlight = null; done(r); };
+    const vt = _vatask();
+    if (!vt || typeof vt.completeRewardVideo !== "function") {
+      done({ ok: true, stub: true }); /* 无平台环境：保持预览可玩（原桩行为） */
+      return;
+    }
+    if (_adInFlight) { done({ ok: false, busy: true, message: "广告进行中，请稍候" }); return; }
+    /* 后台队列迟到落定的 credit：免看直接发权益 */
+    const credits = _readJson(AD_CREDIT_KEY, {});
+    if (credits[hookKey]) {
+      delete credits[hookKey];
+      _writeJson(AD_CREDIT_KEY, credits);
+      _grantHook(hookKey, g => { g.settled = "credit"; done(g); }, "credit");
+      return;
+    }
+    const pendAll = _readJson(AD_PENDING_KEY, {});
+    const p = pendAll[hookKey];
+    if (p) { /* 先核对上一支未落定 */
+      _adInFlight = hookKey;
+      _taskState().then(st => {
+        if (st && st.availableChanceCount > Math.max(p.base, _adFloor())) {
+          delete pendAll[hookKey];
+          _writeJson(AD_PENDING_KEY, pendAll);
+          _setAdFloor(st.availableChanceCount);
+          _grantHook(hookKey, g => { g.settled = "late"; finish(g); }, "settle");
+          return;
+        }
+        _adInFlight = null;
+        if (!st) { done({ ok: false, pending: true, message: "奖励核对中，请稍后再试" }); return; }
+        p.checks = (p.checks || 0) + 1;
+        if (Date.now() - p.at <= AD_BLOCK_MS && p.checks <= AD_MAX_CHECKS) {
+          _writeJson(AD_PENDING_KEY, pendAll);
+          done({ ok: false, pending: true, message: "上一支广告奖励核对中，请稍候" });
+          return;
+        }
+        /* 超时/超次数：放行，转后台队列续核，本次继续走新流程 */
+        delete pendAll[hookKey];
+        _writeJson(AD_PENDING_KEY, pendAll);
+        const q = _readJson(AD_QUEUE_KEY, {});
+        q[hookKey] = { base: p.base, at: p.at };
+        _writeJson(AD_QUEUE_KEY, q);
+        _adInFlight = hookKey;
+        _freshAdFlow(hookKey, finish);
+      });
+      return;
+    }
+    _adInFlight = hookKey;
+    _freshAdFlow(hookKey, finish);
+  },
+  /* 后台队列核对（启动时调用）：PENDING/队列中已落定的转 credit，不直接发权益 */
+  settleAdQueue: function (cb) {
+    cb = cb || function () {};
+    if (!_vatask()) { cb({ settled: [] }); return; }
+    const pendAll = _readJson(AD_PENDING_KEY, {});
+    const queue = _readJson(AD_QUEUE_KEY, {});
+    const keys = Object.keys(pendAll).concat(Object.keys(queue).filter(k => !(k in pendAll)));
+    if (!keys.length) { cb({ settled: [] }); return; }
+    _taskState().then(st => {
+      if (!st) { cb({ settled: [] }); return; }
+      const now = st.availableChanceCount;
+      const settled = [];
+      for (const k of keys) {
+        const rec = pendAll[k] || queue[k];
+        if (rec && now > Math.max(rec.base, _adFloor())) {
+          const credits = _readJson(AD_CREDIT_KEY, {});
+          credits[k] = true;
+          _writeJson(AD_CREDIT_KEY, credits);
+          delete pendAll[k];
+          delete queue[k];
+          settled.push(k);
+          _setAdFloor(now);
+        }
+      }
+      _writeJson(AD_PENDING_KEY, pendAll);
+      _writeJson(AD_QUEUE_KEY, queue);
+      cb({ settled: settled });
+    });
+  },
+  getHookState: function (cb) {
+    cb = cb || function () {};
+    _hooksState(data => cb(data || null));
+  },
+
+  /* 9) 海报发帖：Canvas → OSS → 编辑器（技能原文状态机，防连点） */
+  postPoster: function (cb) {
+    cb = cb || function () {};
+    if (PlatformAdapter._posterBusy) { cb({ ok: false, stage: "busy", message: "海报生成中" }); return; }
+    let data = null;
+    try { data = PlatformAdapter.posterProvider ? PlatformAdapter.posterProvider() : null; } catch (e) {}
+    if (!data) { cb({ ok: false, stage: "nodata", message: "暂无可分享的结算" }); return; }
+    const cbx = _cb();
+    if (!cbx || !cbx.oss || typeof cbx.oss.uploadFile !== "function"
+        || !cbx.request || !cbx.request.bbs || typeof cbx.request.bbs.openPostEditor !== "function"
+        || typeof document === "undefined" || typeof document.createElement !== "function") {
+      cb({ ok: false, stage: "unavailable", message: "当前环境不支持发帖" });
+      return;
+    }
+    PlatformAdapter._posterBusy = true;
+    const finish = r => { PlatformAdapter._posterBusy = false; cb(r); };
+    let canvas = null;
+    try { canvas = drawPosterCanvas(data); } catch (e) {}
+    if (!canvas || typeof canvas.toBlob !== "function") {
+      finish({ ok: false, stage: "render", message: "海报生成失败" });
+      return;
+    }
+    canvas.toBlob(blob => {
+      if (!blob) { finish({ ok: false, stage: "render", message: "海报生成失败" }); return; }
+      _call(() => cbx.oss.uploadFile({ file: blob, filename: "yinanyi-poster-" + Date.now() + ".png" }))
+        .then(up => {
+          const url = up && up.downloadUrl;
+          let valid = false;
+          try { const u = new URL(url); valid = u.protocol === "https:" && !!u.hostname; } catch (e) {}
+          if (!valid) { finish({ ok: false, stage: "upload", message: "海报上传失败" }); return; }
+          const params = { title: posterTitle(data), content: posterContent(data), imageUrl: url };
+          const openEditor = () => _call(() => cbx.request.bbs.openPostEditor(params)).then(r => {
+            if (r && r.code === 200) finish({ ok: true, imageUrl: url });
+            else finish({ ok: false, stage: "open", imageUrl: url, message: (r && r.message) || "发帖编辑器打开失败" });
+          }).catch(() => finish({ ok: false, stage: "open", imageUrl: url, message: "发帖编辑器打开失败" }));
+          if (cbx.bbsConfig && typeof cbx.bbsConfig.get === "function") {
+            _call(() => cbx.bbsConfig.get()).then(bbs => {
+              if (bbs && typeof bbs.bbsTagId === "string" && bbs.bbsTagId.trim() !== "") {
+                params.topicId = bbs.bbsTopicId;
+                params.tagId = bbs.bbsTagId;
+                params.topicName = bbs.bbsTopicName;
+                params.tagName = bbs.bbsTagName;
+              }
+              openEditor();
+            }).catch(() => openEditor());
+          } else openEditor();
+        })
+        .catch(() => finish({ ok: false, stage: "upload", message: "海报上传失败" }));
+    }, "image/png");
+  },
+  _posterBusy: false,
+
+  /* 10) 用户信息：平台昵称优先（裁决 C-9 增补）；未登录/失败 cb(null) */
+  getUserProfile: function (cb) {
+    cb = cb || function () {};
+    const cbx = _cb();
+    if (!cbx || !cbx.auth || typeof cbx.auth.getUserInfo !== "function") { cb(null); return; }
+    _call(() => cbx.auth.getUserInfo()).then(res => {
+      if (res && res.code === 200 && res.data && res.data.islogin === 1 && res.data.nickname) {
+        cb({
+          nickname: res.data.nickname,
+          avatar: res.data.avatar || res.data.userHeadUrl || "",
+          puid: res.data.puid || null
+        });
+      } else cb(null);
+    }).catch(() => cb(null));
+  },
+
+  /* 11) 内容安全检测（R-01）：玩家自由文本落盘前必须先过检。
+     平台 SDK 或 security.checkAudit 不存在时降级放行：本地/断网模式没有可调用的
+     平台风控能力，不能因此让署名功能不可用；此降级只适用于无 SDK 环境。
+     SDK 已存在时，401 拦截并提示登录，500/异常/超时拦截本次保存并保留旧值。 */
+  checkAudit: function (content, cb) {
+    cb = cb || function () {};
+    const cbx = _cb();
+    if (!cbx || !cbx.security || typeof cbx.security.checkAudit !== "function") {
+      cb({ ok: true, passed: true, degraded: true });
+      return;
+    }
+    const audit = _call(() => cbx.security.checkAudit(String(content == null ? "" : content)));
+    _raceTimeout(audit, 10000).then(r => {
+      if (r.t || r.e) {
+        cb({ ok: false, passed: false, error: true, message: "内容安全检测暂时不可用，请稍后再试" });
+        return;
+      }
+      const res = r.v;
+      if (res && res.code === 200 && res.data === true) {
+        cb({ ok: true, passed: true });
+      } else if (res && res.code === 200 && res.data === false) {
+        cb({ ok: false, passed: false, blocked: true, code: 200, message: "这个署名未通过内容安全检测，请换一个" });
+      } else if (res && res.code === 401) {
+        cb({ ok: false, passed: false, loginRequired: true, code: 401, message: "请先登录后再保存署名" });
+      } else {
+        cb({ ok: false, passed: false, error: true, code: res && res.code,
+          message: (res && res.message) || "内容安全检测暂时不可用，请稍后再试" });
+      }
+    });
+  },
+
+  /* 12) 打点：act 只用白名单（click/exposure/videoact），事件走 ext.custom */
+  track: function (act, label, custom) {
+    if (["click", "exposure", "videoact"].indexOf(act) < 0) return false;
+    const cbx = _cb();
+    if (!cbx || typeof cbx.track !== "function") return false;
+    try {
+      cbx.track({ act: act, blk: "BMC001", pos: "T1", ext: { label: label, custom: custom || {} } });
+      return true;
+    } catch (e) { return false; }
+  }
+};
+// === ADAPTER END ===
+</script>
+<script>
+"use strict";
+/* 引导接线（适配器定义后执行）：提供者注入、平台昵称、云存档恢复、广告队列核对。
+   全部异步且失败静默——平台不可用时游戏保持本地完整可玩。 */
+(function bootPlatform() {
+  PlatformAdapter.displayNameProvider = function () { return store.nickname; };
+  PlatformAdapter.recordsProvider = function () { return store; };
+  PlatformAdapter.posterProvider = function () {
+    if (!state.ep || !state.run || !state.settle) return null;
+    const ep = state.ep, run = state.run, j = state.settle.j;
+    return {
+      ep: ep, run: run, j: j,
+      rw: rewriteSummary(ep, run, j),
+      lines: settlementLines(ep, run),
+      nickname: store.nickname,
+      gained: state.settle.pv ? state.settle.pv.gained : computeScore(j, run.mode),
+      declaration: (state.declaration && ep.declarations[state.declaration])
+        ? ep.declarations[state.declaration].text : ""
+    };
+  };
+  window.__yinanyiTrack = function (act, label, custom) {
+    return PlatformAdapter.track(act, label, custom);
+  };
+  PlatformAdapter.getUserProfile(function (p) {
+    if (p && p.nickname && store.nickname === "无名改命者") {
+      store.nickname = p.nickname;
+      saveStore();
+      if (state.screen === "home") renderHome();
+    }
+  });
+  PlatformAdapter.cloudSaveRestore(function (records, updatedAt) {
+    if (!records || !updatedAt) return;
+    if (updatedAt > PlatformAdapter.cloudSaveState().lastTs) {
+      store = normalizeDaily(Object.assign(emptyRecords(), records), todayStr());
+      saveStore();
+      PlatformAdapter.markRestored(updatedAt);
+      if (state.screen === "home") renderHome();
+    }
+  });
+  PlatformAdapter.settleAdQueue(function () {});
+})();
+</script>
+</body></html>
