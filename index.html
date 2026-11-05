@@ -251,13 +251,13 @@ const EPISODES = [
     declarations: {
       blame:      { label: "甩锅", text: "输的那一把，节奏从第一波上路就被带偏了。这不全是我的问题——但这一把，是我改的。" },
       god:        { label: "封神", text: "八周年又如何？TheShy 和 Rookie 的剧本，今天由我来写结局。" },
-      versailles: { label: "凡尔赛", text: "也没做什么。就是五次选择，都恰好选对了而已。" }
+      versailles: { label: "凡尔赛", text: "也没做什么。就是十次选择，都恰好选对了而已。" }
     },
     /* 双幕连改（补遗 v1.5）：acts[0] 第一幕为前置真实败局（内容源 连改内容/ 各幕稿，
        集成记录见 BUILD_NOTES）；acts[1] 第二幕为原名局。 */
     acts: [
       { actId: "act1", label: "第一幕", title: "S16 八强 · TES vs IG 第三局",
-        sub: "扳平局 · 你执 TES，五手牌，守住第二局拼回来的气势，别让 IG 先拿到赛点。",
+        sub: "扳平局 · 你执 TES，本幕五手牌，守住第二局拼回来的气势，别让 IG 先拿到赛点。",
         intro: ["2026 年 11 月 4 日，S16 全球总决赛八强首日，LPL 内战。第一局，IG 先下一城；第二局，TES 被拖进 47 分钟的鏖战——Tian 抢下大龙，369 的鳄鱼在基地前一打三、击杀两人，硬生生把比分扳成 1 : 1。", "气势刚回到 TES 这边。第三局，TES 坐上蓝色方；IG 一抢的杰斯摇摆了三路，最终落在打野位；Creme 后手选出永恩，想亲手把对线打回来。真实历史里，这一局的剧本，是从第三分钟开始写的。"],
         realLine: "真实历史：Wei 的打野杰斯 5 / 0 / 8 锁死全场节奏，29 分 29 秒，IG 团灭 TES。系列赛 1 : 2，TES 站上悬崖。", bridgeText: "",
         scoreBefore: "1 : 1", realScoreAfter: "1 : 2",
@@ -463,7 +463,7 @@ const EPISODES = [
        集成记录见 BUILD_NOTES）；acts[1] 第二幕为原名局。 */
     acts: [
       { actId: "act1", label: "第一幕", title: "S11 半决赛 · DK vs T1 第三局",
-        sub: "天王山之战 · 你执 DK，五手牌，改写卫冕冠军被逼到悬崖边的这一夜。",
+        sub: "天王山之战 · 你执 DK，本幕五手牌，改写卫冕冠军被逼到悬崖边的这一夜。",
         intro: ["2021 年 10 月 30 日，冰岛雷克雅未克，S11 全球总决赛半决赛。卫冕冠军 DK 对阵三冠王 T1——在很多人眼里，这才是本届世界赛真正的决赛。", "前两局战成 1 : 1：首局 DK 先下一城，第二局，DK 吞下了本届世界赛的第一场败仗。Faker 与 ShowMaker，旧王与新王的中路对位，来到天王山。这一局谁赢，谁就先拿到赛点。"],
         realLine: "真实结局：DK 10 : 22 告负，37 分 47 秒基地告破——T1 连下两局，率先拿到赛点，卫冕冠军被逼到悬崖边。", bridgeText: "",
         scoreBefore: "1 : 1", realScoreAfter: "1 : 2",
@@ -669,7 +669,7 @@ const EPISODES = [
        集成记录见 BUILD_NOTES）；acts[1] 第二幕为原名局。 */
     acts: [
       { actId: "act1", label: "第一幕", title: "2018 西决第三场 · 火箭 vs 勇士",
-        sub: "1 : 1 来到奥克兰，五手牌，别让第三节的一波流带走整晚。",
+        sub: "1 : 1 来到奥克兰，本幕五手牌，别让第三节的一波流带走整晚。",
         intro: ["2018 年 5 月 20 日，奥克兰，甲骨文球馆，西部决赛第三场。系列赛在休斯顿打成 1 : 1——首战勇士先声夺人，第二场火箭 127 : 105 大胜扳平，塔克和阿里扎合砍 42 分。", "一边是常规赛 65 胜、联盟第一的火箭：莫雷的『魔球』把进攻收束到三分线、篮下和罚球线，德安东尼的球队整个赛季都在为这一轮攒劲。另一边是卫冕冠军勇士——杜兰特加盟之后的『宇宙勇』，四位全明星，三年两冠。这一轮系列赛，被提前称作总决赛。今晚，你执火箭，先打第一幕。"],
         realLine: "真实历史：火箭 85 : 126 惨败——半场只落后 11 分，第三节被库里单节 18 分的一波流带走，全场 19 次失误送给对手 28 分，41 分的分差是勇士队史季后赛最大胜分，系列赛 1 : 2 落后。", bridgeText: "",
         scoreBefore: "1 : 1", realScoreAfter: "1 : 2",
@@ -1251,7 +1251,7 @@ function renderAffix(ep, run) {
     act.intro.map(p => '<p class="introText">' + esc(p) + "</p>").join("") +
     '<h2 class="sec">开 幕 抽 暗 流</h2>' +
     '<div class="affixBanner"><div class="al">本 幕 暗 流 · 本 幕 内 生 效</div><div class="an2">' + esc(a.name) + '</div><div class="ad2">' + esc(a.desc) + "</div></div>" +
-    '<p class="introText">暗流不是惩罚也不是恩赐，它是这一幕的天气。五手牌怎么打，由你；结算时，每一幕的暗流都会单独记上一笔。</p>' +
+    '<p class="introText">暗流不是惩罚也不是恩赐，它是这一幕的天气。本幕五手牌怎么打，由你；结算时，每一幕的暗流都会单独记上一笔。</p>' +
     '<button class="btn red" id="goBtn">进 入 第 一 手</button>';
   document.getElementById("goBtn").addEventListener("click", () => renderHand(ep, run));
   window.scrollTo(0, 0);
