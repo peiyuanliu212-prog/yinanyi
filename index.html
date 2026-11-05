@@ -203,6 +203,48 @@ h2.sec{font-family:var(--kai);font-size:19px;font-weight:900;letter-spacing:.12e
 .opt{box-shadow:inset 0 0 0 3px #faf4e4,inset 0 0 0 4px rgba(38,34,25,.30),var(--cardsh)}
 .opt .r1{align-items:flex-start}
 .opt .rate{padding-top:3px}
+/* ==== 首更批：改命榜＋全站投票结果＋群福利（弹窗/入口）。仅新增类，不改既有规则 ==== */
+.boardBtn{width:100%;margin-top:14px;padding:12px 0}
+.boardCard{margin-top:16px;border:var(--cardb);border-radius:3px;background:var(--card);padding:16px 18px;box-shadow:inset 0 0 0 3px #faf4e4,inset 0 0 0 4px rgba(38,34,25,.30),var(--cardsh)}
+.boardCard .no{font-family:var(--kai);font-size:12px;font-weight:900;letter-spacing:.26em;color:#b23a26}
+.myRankBig{font-family:var(--kai);font-size:21px;font-weight:900;margin-top:6px}
+.myRankBig b{color:#b23a26}
+.boardRow{display:flex;align-items:baseline;gap:10px;padding:9px 2px;border-bottom:1px dashed rgba(38,34,25,.18);font-size:14px}
+.boardRow:last-child{border-bottom:none}
+.boardRow .rk{font-family:var(--kai);font-weight:900;width:34px;flex:none;color:rgba(38,34,25,.55);font-variant-numeric:tabular-nums}
+.boardRow.top3 .rk{color:#b23a26}
+.boardRow .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.boardRow .sc{font-family:var(--kai);font-weight:900;font-variant-numeric:tabular-nums}
+.boardRow.me{background:#fdf6e7;box-shadow:inset 2px 0 0 #b23a26;padding-left:8px}
+.boardRow .meTag{font-size:10.5px;color:#b23a26;font-weight:800;letter-spacing:.14em;flex:none}
+.voteRes{margin-top:12px;border:1px dashed rgba(38,34,25,.35);border-radius:3px;padding:12px 14px;background:rgba(253,246,231,.6)}
+.vrRow{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:12.5px}
+.vrName{width:118px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vrMine{color:#b23a26;font-weight:800;font-size:11px}
+.vrBar{flex:1;height:8px;border:1px solid rgba(38,34,25,.45);background:rgba(250,244,228,.7);position:relative}
+.vrFill{position:absolute;left:0;top:0;bottom:0;background:#b23a26}
+.vrNum{width:86px;flex:none;text-align:right;font-variant-numeric:tabular-nums;color:rgba(38,34,25,.72)}
+.vrMine{width:38px;flex:none;text-align:right;white-space:nowrap}
+.pick.voted{cursor:default}
+.welfare{margin-top:20px;border:var(--cardb);border-radius:3px;background:var(--card);padding:16px 20px 18px;position:relative;box-shadow:var(--cardsh)}
+.welfare .no{position:absolute;top:-9px;left:14px;background:#f4eedd;padding:0 8px;font-family:var(--kai);font-size:12px;font-weight:900;letter-spacing:.26em;color:#b23a26}
+.welfare .wrow{display:flex;gap:10px;margin-top:8px}
+.welfare input{flex:1;min-width:0;border:1px solid rgba(38,34,25,.5);border-radius:3px;background:#fdfaf0;padding:11px 12px;font-size:15px;font-family:inherit;letter-spacing:.12em;text-transform:uppercase;color:#262219}
+.welfare .wbtn{flex:none;border:1px solid #93301f;border-radius:3px;background:#b23a26;color:#fdf3da;font-family:var(--kai);font-weight:900;letter-spacing:.2em;padding:0 18px;cursor:pointer;font-size:14px}
+.welfare .wmsg{margin-top:9px;font-size:12.5px;line-height:1.7;color:rgba(38,34,25,.66)}
+.welfare .wmsg.ok{color:#b23a26;font-weight:700}
+.welfare .wdone{font-family:var(--kai);font-size:15.5px;font-weight:900;margin-top:6px}
+.wfMask{position:fixed;inset:0;background:rgba(38,34,25,.55);z-index:60;display:flex;align-items:center;justify-content:center;padding:22px}
+.wfCard{background:#f4eedd;border:1.5px solid rgba(38,34,25,.8);border-radius:3px;max-width:340px;width:100%;padding:22px 20px 18px;text-align:center;box-shadow:inset 0 0 0 3px #faf4e4,inset 0 0 0 4px rgba(38,34,25,.30),0 18px 40px -12px rgba(0,0,0,.45)}
+.wfCard .no{font-family:var(--kai);font-size:12px;font-weight:900;letter-spacing:.3em;color:#b23a26}
+.wfCard h3{font-family:var(--kai);font-size:20px;font-weight:900;margin:8px 0 4px}
+.wfCard img{width:200px;height:200px;display:block;margin:12px auto 6px;border:1px solid rgba(38,34,25,.25);background:#fff}
+.wfCard .wcap{font-size:11.5px;color:rgba(38,34,25,.55)}
+.wfCard .wtext{margin-top:12px;font-size:13.5px;line-height:1.85;text-align:left}
+.wfCard .wmute{display:flex;align-items:center;gap:7px;justify-content:center;margin-top:14px;font-size:12.5px;color:rgba(38,34,25,.7);cursor:pointer}
+.wfCard .wmute input{width:15px;height:15px;accent-color:#b23a26}
+.wfCard .wbtns{display:flex;gap:10px;margin-top:14px}
+.wfCard .wbtns .btn{flex:1}
 </style></head>
 <body>
 <script>
@@ -280,11 +322,14 @@ const AD_HOOKS = {
   posterDeluxe:  { key: "posterDeluxe",  label: "精装海报", dailyLimit: 3 },
   rewindLastHand:{ key: "rewindLastHand",label: "续命一手", dailyLimit: 1 }
 };
-/* ---------- 配置：下期投票（全局） ---------- */
+/* ---------- 配置：下期投票（全局） ----------
+   选项 id 与云端 votes.js 白名单逐值同步（test.js 断言）；w16g7/wc22 已转正式案卷，
+   首更批轮换为 spurs13/dk21，friday 保留。期号与云端 VOTE_ROUND 同值。 */
+const VOTE_ROUND = "s1";
 const VOTE_OPTIONS = [
-  { id: "w16g7",  text: "2016 总决赛抢七 · 执勇士，改写 73 胜的最后一场" },
-  { id: "wc22",   text: "2022 世界杯决赛 · 执法国，改写姆巴佩的帽子戏法之夜" },
-  { id: "friday", text: "本周五之夜 · BLG vs DK 的败者那一局（赛后加更）" }
+  { id: "spurs13", text: "2013 NBA 总决赛第六场 · 执马刺，改写那记扳平三分之夜" },
+  { id: "dk21",    text: "2021 全球总决赛决赛 · 执 DK，改写 EDG 的夺冠之夜" },
+  { id: "friday",  text: "本周五之夜 · BLG vs DK 的败者那一局（赛后加更）" }
 ];
 /* ---------- 数据层：EPISODES ----------
    一期一对象，引擎零硬编码剧情。双幕连改（补遗 v1.5）：每期 acts 两幕，
@@ -1118,6 +1163,7 @@ function resolveDisplayName(profile) {
 }
 function emptyRecords() {
   return { nickname: DEFAULT_NICKNAME, totalScore: 0, episodes: {}, votes: {},
+    welfareClaimed: false, welfareMuted: false,
     daily: { date: "", firstDone: false, adHooks: {} } };
 }
 function normalizeDaily(records, todayStr) {
@@ -1135,7 +1181,7 @@ function applyResultToRecords(records, ep, run, j, todayStr) {
   const rankBefore = rankFor(records.totalScore).current.name;
   records.totalScore += gained;
   const rankAfter = rankFor(records.totalScore).current.name;
-  if (!records.episodes[ep.id]) records.episodes[ep.id] = { plays: 0, bestRating: null, bestAdv: null, archive: {} };
+  if (!records.episodes[ep.id]) records.episodes[ep.id] = { plays: 0, bestRating: null, bestAdv: null, bestScore: null, archive: {} };
   const rec = records.episodes[ep.id];
   rec.plays += 1;
   let archiveNew = null;
@@ -1144,11 +1190,54 @@ function applyResultToRecords(records, ep, run, j, todayStr) {
     const order = { S: 4, A: 3, B: 2, C: 1 };
     if (!rec.bestRating || order[j.rating] > order[rec.bestRating]) rec.bestRating = j.rating;
     if (rec.bestAdv === null || j.adv > rec.bestAdv) rec.bestAdv = j.adv;
+    /* 本地最佳单轮改命分（改命榜降级态展示用）；续命局同最佳评级红线，不计 */
+    if (rec.bestScore === null || rec.bestScore === undefined || gained > rec.bestScore) rec.bestScore = gained;
   }
   let firstRewrite = false;
   if (!records.daily.firstDone) { records.daily.firstDone = true; firstRewrite = true; }
   return { gained: gained, firstRewrite: firstRewrite, archiveNew: archiveNew,
     rankBefore: rankBefore, rankAfter: rankAfter, countsForBest: !run.rewound };
+}
+/* ---------- 首更批纯函数：改命榜视图模型 / 投票结果行 / 本地最佳分 ----------
+   只做数据整形不碰 DOM，UI 与 test.js 共用同一口径。 */
+/* rows 非数组（云端不可达）→ local 模式；me 为 /leaderboard/me 的 data 或 null */
+function boardViewModel(rows, me, localBest) {
+  const lb = typeof localBest === "number" ? localBest : null;
+  if (!Array.isArray(rows)) return { mode: "local", rows: [], me: null, localBest: lb };
+  return {
+    mode: "cloud",
+    rows: rows.slice(0, 50).map(r => ({
+      rank: r.rank, name: String(r.displayName == null ? "" : r.displayName),
+      score: Number(r.score) || 0, current: !!r.isCurrent
+    })),
+    me: me && typeof me.rank === "number"
+      ? { rank: me.rank, score: Number(me.score) || 0, name: String(me.displayName == null ? "" : me.displayName) }
+      : null,
+    localBest: lb
+  };
+}
+function localBestScore(records) {
+  let best = null;
+  const eps = (records && records.episodes) || {};
+  for (const k in eps) {
+    const s = eps[k] && eps[k].bestScore;
+    if (typeof s === "number" && (best === null || s > best)) best = s;
+  }
+  return best;
+}
+/* counts: { itemId: 票数 }；total 缺省时按三项求和；label 取选项文案「·」前短名 */
+function voteResultRows(counts, total, mine) {
+  counts = counts || {};
+  const t = typeof total === "number"
+    ? total
+    : VOTE_OPTIONS.reduce((s, v) => s + (counts[v.id] || 0), 0);
+  return VOTE_OPTIONS.map(v => {
+    const c = counts[v.id] || 0;
+    return {
+      id: v.id, label: v.text.split("·")[0].trim(), count: c,
+      pct: t > 0 ? Math.round(100 * c / t) : 0, mine: mine === v.id
+    };
+  });
 }
 // === ENGINE END ===
 </script>
@@ -1206,11 +1295,211 @@ function advBar(run) {
 }
 /* ---------- 广告钩子本地计数（每日上限来自 AD_HOOKS 配置） ---------- */
 function hookUsed(key) { return (store.daily.adHooks && store.daily.adHooks[key]) || 0; }
-function canUseHook(key) { return hookUsed(key) < AD_HOOKS[key].dailyLimit; }
+/* 福利余额（服务端按账号，云端回填到 cloudUi.bonus；未知/无云时为 null 按 0 计）。
+   计数口径：可用 = 每日剩余 + 福利余额，服务端 consume 先扣余额再扣每日，本地只做展示与前置闸。 */
+const cloudUi = { bonus: null, welfareClaimed: null, welfareChecked: false, hooksAt: 0 };
+function hookBonus(key) { return cloudUi.bonus ? (cloudUi.bonus[key] || 0) : 0; }
+function hookLeft(key) {
+  const daily = Math.max(0, AD_HOOKS[key].dailyLimit - hookUsed(key));
+  const bonus = hookBonus(key);
+  return { daily: daily, bonus: bonus, total: daily + bonus };
+}
+function hookLeftText(key) {
+  const l = hookLeft(key);
+  return l.bonus > 0 ? "剩 " + l.total + " 次（今日 " + l.daily + "＋福利 " + l.bonus + "）" : "今日剩 " + l.daily + " 次";
+}
+function canUseHook(key) { return hookUsed(key) < AD_HOOKS[key].dailyLimit || hookBonus(key) > 0; }
 function consumeHook(key) {
   normalizeDaily(store, todayStr());
   store.daily.adHooks[key] = hookUsed(key) + 1; saveStore();
 }
+/* 发奖落账：服务端经福利余额发放（res.viaBonus）时只减本地缓存的余额，不占本地每日计数 */
+function applyHookConsume(key, res) {
+  if (res && res.viaBonus) {
+    if (cloudUi.bonus) cloudUi.bonus[key] = Math.max(0, hookBonus(key) - 1);
+    return;
+  }
+  consumeHook(key);
+}
+/* ---------- 首更批：改命榜 / 全站投票结果 / 群福利 ----------
+   GROUP_QR 为拼将三作共用交流群现行群码图（与巨星拼图现行内嵌图同字节，
+   2026-11-11 到期版先占位，上线前换新码图，见 BUILD_NOTES）。 */
+const GROUP_QR = "data:image/png;base64,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";
+const WELFARE_COPY = "首批福利：改命礼包，限量 200 份。福利码将在群内发布，开放后回游戏输入福利码领取。";
+const WELFARE_REWARD_TEXT = "情报 +3 · 精装海报 +3 · 续命一手 +1";
+let onHomeShown = null; /* 引导脚本接线：首页每次展示后刷新云端态（福利/余额/弹窗） */
+
+function welfareClaimed() { return !!(store.welfareClaimed || cloudUi.welfareClaimed); }
+function welfareBoxHtml() {
+  if (welfareClaimed()) {
+    return '<div class="no">群 福 利</div><div class="wdone">改命礼包 · 已领取</div>' +
+      '<div class="wmsg ok">奖励已存入福利余额（' + WELFARE_REWARD_TEXT + "），用钩子时先扣福利、再扣每日次数。</div>";
+  }
+  return '<div class="no">群 福 利</div>' +
+    '<div class="wmsg" style="margin-top:2px">' + WELFARE_COPY + "</div>" +
+    '<div class="wrow"><input id="welfareCode" type="text" placeholder="输入福利码" autocomplete="off" maxlength="24">' +
+    '<button class="wbtn" id="welfareBtn">领 取</button></div>' +
+    '<div class="wmsg" id="welfareMsg">奖励：' + WELFARE_REWARD_TEXT + "（存入福利余额，先于每日次数使用）</div>";
+}
+function paintWelfare() {
+  const box = document.getElementById("welfareBox");
+  if (!box) return;
+  box.innerHTML = welfareBoxHtml();
+  bindWelfare();
+}
+function bindWelfare() {
+  const btn = document.getElementById("welfareBtn");
+  if (!btn) return;
+  btn.addEventListener("click", () => {
+    const input = document.getElementById("welfareCode");
+    const msg = document.getElementById("welfareMsg");
+    const code = input ? input.value : "";
+    if (!String(code || "").trim()) { if (msg) msg.textContent = "先输入福利码（群内发布）再领取。"; return; }
+    btn.disabled = true;
+    if (msg) msg.textContent = "核销中…";
+    PlatformAdapter.redeemWelfare(code, r => {
+      btn.disabled = false;
+      if (!r || r.status === "unavailable") { if (msg) msg.textContent = "云端暂不可达，请稍后再试。"; return; }
+      if (r.bonus) cloudUi.bonus = r.bonus;
+      if (r.status === "ok") {
+        store.welfareClaimed = true; cloudUi.welfareClaimed = true; saveStore();
+        closeWelfarePopup();
+        paintWelfare();
+        toast("领取成功：" + WELFARE_REWARD_TEXT + " 已存入福利余额");
+        return;
+      }
+      if (r.status === "already") {
+        store.welfareClaimed = true; cloudUi.welfareClaimed = true; saveStore();
+        paintWelfare();
+        toast("你已经领取过改命礼包了");
+        return;
+      }
+      if (msg) msg.textContent = r.status === "exhausted"
+        ? "改命礼包已被领完（" + (r.claimedCount || 200) + " / " + (r.totalCap || 200) + "），下次请早。"
+        : "福利码不对，请核对后再试。";
+    });
+  });
+}
+/* 公告弹窗：已领取或已勾「不再提醒」永不再弹；未勾则每次进首页弹（云端状态确认后判定） */
+function maybeShowWelfarePopup() {
+  if (state.screen !== "home") return;
+  if (store.welfareClaimed || store.welfareMuted) return;
+  if (!cloudUi.welfareChecked) return;
+  if (cloudUi.welfareClaimed) return;
+  showWelfarePopup();
+}
+function closeWelfarePopup() {
+  const el = document.getElementById("welfarePopup");
+  if (el && el.parentNode) el.parentNode.removeChild(el);
+}
+function showWelfarePopup() {
+  closeWelfarePopup();
+  const mask = document.createElement("div");
+  mask.className = "wfMask";
+  mask.id = "welfarePopup";
+  mask.innerHTML =
+    '<div class="wfCard"><div class="no">拼 将 交 流 群</div><h3>群 福 利 公 告</h3>' +
+    '<img src="' + GROUP_QR + '" alt="拼将交流群二维码">' +
+    '<div class="wcap">微信扫码进群 · 本码 2026-11-11 到期，过期后等群内新码</div>' +
+    '<div class="wtext">' + WELFARE_COPY + "</div>" +
+    '<label class="wmute"><input type="checkbox" id="wfMute">下次进入不再提醒</label>' +
+    '<div class="wbtns"><button class="btn ghost" id="wfClose">稍 后 再 说</button>' +
+    '<button class="btn red" id="wfGo">去 输 福 利 码</button></div></div>';
+  document.body.appendChild(mask);
+  const finish = go => {
+    const mute = document.getElementById("wfMute");
+    if (mute && mute.checked) { store.welfareMuted = true; saveStore(); }
+    closeWelfarePopup();
+    if (go) {
+      const input = document.getElementById("welfareCode");
+      if (input) { input.scrollIntoView({ block: "center" }); input.focus(); }
+    }
+  };
+  document.getElementById("wfClose").addEventListener("click", () => finish(false));
+  document.getElementById("wfGo").addEventListener("click", () => finish(true));
+}
+/* 云端态刷新：钩子 state（带 bonus）+ 福利领取状态；变化时才重渲首页，避免循环 */
+function refreshCloudUi(force) {
+  const now = Date.now();
+  if (!force && cloudUi.bonus !== null && now - cloudUi.hooksAt < 4000) { maybeShowWelfarePopup(); return; }
+  cloudUi.hooksAt = now;
+  PlatformAdapter.getHookState(data => {
+    if (data && data.bonus) {
+      const changed = JSON.stringify(cloudUi.bonus) !== JSON.stringify(data.bonus);
+      cloudUi.bonus = data.bonus;
+      if (changed && state.screen === "home") renderHome();
+    }
+  });
+  PlatformAdapter.getWelfareMe(data => {
+    cloudUi.welfareChecked = true;
+    if (data) {
+      cloudUi.welfareClaimed = !!data.claimed;
+      if (data.bonus) cloudUi.bonus = data.bonus;
+      if (data.claimed && !store.welfareClaimed) {
+        store.welfareClaimed = true; saveStore(); paintWelfare();
+      }
+    }
+    maybeShowWelfarePopup();
+  });
+}
+/* ================= 屏幕：改命榜 ================= */
+function renderBoard() {
+  state.screen = "board";
+  let h = topBar("总卷") +
+    "<h1>改 命 榜</h1>" +
+    '<div class="sub">全 站 改 命 分 · 单 轮 最 佳</div>' +
+    '<div id="boardBody"><div class="boardCard"><div class="no">改 命 榜</div>' +
+    '<div class="wmsg" style="margin-top:8px;font-size:13px;color:rgba(38,34,25,.6)">榜单载入中…</div></div></div>' +
+    '<button class="btn ghost" id="boardBack" style="margin-top:18px">归 档 · 回 案 卷 列 表</button>';
+  app.innerHTML = h;
+  document.getElementById("boardBack").addEventListener("click", renderHome);
+  trk("exposure", "改命榜");
+  let board = null, me = null, done = 0;
+  const finish = () => { if (++done < 2) return; paintBoard(board, me); };
+  PlatformAdapter.getBoard(d => { board = d; finish(); });
+  PlatformAdapter.getMyRank(d => { me = d; finish(); });
+  window.scrollTo(0, 0);
+}
+function paintBoard(board, me) {
+  const el = document.getElementById("boardBody");
+  if (!el) return;
+  const vm = boardViewModel(board, me, localBestScore(store));
+  let h = "";
+  if (vm.mode === "local") {
+    h += '<div class="boardCard"><div class="no">我 的 名 次</div>' +
+      '<div class="wmsg" style="margin-top:8px;font-size:13px;color:rgba(38,34,25,.66)">云端榜单暂不可达，先记在本地档案。</div>' +
+      '<div class="myRankBig">' + (vm.localBest !== null ? "本地最佳改命分 <b>" + vm.localBest + "</b>" : "暂无本地成绩 · 打完一轮整轮结算即可上榜") + "</div></div>";
+    el.innerHTML = h;
+    return;
+  }
+  h += '<div class="boardCard"><div class="no">我 的 名 次</div>' +
+    (vm.me
+      ? '<div class="myRankBig">第 <b>' + vm.me.rank + "</b> 名 · 改命分 <b>" + vm.me.score + "</b></div>"
+      : '<div class="myRankBig" style="font-size:16px">暂无名次</div><div class="wmsg" style="font-size:12.5px;color:rgba(38,34,25,.6);margin-top:4px">打完一轮整轮结算即可上榜</div>') +
+    "</div>";
+  h += '<div class="boardCard"><div class="no">全 站 前 ' + vm.rows.length + " 名</div>" +
+    (vm.rows.length
+      ? vm.rows.map(r =>
+          '<div class="boardRow' + (r.rank <= 3 ? " top3" : "") + (r.current ? " me" : "") + '">' +
+          '<span class="rk">' + r.rank + '</span><span class="nm">' + esc(r.name) + "</span>" +
+          (r.current ? '<span class="meTag">我</span>' : "") +
+          '<span class="sc">' + r.score + "</span></div>").join("")
+      : '<div class="wmsg" style="font-size:13px;color:rgba(38,34,25,.6);margin-top:6px">暂无上榜记录，来打第一轮。</div>') +
+    "</div>";
+  el.innerHTML = h;
+}
+/* 结算页投票结果态（云端模式）：三项票数＋占比条＋「我投的」标记 */
+function paintVoteResults(vs) {
+  const box = document.getElementById("voteResults");
+  if (!box || !vs) return;
+  const rows = voteResultRows(vs.counts, vs.total, vs.mine);
+  box.innerHTML = '<div class="voteRes">' + rows.map(r =>
+    '<div class="vrRow"><span class="vrName">' + esc(r.label) + "</span>" +
+    '<span class="vrBar"><span class="vrFill" style="width:' + r.pct + '%"></span></span>' +
+    '<span class="vrNum">' + r.count + " 票 · " + r.pct + "%</span>" +
+    '<span class="vrMine">' + (r.mine ? "我投的" : "") + "</span></div>").join("") + "</div>";
+}
+
 /* ================= 屏幕：首页 ================= */
 function renderHome() {
   state.screen = "home"; state.deluxe = false;
@@ -1225,7 +1514,10 @@ function renderHome() {
     '<span class="nick">' + esc(store.nickname) + '</span>' +
     '<div class="rankline">段位 <b>' + rk.current.name + '</b> · 累计改命分 <b>' + store.totalScore + '</b>' +
     (rk.next ? ' · 距「' + rk.next.name + '」还差 ' + (rk.next.min - store.totalScore) + " 分" : " · 已至绝巅") + '</div>' +
-    '<div class="rankTrack"><div class="rankFill" style="width:' + rankPct + '%"></div></div></div>';
+    '<div class="rankTrack"><div class="rankFill" style="width:' + rankPct + '%"></div></div>' +
+    '<button class="btn ghost boardBtn" id="boardBtn">改 命 榜 · 全 站 排 名</button></div>';
+  /* 群福利入口 */
+  h += '<div class="welfare" id="welfareBox">' + welfareBoxHtml() + "</div>";
   /* 模式 */
   h += '<div class="modeRow">' +
     ["normal", "hard"].map(k => {
@@ -1268,11 +1560,15 @@ function renderHome() {
     if (!canUseHook("earlyEpisode")) { toast("今日抢先次数已用完"); return; }
     PlatformAdapter.showRewardAd("earlyEpisode", res => {
       if (!res || !res.ok) { toast((res && res.message) || "广告未完成，奖励未发放"); return; }
-      consumeHook("earlyEpisode"); toast("抢先翻卷即将开启，敬请期待");
+      applyHookConsume("earlyEpisode", res); toast("抢先翻卷即将开启，敬请期待");
     });
   }));
+  const bb = document.getElementById("boardBtn");
+  if (bb) bb.addEventListener("click", () => { trk("click", "改命榜"); renderBoard(); });
+  bindWelfare();
   trk("exposure", "案卷架-期数列表");
   window.scrollTo(0, 0);
+  if (onHomeShown) onHomeShown();
 }
 /* ================= 屏幕：开卷 ================= */
 function renderIntro(ep) {
@@ -1339,7 +1635,7 @@ function renderHand(ep, run) {
     if (intelOn) {
       h += '<button class="hookBtn" disabled style="margin-top:14px;width:100%">情报已揭示 · 本手期望值与最优解已标出</button>';
     } else {
-      h += '<button class="hookBtn" id="intelBtn" style="margin-top:14px;width:100%">情报 · 显示本手期望值与最优解 · 今日剩 ' + (AD_HOOKS.intel.dailyLimit - hookUsed("intel")) + ' 次</button>';
+      h += '<button class="hookBtn" id="intelBtn" style="margin-top:14px;width:100%">情报 · 显示本手期望值与最优解 · ' + hookLeftText("intel") + '</button>';
     }
   } else {
     const e = state.lastEntry;
@@ -1358,11 +1654,11 @@ function renderHand(ep, run) {
     if (ib) {
       trk("exposure", "出手页-情报入口", { ep: ep.id });
       ib.addEventListener("click", () => {
-        if (!canUseHook("intel")) { toast("今日情报次数已用完"); return; }
+        if (!canUseHook("intel")) { toast("情报次数已用完（今日与福利都已用尽）"); return; }
         trk("click", "出手页-情报入口", { ep: ep.id });
         PlatformAdapter.showRewardAd("intel", res => {
           if (!res || !res.ok) { toast((res && res.message) || "广告未完成，情报未发放"); return; }
-          consumeHook("intel");
+          applyHookConsume("intel", res);
           state.intel = { run: run, handIdx: run.handIdx };
           toast("情报到手：本手期望值已标出，最高的一项已打上「最优解」");
           renderHand(ep, run);
@@ -1421,6 +1717,7 @@ function commitSettle(ep, run, j) {
 }
 function renderSettlement(ep, run) {
   state.screen = "settle";
+  state.voteCloud = undefined; /* 投票云端态每进结算重拉，先按本地模式paint、回来再升级结果态 */
   const j = judge(ep, run);
   /* 先在副本上预览落账结果（首改印/新档案/得分），真正落账在离开结算时提交一次 */
   const previewStore = JSON.parse(JSON.stringify(store));
@@ -1460,14 +1757,20 @@ function renderSettlement(ep, run) {
       const d = ep.declarations[k];
       return '<div class="pick' + (state.declaration === k ? " sel" : "") + '" data-decl="' + k + '"><span class="pl">' + d.label + "</span><br>" + esc(d.text) + "</div>";
     }).join("") + "</div>";
-  /* 下期投票 */
+  /* 下期投票：云端模式（state.voteCloud 为对象）展示全站结果态；本地模式沿用本地档案口径 */
   h += '<h2 class="sec">下 一 期 · 你 来 定</h2><div class="pickRow">' +
-    VOTE_OPTIONS.map(v => '<div class="pick' + (store.votes && store.votes.choice === v.id ? " sel" : "") + '" data-vote="' + v.id + '">' + esc(v.text) + "</div>").join("") +
-    '</div><div class="foot" id="voteLine" style="margin-top:8px">投票记在本地档案，结果将在评价区公布，下期案卷按票数开卷。</div>';
+    VOTE_OPTIONS.map(v => {
+      const sel = state.voteCloud ? state.voteCloud.mine === v.id : (store.votes && store.votes.choice === v.id);
+      const voted = state.voteCloud && state.voteCloud.mine ? " voted" : "";
+      return '<div class="pick' + (sel ? " sel" : "") + voted + '" data-vote="' + v.id + '">' + esc(v.text) + "</div>";
+    }).join("") +
+    '</div><div id="voteResults"></div>' +
+    '<div class="foot" id="voteLine" style="margin-top:8px">' +
+    (state.voteCloud ? "全站票数实时汇总，得票最高的案卷优先开卷。" : "投票记在本地档案，结果将在评价区公布，下期案卷按票数开卷。") + "</div>";
   /* 广告钩子行 */
   h += '<div class="hookRow">' +
-    '<button class="hookBtn" id="posterBtn">精装海报 · 今日剩 ' + (AD_HOOKS.posterDeluxe.dailyLimit - hookUsed("posterDeluxe")) + " 次</button>" +
-    (j.tier !== "success" && !run.rewound ? '<button class="hookBtn" id="rewindBtn">续命一手 · 重打最后一手（今日剩 ' + (AD_HOOKS.rewindLastHand.dailyLimit - hookUsed("rewindLastHand")) + " 次）</button>" : "") +
+    '<button class="hookBtn" id="posterBtn">精装海报 · ' + hookLeftText("posterDeluxe") + "</button>" +
+    (j.tier !== "success" && !run.rewound ? '<button class="hookBtn" id="rewindBtn">续命一手 · 重打最后一手（' + hookLeftText("rewindLastHand") + "）</button>" : "") +
     "</div>";
   h += '<div id="statsLine" class="foot"></div>';
   h += '<button class="btn ghost" id="shareBtn">把 这 一 卷 发 到 虎 扑</button>';
@@ -1489,11 +1792,18 @@ function renderSettlement(ep, run) {
       el.textContent = "全站本期已有 " + stats.participants + " 人改命 · 成功率 " + stats.rate + "%";
     }
   });
-  PlatformAdapter.getVoteResult(vres => {
-    const el = document.getElementById("voteLine");
-    if (el && vres) {
-      el.textContent = "全站票数：" + VOTE_OPTIONS.map(v => v.text.split("·")[0].trim() + " " + (vres[v.id] || 0) + " 票").join(" · ");
-    }
+  /* 投前先拉全站结果：已投 → 直接结果态；云端不可达 → state.voteCloud=null 回落本地模式 */
+  PlatformAdapter.getVoteState(vs => {
+    if (!document.getElementById("voteLine")) return;
+    if (!vs) { state.voteCloud = null; return; }
+    state.voteCloud = vs;
+    const lineEl = document.getElementById("voteLine");
+    if (lineEl) lineEl.textContent = "全站票数实时汇总，得票最高的案卷优先开卷。";
+    paintVoteResults(vs);
+    document.querySelectorAll("[data-vote]").forEach(el => {
+      el.classList.toggle("sel", vs.mine === el.dataset.vote);
+      if (vs.mine) el.classList.add("voted");
+    });
   });
   document.querySelectorAll("[data-decl]").forEach(el => el.addEventListener("click", () => {
     state.declaration = el.dataset.decl;
@@ -1502,10 +1812,18 @@ function renderSettlement(ep, run) {
   }));
   document.querySelectorAll("[data-vote]").forEach(el => el.addEventListener("click", () => {
     const key = el.dataset.vote;
-    store.votes = { choice: key, date: todayStr() }; saveStore();
+    if (state.voteCloud && state.voteCloud.mine) { toast("本期你已经投过票了"); return; }
     PlatformAdapter.submitVote(key, r => {
-      if (r && r.remote && !r.ok) toast(r.message || "投票失败，请稍后再试");
-      else toast(r && r.remote ? "已投出你的一票" : "已记下你的一票");
+      if (r && r.cloud) {
+        store.votes = { choice: key, date: todayStr() }; saveStore();
+        state.voteCloud = { counts: r.counts, total: r.total, mine: r.mine };
+        toast(r.alreadyVoted ? "你已经投过票了" : "已投出你的一票");
+        renderSettlement(ep, run);
+        return;
+      }
+      if (r && r.remote && !r.ok) { toast(r.message || "投票失败，请稍后再试"); return; }
+      store.votes = { choice: key, date: todayStr() }; saveStore();
+      toast(r && r.remote ? "已投出你的一票" : "已记下你的一票");
       renderSettlement(ep, run);
     });
   }));
@@ -1514,7 +1832,7 @@ function renderSettlement(ep, run) {
     if (!canUseHook("posterDeluxe")) { toast("今日精装次数已用完"); return; }
     PlatformAdapter.showRewardAd("posterDeluxe", res => {
       if (!res || !res.ok) { toast((res && res.message) || "广告未完成，海报未发放"); return; }
-      consumeHook("posterDeluxe"); state.deluxe = !state.deluxe; renderSettlement(ep, run);
+      applyHookConsume("posterDeluxe", res); state.deluxe = !state.deluxe; renderSettlement(ep, run);
       toast(state.deluxe ? "已切换精装海报样式" : "已恢复普通样式");
     });
   });
@@ -1523,7 +1841,7 @@ function renderSettlement(ep, run) {
     if (!canUseHook("rewindLastHand")) { toast("今日续命次数已用完"); return; }
     PlatformAdapter.showRewardAd("rewindLastHand", res => {
       if (!res || !res.ok) { toast((res && res.message) || "广告未完成，续命未发放"); return; }
-      consumeHook("rewindLastHand");
+      applyHookConsume("rewindLastHand", res);
       rewindRun(ep, run);
       state.settle = null; state.phase = "pick"; state.lastEntry = null;
       state.intel = null; /* 续命重打最后一手：旧情报不带回，防同 run 同 handIdx 误命中 */
@@ -1612,7 +1930,11 @@ renderHome();
      （/api/hooks/consume）为权威闸，云端不可达时以本地计数放行。
    · 云存档：本地 localStorage 第一写入，云端 SDK 键值异步镜像（≥3 秒节流合并），
      恢复只在云端时间戳更新时覆盖本地，失败不阻塞。
-   · 投票：平台活动未配置（PLATFORM_CONFIG.vote 为空）时降级本地投票＋打点。
+   · 投票（首更批）：优先自建 /api/vote 全站计数（一人一票，云端唯一约束防重）；
+     云端不可达才回落旧路径——平台活动未配置（PLATFORM_CONFIG.vote 为空，常态）
+     时降级本地投票＋打点。PLATFORM_CONFIG.vote 保持为空，不填假 ID。
+   · 福利码（首更批）：/api/welfare 核销发钩子福利余额，服务端原子记账防重领；
+     输入仅作功能核销码上行，不作任何展示，与被驳回的昵称自由输入不同性质。
    · 显示名（二审整改，2026-11-05）：审核要求玩家不得手动输入昵称——显示名一律取
      平台登录昵称（auth.getUserInfo），取不到/未登录/无 SDK 时以默认名「改命人」兜底；
      存档里的旧自设名不再作显示与上榜口径。内容安全 checkAudit 能力保留在适配器中，
@@ -1742,14 +2064,17 @@ function _cloudReq(path, method, data, cb) {
 function _hooksState(cb) {
   _cloudReq("/api/hooks/state", "GET", undefined, data => cb(data || null));
 }
-/* 差量已落定后过服务端钩子计数闸：allowed===false 才拒；云端不可达以本地计数放行 */
+/* 差量已落定后过服务端钩子计数闸：allowed===false 才拒；云端不可达以本地计数放行。
+   服务端 consume v2 先扣福利余额：viaBonus/bonusLeft 透传给 UI 做本地余额缓存对账。 */
 function _grantHook(hookKey, cb, via) {
   _cloudReq("/api/hooks/consume", "POST", { hookKey: hookKey }, data => {
     if (data && data.allowed === false) {
       cb({ ok: false, via: via, serverDenied: true, message: "本钩子今日次数已用完" });
       return;
     }
-    cb({ ok: true, via: via });
+    cb({ ok: true, via: via,
+      viaBonus: !!(data && data.viaBonus),
+      bonusLeft: data && typeof data.bonusLeft === "number" ? data.bonusLeft : null });
   });
 }
 
@@ -1784,7 +2109,8 @@ function _freshAdFlow(hookKey, finish) {
     const base = st.availableChanceCount;
     _hooksState(hs => {
       if (hs && hs.counts && hs.limits && typeof hs.counts[hookKey] === "number"
-          && hs.counts[hookKey] >= (hs.limits[hookKey] || 0)) {
+          && hs.counts[hookKey] >= (hs.limits[hookKey] || 0)
+          && !(hs.bonus && hs.bonus[hookKey] > 0)) {
         finish({ ok: false, serverDenied: true, message: "本钩子今日次数已用完" });
         return;
       }
@@ -2066,6 +2392,12 @@ const PlatformAdapter = {
     _cloudReq("/api/leaderboard/me", "GET", undefined, data => cb(data || null));
   },
 
+  /* 2b) 改命榜 Top 50：云端不可达 cb(null)，UI 走本地降级态 */
+  getBoard: function (cb) {
+    cb = cb || function () {};
+    _cloudReq("/api/leaderboard", "GET", undefined, data => cb(Array.isArray(data) ? data : null));
+  },
+
   /* 3) 每期统计：归一化为 UI 形状 {rate, percentile, participants, myBest, totalRuns} */
   getEpisodeStats: function (epId, cb) {
     cb = cb || function () {};
@@ -2081,26 +2413,81 @@ const PlatformAdapter = {
     });
   },
 
-  /* 4) 投票：平台活动未配置 → 本地降级＋打点；已配置 → 官方活动投票 */
+  /* 4) 投票（首更批改云端优先）：先走自建 /api/vote（全站计数、一人一票）；
+     云端不可达/端点未部署才回落旧路径（平台活动未配置 → 本地降级＋打点；已配置 → 官方活动）。
+     重复投（code 409）带回最新票数，按已投成功处理，UI 直接展示结果态。 */
   submitVote: function (itemKey, cb) {
     cb = cb || function () {};
-    const cfg = PLATFORM_CONFIG.vote;
-    const cbx = _cb();
-    const items = (cfg && cfg.items) || {};
-    if (!cfg || !cbx || !cbx.request || !cbx.request.activity
-        || typeof cbx.request.activity.submitVote !== "function"
-        || !Object.prototype.hasOwnProperty.call(items, itemKey)) {
-      PlatformAdapter.track("click", "结算页-下期投票", { vote: itemKey, mode: "local" });
-      cb({ ok: true, local: true, degraded: true });
-      return;
-    }
-    _call(() => cbx.request.activity.submitVote({
-      activityId: Number(cfg.activityId), groupId: Number(cfg.groupId),
-      itemId: Number(items[itemKey]), voteNum: 1
-    })).then(res => {
-      if (res && res.code === 200 && res.data && res.data.succeed === true) cb({ ok: true, remote: true });
-      else cb({ ok: false, remote: true, message: (res && res.message) || "投票失败" });
-    }).catch(() => cb({ ok: false, remote: true, message: "投票失败" }));
+    const legacyVote = () => {
+      const cfg = PLATFORM_CONFIG.vote;
+      const cbx = _cb();
+      const items = (cfg && cfg.items) || {};
+      if (!cfg || !cbx || !cbx.request || !cbx.request.activity
+          || typeof cbx.request.activity.submitVote !== "function"
+          || !Object.prototype.hasOwnProperty.call(items, itemKey)) {
+        PlatformAdapter.track("click", "结算页-下期投票", { vote: itemKey, mode: "local" });
+        cb({ ok: true, local: true, degraded: true });
+        return;
+      }
+      _call(() => cbx.request.activity.submitVote({
+        activityId: Number(cfg.activityId), groupId: Number(cfg.groupId),
+        itemId: Number(items[itemKey]), voteNum: 1
+      })).then(res => {
+        if (res && res.code === 200 && res.data && res.data.succeed === true) cb({ ok: true, remote: true });
+        else cb({ ok: false, remote: true, message: (res && res.message) || "投票失败" });
+      }).catch(() => cb({ ok: false, remote: true, message: "投票失败" }));
+    };
+    if (!VOTE_OPTIONS.some(v => v.id === itemKey)) { legacyVote(); return; }
+    _cloudReq("/api/vote", "POST", { round: VOTE_ROUND, item: itemKey }, (data, res) => {
+      if (data) {
+        PlatformAdapter.track("click", "结算页-下期投票", { vote: itemKey, mode: "cloud" });
+        cb({ ok: true, remote: true, cloud: true,
+          counts: data.counts || {}, total: data.total || 0, mine: data.mine || itemKey });
+        return;
+      }
+      if (res && res.code === 409 && res.data) {
+        cb({ ok: true, remote: true, cloud: true, alreadyVoted: true,
+          counts: res.data.counts || {}, total: res.data.total || 0, mine: res.data.mine || itemKey });
+        return;
+      }
+      legacyVote();
+    });
+  },
+
+  /* 4b) 全站投票结果：{ counts, total, mine }；云端不可达 cb(null)，UI 回落本地模式 */
+  getVoteState: function (cb) {
+    cb = cb || function () {};
+    _cloudReq("/api/vote/results?round=" + encodeURIComponent(VOTE_ROUND), "GET", undefined, data => {
+      if (!data || typeof data !== "object" || !data.counts) { cb(null); return; }
+      const counts = {};
+      for (const v of VOTE_OPTIONS) counts[v.id] = Number(data.counts[v.id]) || 0;
+      cb({ counts: counts, total: Number(data.total) || 0,
+        mine: VOTE_OPTIONS.some(v => v.id === data.mine) ? data.mine : null });
+    });
+  },
+
+  /* 4c) 福利：本人领取状态；云端不可达 cb(null) */
+  getWelfareMe: function (cb) {
+    cb = cb || function () {};
+    _cloudReq("/api/welfare/me", "GET", undefined, data => cb(data || null));
+  },
+
+  /* 4d) 福利码核销：四态分明 ok/already/invalid/exhausted；云端不可达 → unavailable。
+     福利码只是功能核销码：只上行不回显到任何公开面（与昵称自由输入被驳回是两回事，
+     区别说明见 BUILD_NOTES 首更批一条）。 */
+  redeemWelfare: function (code, cb) {
+    cb = cb || function () {};
+    const clean = String(code == null ? "" : code).trim().toUpperCase();
+    if (!clean) { cb({ status: "invalid" }); return; }
+    _cloudReq("/api/welfare/redeem", "POST", { code: clean }, (data, res) => {
+      const d = data || (res && res.data) || null;
+      if (d && d.status) {
+        cb({ status: d.status, rewards: d.rewards || {},
+          claimedCount: d.claimedCount || 0, totalCap: d.totalCap || 0, bonus: d.bonus || null });
+        return;
+      }
+      cb({ status: "unavailable" });
+    });
   },
 
   /* 5) 投票结果：归一化为 { itemKey: 票数 }；不可用 cb(null) */
@@ -2396,6 +2783,9 @@ const PlatformAdapter = {
   window.__yinanyiTrack = function (act, label, custom) {
     return PlatformAdapter.track(act, label, custom);
   };
+  /* 首更批：首页每次展示后刷新云端态（福利领取/钩子福利余额/公告弹窗判定） */
+  onHomeShown = function () { refreshCloudUi(false); };
+  refreshCloudUi(true);
   /* 显示名合规（二审整改）：只认平台登录昵称、其次默认名，旧自设名一律不作数。
      平台资料未回前先按默认名落定，回来后再覆盖；云档恢复后同样重定一遍，
      保证首页/结算/海报/榜单提交四处口径一致。 */
