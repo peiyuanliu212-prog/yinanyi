@@ -166,10 +166,14 @@ const TIERS = [
 ];
 /* ---------- 配置：模式 ---------- */
 const MODES = {
-  normal: { key: "normal", label: "普通", threshold: 30, probShift: 0 },
-  hard:   { key: "hard",   label: "困难", threshold: 31, probShift: 1 }
+  /* 整轮阈值（双幕连改校准定版，补遗 v1.5 §4＋主开发裁决条）：普通 T=56、困难 52、开局优势 −12。
+     五策略蒙特卡洛（N=50000）：普通会玩 48.2% / 全稳 0% / 全搏 12.3% / 随机 18.3% 达带；
+     困难难度来源为概率整表降档，阈值作补偿由 57 改 52（T+1 口径下双带无解，证明见补遗
+     v1.5 §4 与 BUILD_NOTES），困难会玩复测落入 15–25% 带内（复测表见 BUILD_NOTES 集成记录）。 */
+  normal: { key: "normal", label: "普通", threshold: 56, probShift: 0 },
+  hard:   { key: "hard",   label: "困难", threshold: 52, probShift: 1 }
 };
-/* ---------- 配置：暗流词缀池（开局随机抽 1，全程生效，引擎只读） ----------
+/* ---------- 配置：暗流词缀池（每幕开幕随机抽 1，本幕内生效，引擎只读） ----------
    mods 通用修正字段：
      probBonus{tierKey:+n} 按档加概率；probBonusByHand{handId:+n} 按手加概率
      successBonus{tierKey:+n} 成功时额外优势；failDeltaBonus{tierKey:+n} 失败时优势修正
@@ -184,6 +188,16 @@ const AFFIXES = [
   { id: "longpause", name: "长暂停余温", desc: "「停」手所有选项成功率 +15%。那段漫长的暂停，还没凉透。",
     mods: { probBonusByHand: { pause: 15 } } }
 ];
+/* ---------- 暗流池的按期替换（事实审计 S-2） ----------
+   「长暂停余温」影射 ep1 两局之间近一小时的平台故障等待，只在 ep1 成立；
+   ep2/ep3 的池里同位置替换为中性词缀「中场喘息」（mods 与长暂停完全一致，
+   仅文案去具体指代）。池长恒为 4，抽取下标口径不变。 */
+const AFFIX_PAUSE_NEUTRAL = { id: "breather", name: "中场喘息", desc: "「停」手所有选项成功率 +15%。停下来的那几分钟，够把呼吸匀回来。",
+  mods: { probBonusByHand: { pause: 15 } } };
+function affixPoolFor(ep) {
+  if (ep && ep.id === "ep1") return AFFIXES;
+  return AFFIXES.map(a => (a.id === "longpause" ? AFFIX_PAUSE_NEUTRAL : a));
+}
 /* ---------- 配置：改命者段位（累计改命分 → 段位） ---------- */
 const RANKS = [
   { min: 0,   name: "见习卷宗" },
@@ -207,24 +221,25 @@ const VOTE_OPTIONS = [
   { id: "friday", text: "本周五之夜 · BLG vs DK 的败者那一局（赛后加更）" }
 ];
 /* ---------- 数据层：EPISODES ----------
-   一局一对象，引擎零硬编码剧情。hands 顺序固定为借/换/改/停/决（第五手 id 仍为 gamble，显示 verb 已按审计 F6 改「决」）。
+   一期一对象，引擎零硬编码剧情。双幕连改（补遗 v1.5）：每期 acts 两幕，
+   每幕 hands 顺序固定为借/换/改/停/决（第五手 id 仍为 gamble，显示 verb 已按审计 F6 改「决」）。
    选项字段：name 选项名 / tier 档位键 / cond 成立条件 / okDelta failDelta 成败优势
              actor 功臣归属 / okText failText 成败归因句                        */
 const EPISODES = [
   {
     id: "ep1", no: "001", status: "playable",
     title: "S16 八强 · TES vs IG 第四局",
-    listDesc: "赛点局 · 你执 TES，五手牌，赢下这一局，把系列赛拖进决胜局。",
+    listDesc: "八强之夜 · 你执 TES，双幕连改第三、第四局，把系列赛拖进决胜局。",
     tags: ["赛点局", "执 TES"],
     startAdv: -12,
     intro: [
       "2026 年 11 月 4 日，S16 全球总决赛八强首日。这轮系列赛开打的日子，恰逢 IG 夺得 S8 冠军八周年——八年前，TheShy、Rookie 和 JackeyLove 穿着同一件队服捧杯；八年后，JackeyLove 站到了他们的对面。",
       "前三局战罢，TES 1 : 2 落后。第四局再输，这个赛季就到此为止。"
     ],
-    goal: "赢下第四局，把系列赛拖进 2 : 2 的决胜局。",
+    goal: "连改第三、第四局，把系列赛拖进 2 : 2 的决胜局。",
     realHistory: {
       ending: "TES 1 : 3 出局，止步八强",
-      turning: "第四局，Wei 多次针对上路，TheShy 的奎桑提连续击杀 369 的剑魔。TES 曾靠小龙团打出一换三追回劣势，但 IG 拿下大龙与龙魂后，在龙魂团战打出一换四，推平基地。",
+      turning: "第四局，Wei 多次针对上路，配合 TheShy 的奎桑提把 369 的剑魔一次次按在塔下。TES 曾靠小龙团打出一换三追回劣势，但 IG 拿下大龙与龙魂后，在龙魂团战打出一换四，推平基地。",
       hero: "Wei —— 系列赛 POM，第四局纳亚菲利 5 / 2 / 6",
       footnote: "赛后，Zhuo 在采访里说：自己打得太急躁，没发挥好，对队友们感到很抱歉。"
     },
@@ -238,7 +253,102 @@ const EPISODES = [
       god:        { label: "封神", text: "八周年又如何？TheShy 和 Rookie 的剧本，今天由我来写结局。" },
       versailles: { label: "凡尔赛", text: "也没做什么。就是五次选择，都恰好选对了而已。" }
     },
-    hands: [
+    /* 双幕连改（补遗 v1.5）：acts[0] 第一幕为前置真实败局（内容源 连改内容/ 各幕稿，
+       集成记录见 BUILD_NOTES）；acts[1] 第二幕为原名局。 */
+    acts: [
+      { actId: "act1", label: "第一幕", title: "S16 八强 · TES vs IG 第三局",
+        sub: "扳平局 · 你执 TES，五手牌，守住第二局拼回来的气势，别让 IG 先拿到赛点。",
+        intro: ["2026 年 11 月 4 日，S16 全球总决赛八强首日，LPL 内战。第一局，IG 先下一城；第二局，TES 被拖进 47 分钟的鏖战——Tian 抢下大龙，369 的鳄鱼在基地前一打三、击杀两人，硬生生把比分扳成 1 : 1。", "气势刚回到 TES 这边。第三局，TES 坐上蓝色方；IG 一抢的杰斯摇摆了三路，最终落在打野位；Creme 后手选出永恩，想亲手把对线打回来。真实历史里，这一局的剧本，是从第三分钟开始写的。"],
+        realLine: "真实历史：Wei 的打野杰斯 5 / 0 / 8 锁死全场节奏，29 分 29 秒，IG 团灭 TES。系列赛 1 : 2，TES 站上悬崖。", bridgeText: "",
+        scoreBefore: "1 : 1", realScoreAfter: "1 : 2",
+        hands: [
+      { id: "borrow", verb: "借", title: "借一手招牌",
+        snapshot: "BP 落定。那手游走三路的杰斯，最终握在 Wei 手里——它不是上单，也不是中单，是打野。而永恩对安妮的这条线，Creme 还没上线，就已经站在了下风口。",
+        options: [
+          { name: "借 Wei 的刷野路线图，装给 Tian", tier: "steady",
+            cond: "斯卡纳前两组野怪交错着刷，不贪第三组", okDelta: 3, failDelta: -4, actor: "Tian",
+            okText: "Tian 提前蹲进中路侧草，杰斯的第一波声东击西扑了个空，永恩安稳吃完前三波兵线。",
+            failText: "路线图背得再熟，杰斯还是先到了一步——好在斯卡纳及时拉开，只亏了半片野区。" },
+          { name: "借 Rookie 的安妮压制，装给 Creme", tier: "risky",
+            cond: "永恩攒住风再上前换血，不空放技能", okDelta: 23, failDelta: -7, actor: "Creme",
+            okText: "永恩的换血第一次占了上风，安妮被压回塔下补刀，中路的线权换了主人。",
+            failText: "安妮的眩晕捏得太稳，永恩换血换成了丢线权，只好回城、用传送补回状态。" },
+          { name: "借 TheShy 的奥恩让线，装给 369", tier: "gamble",
+            cond: "兰博囤住两波兵线，再叫斯卡纳来越塔", okDelta: 27, failDelta: -7, actor: "369",
+            okText: "奥恩被压在塔下不敢探头，369 的兰博第一次在上路打出了声音。",
+            failText: "越塔被奥恩顶了个正着，兰博交闪逃生——压制没打成，先换掉了状态。" }
+        ] },
+      { id: "swap", verb: "换", title: "换位止损",
+        snapshot: "三分钟，杰斯声东击西，配合安妮抓死永恩，一血落地。此后 IG 的中野像拧紧了发条，九分钟、十一分钟，两次落向下路——真实历史里，TES 的双人组在十分钟出头连倒两次。七分钟泽丽越塔被控、TES 打出的那波零换二证明：这条线，不是不能打。",
+        options: [
+          { name: "双人组换去中路，永恩转下吃线", tier: "steady",
+            cond: "艾希的鹰击长空先探清下路河道", okDelta: 3, failDelta: -4, actor: "JackeyLove",
+            okText: "换线让 IG 准备好的四人包下扑了个空，艾希在中路安稳补刀，萨勒芬妮的护盾第一次罩住了全队。",
+            failText: "换线慢了半拍，下路一塔还是先掉——但至少，连续阵亡止住了。" },
+          { name: "Tian 住进下路草丛反蹲，把包夹接成正面对拼", tier: "risky",
+            cond: "斯卡纳的大招只留给进场的杰斯", okDelta: 22, failDelta: -7, actor: "Tian",
+            okText: "四人包下撞上早有准备的反蹲，杰斯被拖回塔前，TES 在下路打出一波零换二——开局的账，讨了回来。",
+            failText: "反蹲蹲了个空：IG 临时改道中路，永恩再次倒在安妮的提伯斯手里。" },
+          { name: "369 传送下路，五人强越泽丽与悠米", tier: "gamble",
+            cond: "奥恩的传送比兰博晚一步转好", okDelta: 27, failDelta: -7, actor: "369",
+            okText: "五人越塔，泽丽连同身上的悠米一起倒下，IG 下路刚刚滚起的雪球，被生生掐断。",
+            failText: "越塔被泽丽翻墙拉开距离，奥恩传送落地反包，TES 反倒多送了两个人头。" }
+        ] },
+      { id: "tactics", verb: "改", title: "改战术",
+        snapshot: "中段，TES 找到了自己的答案：369 的兰博两次用大招配合队友点掉泽丽，Creme 的永恩也打出一波双杀；十八分钟，艾希的大招正中悠米，TES 在中路打出零换二。可账本的另一页写着另一句话：所有人都在看泽丽，没有人管杰斯。",
+        options: [
+          { name: "围猎泽丽照旧，但每次动手前，先逼杰斯在另一条线露头", tier: "steady",
+            cond: "艾希的大招只留给泽丽与悠米", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "杰斯被迫在边路现身收线，TES 的围猎一次比一次从容，泽丽的发育时钟被拨慢了整整一截。",
+            failText: "杰斯就是不肯露头，TES 的等待耗掉了兰博的两个大招，围猎打成了消耗战。" },
+          { name: "改猎杰斯：斯卡纳的大招，只锁这一个人", tier: "risky",
+            cond: "先逼出杰斯的加速之门与苍穹之跃", okDelta: 22, failDelta: -7, actor: "Tian",
+            okText: "蝎尾拖回了全场最肥的杰斯，兰博的大招铺满他的退路——这颗人头，带着赏金落袋。",
+            failText: "杰斯的锤炮切换快了半秒，大招拖了个空，TES 的围猎反被安妮开出提伯斯，先倒两人。" },
+          { name: "放弃围猎，五人抱团强推中路", tier: "gamble",
+            cond: "安妮的提伯斯先交在上一波消耗里", okDelta: 27, failDelta: -7, actor: "全队",
+            okText: "中路一塔在兰博大招的火线上告破，TES 第一次把战线推过了河道。",
+            failText: "强推被奥恩的熔铸之神召唤撞成两截，TES 阵型散在塔前，推进打成了撤退。" }
+        ] },
+      { id: "pause", verb: "停", title: "停一停",
+        snapshot: "二十二分钟将至。真实历史里，Wei 的杰斯绕后单杀 Creme 的永恩，IG 顺势击杀斯卡纳，拿下大龙——整局的判决，是在大龙坑边上签的字。这一手，先停下来，把坑边的视野一寸一寸做回去。",
+        options: [
+          { name: "全队回城补齐真眼，大龙两侧的视野做满再出门", tier: "steady",
+            cond: "五个人把下一波的纪律说清，再散开落位", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "视野铺开，TES 第一次看清了杰斯的动向——IG 那张绕后的路线图，失效了。",
+            failText: "视野做满了，杰斯还是从没被点亮的角落钻了出来——好在永恩交闪保命，只丢了一座边塔。" },
+          { name: "永恩转去下边线单带，用传送牵着杰斯走", tier: "risky",
+            cond: "永恩的传送捏到大龙刷新之后再交", okDelta: 23, failDelta: -7, actor: "Creme",
+            okText: "杰斯被迫回身防下路，大龙坑前，第一次变成 TES 人数占优的账。",
+            failText: "单带被奥恩传送包夹，永恩倒在边路，TES 只能四个人守坑。" },
+          { name: "放 IG 先动大龙，全队蹲在杰斯绕后的必经之路上", tier: "gamble",
+            cond: "IG 开龙超过十秒，杰斯仍未在正面露头", okDelta: 27, failDelta: -7, actor: "全队",
+            okText: "绕后的杰斯一头撞进五个人的口袋——IG 的发动机，在大龙坑外熄了火。",
+            failText: "口袋蹲了个空：这一回杰斯就站在正面，大龙的哀鸣，从坑里传了出来。" }
+        ] },
+      { id: "gamble", verb: "决", title: "最后一波",
+        snapshot: "大龙易主，IG 的推进如约而至。真实历史里，二十八分钟，TES 在野区主动开团，被奥恩与安妮稳稳接住；29 分 29 秒，团灭，推平。最后一手，写在终局之前。",
+        options: [
+          { name: "放弃正面团，兰博与永恩分带两路，换 IG 的边路高地", tier: "steady",
+            cond: "兵线提前送进 IG 的半区", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "高地换团战，不亏。TES 把终局，往后拖了整整一波兵线的时间。",
+            failText: "高地没摸到，正面又被奥恩的召唤留住人——终局的钟声，只晚敲了片刻。" },
+          { name: "正面接团，斯卡纳闪现进场，大招只拖杰斯", tier: "risky",
+            cond: "兰博的大招先一步铺满 IG 的后排", okDelta: 23, failDelta: -7, actor: "Tian",
+            okText: "杰斯被拖进火海，TES 打出了整局最好的一波团——攻守，在这一波易了形。",
+            failText: "闪现慢了半拍，杰斯的炮口先一步轰散了 TES 的后排，又一次只差一步。" },
+          { name: "双传送绕后：先点泽丽，再回头收杰斯", tier: "gamble",
+            cond: "绕后的落点没有被扫描照出来", okDelta: 24, failDelta: -11, actor: "全队",
+            okText: "泽丽倒下，杰斯被四面包围——29 分钟的剧本被撕掉重写。TES 拿下大龙、推平中路，系列赛 2 : 1，赛点反握回自己手里。",
+            failText: "绕后的落点正踩在真眼上，安妮的提伯斯在五个人中间炸开。29 分 29 秒——与真实历史，殊途同归。" }
+        ] }
+    ] },
+      { actId: "act2", label: "第二幕", title: "S16 八强 · TES vs IG 第四局",
+        sub: "赛点局 · 执 TES",
+        intro: [],
+        realLine: "", bridgeText: "第一幕终。经历了近一小时的平台故障等待，第四局才终于开打——系列赛 1 : 2 落后，再输一局，这个赛季就到此为止。悬崖边上见。",
+        scoreBefore: "", realScoreAfter: "",
+        hands: [
       { id: "borrow", verb: "借", title: "借一手招牌",
         snapshot: "开局不久，Wei 已经数次出现在上路。真实历史里，369 的剑魔就是这样被一点点抓崩的。",
         options: [
@@ -319,24 +429,25 @@ const EPISODES = [
             okText: "绕后开团，团灭 IG！基地在欢呼声里被推平，第四局，属于 TES。",
             failText: "绕后被烬的大招留住两人，这波团，成了系列赛的句号。" }
         ] }
+    ] }
     ]
   },
   {
     id: "ep2", no: "002", status: "playable",
     title: "S11 总决赛 · DK vs EDG 第五局",
-    listDesc: "决胜局 · 你执 DK，五手牌，改写 Khan 职业生涯的最后一局。",
+    listDesc: "卫冕之路 · 你执 DK，双幕连改半决赛与决赛，改写 Khan 职业生涯的最后一程。",
     tags: ["经典卷", "执 DK"],
     startAdv: -12,
     intro: [
       "2021 年 11 月 6 日，冰岛雷克雅未克，S11 全球总决赛。卫冕冠军 DK 与 LPL 一号种子 EDG 战成 2 : 2，决赛被拖进决胜局。",
       "对 DK 上单 Khan 来说，这一局还有另一重分量：他早已宣布赛季结束后退役、入伍服兵役。赢了，带着冠军离开；输了，这是他职业生涯的最后一场比赛。"
     ],
-    goal: "赢下决胜局，让 DK 卫冕，也让 Khan 带着冠军退役。",
+    goal: "先过半决赛，再赢下决赛决胜局，让 DK 卫冕，也让 Khan 带着冠军退役。",
     realHistory: {
       ending: "DK 2 : 3 告负，卫冕失败，EDG 夺得队史首座召唤师杯",
-      turning: "决胜局 22 分 40 秒，Flandre 的凯南绕后开大，电晕辛德拉与巨魔，EDG 打出一换四并拿下小龙；29 分钟龙坑团，DK 再度被凯南大招笼罩、遭团灭；35 分钟远古龙团，Khan 的男枪几乎以一己之力翻盘，Jiejie 却用惩戒抢下远古龙。EDG 在 42 分钟终结比赛。",
-      hero: "Scout —— 决赛 FMVP；这一夜同样改写了剧本的，还有凯南 Flandre 与抢下远古龙的赵信 Jiejie",
-      footnote: "Khan 赛前曾说，想在决赛里选一次奥恩——那是他和一位朋友的约定。最终，他没能选，也没能赢。这一局之后，他宣布退役。"
+      turning: "决胜局 22 分 40 秒，Flandre 的凯南绕后开大，电晕辛德拉与巨魔，EDG 打出一换四并拿下小龙；29 分钟龙坑团，DK 再度被凯南大招笼罩、遭团灭；35 分钟远古龙团前，Canyon 被佐伊先手秒掉，男枪进坑抢龙不成反送性命，远古龙被 Jiejie 惩下。EDG 在第 42 分钟终结比赛。",
+      hero: "Scout —— 决赛 FMVP；这一夜同样改写了剧本的，还有凯南 Flandre 与惩下远古龙的赵信 Jiejie",
+      footnote: "Khan 和一位朋友早有约定：这一年若能夺冠，他就选一次奥恩，把它做成冠军皮肤。最终，他没能选，也没能赢。这一局之后，他正式告别了赛场。"
     },
     rewriteEndings: {
       success: "DK 拿下决胜局，3 : 2 —— 卫冕成功，Khan 带着冠军退役",
@@ -348,7 +459,102 @@ const EPISODES = [
       god:        { label: "封神", text: "都说这一夜的剧本叫以下克上。今晚，卫冕冠军亲手把结局改了回来。" },
       versailles: { label: "凡尔赛", text: "也没做什么。就是没让那只凯南，再绕后成功一次而已。" }
     },
-    hands: [
+    /* 双幕连改（补遗 v1.5）：acts[0] 第一幕为前置真实败局（内容源 连改内容/ 各幕稿，
+       集成记录见 BUILD_NOTES）；acts[1] 第二幕为原名局。 */
+    acts: [
+      { actId: "act1", label: "第一幕", title: "S11 半决赛 · DK vs T1 第三局",
+        sub: "天王山之战 · 你执 DK，五手牌，改写卫冕冠军被逼到悬崖边的这一夜。",
+        intro: ["2021 年 10 月 30 日，冰岛雷克雅未克，S11 全球总决赛半决赛。卫冕冠军 DK 对阵三冠王 T1——在很多人眼里，这才是本届世界赛真正的决赛。", "前两局战成 1 : 1：首局 DK 先下一城，第二局，DK 吞下了本届世界赛的第一场败仗。Faker 与 ShowMaker，旧王与新王的中路对位，来到天王山。这一局谁赢，谁就先拿到赛点。"],
+        realLine: "真实结局：DK 10 : 22 告负，37 分 47 秒基地告破——T1 连下两局，率先拿到赛点，卫冕冠军被逼到悬崖边。", bridgeText: "",
+        scoreBefore: "1 : 1", realScoreAfter: "1 : 2",
+        hands: [
+      { id: "borrow", verb: "借", title: "借一手招牌",
+        snapshot: "三分钟，Canyon 的皇子来到中路，辛德拉拿下瑞兹的一血——和第一局一样的开局。真实历史里，DK 的开局并不差：先锋、小龙接连入账。差的是随后那波越下路，执行得不够干净，只打出一换一。节奏的漏气，就是从这些小口子开始的。",
+        options: [
+          { name: "按原路打，先锋小龙照单全收，不越那波塔", tier: "steady",
+            cond: "下路把兵线压进塔下就收，不深追", okDelta: 3, failDelta: -4, actor: "Canyon",
+            okText: "先锋和第一条小龙稳稳入账，DK 的前期账本，一笔不漏。",
+            failText: "T1 把节奏拖住了，资源虽然没丢，下路的镀层也被烬蹭了回去。" },
+          { name: "借 Faker 第二局的游走时机，装给 ShowMaker", tier: "risky",
+            cond: "辛德拉推完中线，必须赶在瑞兹之前动身", okDelta: 23, failDelta: -7, actor: "ShowMaker",
+            okText: "辛德拉先动一步，上路的凯南被逼出闪现——瑞兹的传送，只能用来救火。",
+            failText: "游走扑了个空，中路的兵线白白烧掉一波，瑞兹反倒先升了六级。" },
+          { name: "借 Keria 的先手时机，装给 BeryL，三人越下强开烬", tier: "gamble",
+            cond: "茂凯的先手必须捆住烬，不能捆在基兰身上", okDelta: 27, failDelta: -7, actor: "BeryL",
+            okText: "越塔打成零换二，烬的发育被当场掐断——这一波，DK 没有再漏气。",
+            failText: "捆是捆住了，基兰却在塔后留了后手——一换一的历史重演，还多交了召唤师技能。" }
+        ] },
+      { id: "swap", verb: "换", title: "换位止损",
+        snapshot: "十五分钟，DK 刚打出一波漂亮的二换一，手里攥着三条小龙，龙魂只差临门一脚。可 T1 一直在用防御塔咬住比分：换塔、换线，把 DK 的推进一寸寸磨平。资源的账，两边算法不同——这一手，得算清楚。",
+        options: [
+          { name: "放掉上路一塔，换先锋撞中，保住中路线权", tier: "steady",
+            cond: "中路兵线先一步推进塔下", okDelta: 3, failDelta: -4, actor: "Canyon",
+            okText: "先锋一头撞开中路，辛德拉的活动半径大了一圈，瑞兹的游走慢了半拍。",
+            failText: "先锋撞完，中塔还剩一层血皮——上塔白放了，这笔置换只算勉强。" },
+          { name: "卢锡安换去中路压瑞兹，辛德拉转边线吃线", tier: "risky",
+            cond: "辛德拉的传送留着，不轻易交", okDelta: 22, failDelta: -7, actor: "Khan",
+            okText: "瑞兹被卢锡安压在塔下补刀，曲境折跃的落点一次比一次保守，T1 的转线慢了下来。",
+            failText: "换线换出了破绽：凯南在边路把辛德拉压回了家，DK 反倒丢了一波兵线。" },
+          { name: "四人换上半区，抢在基兰大招转好前强开凯南", tier: "gamble",
+            cond: "基兰的时光倒流还在冷却，凯南没有闪现", okDelta: 27, failDelta: -7, actor: "全队",
+            okText: "凯南倒在时光倒流转好之前——T1 最锋利的那把团战刀，这一波没等来出鞘的机会。",
+            failText: "强开慢了半步，基兰的大招刚好转好：倒下的人又站了起来，DK 的技能却全交了。" }
+        ] },
+      { id: "tactics", verb: "改", title: "改战术",
+        snapshot: "二十分钟前后，大龙坑前的拉扯。真实历史里，这一波成了整局的转折：DK 的伤害打在 T1 身上，基兰一次次把倒下的人拉回来；拉扯的尽头，是四换一。DK 这一波输的不是团战，是「打不死人」这四个字。",
+        options: [
+          { name: "先逼基兰交出时光倒流，再拉开，下一波再接", tier: "steady",
+            cond: "全队记住一条纪律：看到复活的光就停手", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "时光倒流被先手逼了出来，DK 全身而退——下一波，T1 的人倒下，就是真的倒下。",
+            failText: "纪律执行了一半：有人多贪了一下输出，拉扯又被拖进了 T1 的节奏里。" },
+          { name: "站位散开，专等瑞兹开大，集火曲境折跃的落点", tier: "risky",
+            cond: "辛德拉的推球留给落点，不提前交", okDelta: 22, failDelta: -7, actor: "ShowMaker",
+            okText: "瑞兹的大招刚落地，法球已经等在门口——这一波，Faker 的开车成了 DK 的反攻信号。",
+            failText: "落点猜错了半个身位，推空的法球让 DK 的阵型先散了架。" },
+          { name: "假打大龙真开团，皇子先手框住基兰本人", tier: "gamble",
+            cond: "基兰的站位靠前，且闪现没有转好", okDelta: 27, failDelta: -7, actor: "Canyon",
+            okText: "德邦军旗插在基兰身后——没有时光倒流的 T1，第一次在拉扯里露出了慌乱。",
+            failText: "皇子框住了基兰，自己也留在了人群里：时光倒流还是按了出来，先手反倒成了 T1 集火的信号。" }
+        ] },
+      { id: "pause", verb: "停", title: "停一停",
+        snapshot: "二十七分钟，中路团再败，T1 又打出四人阵亡，顺势拿下第一条大龙。带着大龙之力推进时，他们又在中路抓到了落单的 Ghost。真实历史的剧本里，DK 的防线从这里开始一层一层剥落。先把呼吸放慢。",
+        options: [
+          { name: "全队语音复盘，只定一条纪律：不追出高地", tier: "steady",
+            cond: "五个人把话说完再出门", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "大龙之力的时间被一秒秒拖掉，DK 保住了三路水晶——防线还在，账就还没算完。",
+            failText: "纪律只维持到下一波兵线：有人在野区多看了一眼，险些又被抓单。" },
+          { name: "BeryL 接管指挥，放弃外塔，只守龙魂团的落位", tier: "risky",
+            cond: "第四条小龙刷新前，全队提前一分钟落位河道", okDelta: 23, failDelta: -7, actor: "BeryL",
+            okText: "河道视野被 DK 一寸寸抢了回来——龙魂团的入场券，重新握回自己手里。",
+            failText: "外塔放得太干脆，T1 的兵线压得 DK 连河道都出不去，落位还是晚了。" },
+          { name: "卢锡安单带牵扯，拖住 T1 的推进合流", tier: "gamble",
+            cond: "Khan 的传送捏到最后一刻才交", okDelta: 27, failDelta: -7, actor: "Khan",
+            okText: "T1 被迫分人回防上路，大龙推进的合流被生生拆散，DK 抢回了喘息的时间。",
+            failText: "牵扯成了孤军：卢锡安被凯南和赵信联手收掉，DK 被迫四打五守高地。" }
+        ] },
+      { id: "gamble", verb: "决", title: "最后一波",
+        snapshot: "比赛拖进最后阶段。真实历史里，T1 拿下第二条大龙，三路水晶接连告破；升到 18 级的瑞兹开大越过中路、闪现向前收掉 ShowMaker。37 分 47 秒，基地告破，天王山易主。这一手，改写它。",
+        options: [
+          { name: "放弃边路水晶，五人守门牙塔打最后一波", tier: "steady",
+            cond: "兵线提前处理，不给 T1 免费磨塔的机会", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "门牙塔守住了。但离改命线，还差最后一步。",
+            failText: "门牙塔还是被兵线一点点磨掉——DK 只能目送三路兵线压进基地。" },
+          { name: "辛德拉留推球等瑞兹落地，在落点反打", tier: "risky",
+            cond: "瑞兹的曲境折跃亮起时，全队不退反进", okDelta: 23, failDelta: -7, actor: "ShowMaker",
+            okText: "瑞兹落地即被推晕——Faker 压垮 DK 的那一幕，在这一手被按了回去，DK 打赢了这波团。",
+            failText: "推球还是慢了一帧，瑞兹闪现向前——历史在线的那一端，重演了大半。" },
+          { name: "皇子绕后强开烬，茂凯跟进，全队压上打先手", tier: "gamble",
+            cond: "烬的站位脱离基兰的保护范围", okDelta: 24, failDelta: -11, actor: "Canyon",
+            okText: "烬在架起大招之前倒下，时光倒流只能拉回一个残局——DK 赢下团战，翻过天王山，赛点握在了自己手里。",
+            failText: "绕后被视野照了出来，皇子倒在进场的路上——37 分 47 秒的剧本，还是走到了最后一页。" }
+        ] }
+    ] },
+      { actId: "act2", label: "第二幕", title: "S11 总决赛 · DK vs EDG 第五局",
+        sub: "决胜局 · 执 DK",
+        intro: [],
+        realLine: "", bridgeText: "真实剧本里，DK 在输掉这一局之后连扳两局、抢五险胜过关；一周后的决赛，他们又与 EDG 战成 2 : 2——决胜局，在下一幕。",
+        scoreBefore: "", realScoreAfter: "",
+        hands: [
       { id: "borrow", verb: "借", title: "借一手招牌",
         snapshot: "决胜局开局，Canyon 的巨魔三分钟就来到上路，逼出凯南的闪现和传送。真实历史里，DK 的开局并不差——差的是把优势延续下去的那口气。",
         options: [
@@ -414,7 +620,7 @@ const EPISODES = [
             failText: "牵扯变成了孤军深入，男枪被包掉，DK 被迫四打五守高地。" }
         ] },
       { id: "gamble", verb: "决", title: "最后一波",
-        snapshot: "35 分钟，远古龙团。真实历史里，Khan 的男枪几乎以一己之力打赢了这波团——可 Jiejie 的惩戒从 Canyon 手里抢走了远古龙。这一手，改写它。",
+        snapshot: "35 分钟，远古龙团。真实历史里，Canyon 先被佐伊秒掉，Khan 的男枪扑进龙坑想强抢远古龙，也倒在那里——龙还是被 Jiejie 稳稳惩下。这一手，改写它。",
         options: [
           { name: "放弃远古龙，换 EDG 的上路高地", tier: "steady",
             cond: "兵线提前送进 EDG 半区", okDelta: 3, failDelta: -4, actor: "全队",
@@ -429,19 +635,20 @@ const EPISODES = [
             okText: "男枪绕后，两枪点倒厄斐琉斯！DK 打赢远古团，一路推平基地——Khan 的最后一舞，以冠军作结。",
             failText: "绕后被洛的盛大登场抬了起来，男枪倒在龙坑门口，这波团，成了告别的句号。" }
         ] }
+    ] }
     ]
   },
   {
     id: "ep3", no: "003", status: "playable",
     title: "2018 西决抢七 · 火箭 vs 勇士",
-    listDesc: "抢七之夜 · 你执火箭，五手牌，改写 27 连铁的那一夜。",
+    listDesc: "西决之争 · 你执火箭，双幕连改第三场与抢七，改写 27 连铁的那一轮系列赛。",
     tags: ["跨项目卷", "执火箭"],
     startAdv: -12,
     intro: [
       "2018 年 5 月 28 日，休斯顿丰田中心，西部决赛抢七。常规赛 65 胜的火箭，系列赛一度 3 : 2 领先勇士——距离总决赛，只差一场球。",
       "但第五场最后时刻，保罗拉伤了右腿筋。抢七之夜，他只能穿着外套坐在替补席。哈登单核，迎战杜兰特、库里、克莱和格林——这一夜后来发生的事，成了 NBA 历史上最著名的『如果』之一。"
     ],
-    goal: "赢下抢七，把火箭送进总决赛。",
+    goal: "连改第三场与抢七，把火箭送进总决赛。",
     realHistory: {
       ending: "火箭 92 : 101 告负，3 : 4 出局，勇士晋级总决赛",
       turning: "火箭半场 54 : 43 领先，却从次节中段起连续投失 27 记三分，创下 NBA 季后赛纪录；第三节又被勇士打出 33 : 15。等塔克在末节投进那记终结连铁的底角三分时，火箭早已从领先变成落后。",
@@ -458,9 +665,104 @@ const EPISODES = [
       god:        { label: "封神", text: "27 连铁又如何？抢七之夜的主人，今晚在休斯顿。" },
       versailles: { label: "凡尔赛", text: "也没做什么。就是让该进的球，进了而已。" }
     },
-    hands: [
+    /* 双幕连改（补遗 v1.5）：acts[0] 第一幕为前置真实败局（内容源 连改内容/ 各幕稿，
+       集成记录见 BUILD_NOTES）；acts[1] 第二幕为原名局。 */
+    acts: [
+      { actId: "act1", label: "第一幕", title: "2018 西决第三场 · 火箭 vs 勇士",
+        sub: "1 : 1 来到奥克兰，五手牌，别让第三节的一波流带走整晚。",
+        intro: ["2018 年 5 月 20 日，奥克兰，甲骨文球馆，西部决赛第三场。系列赛在休斯顿打成 1 : 1——首战勇士先声夺人，第二场火箭 127 : 105 大胜扳平，塔克和阿里扎合砍 42 分。", "一边是常规赛 65 胜、联盟第一的火箭：莫雷的『魔球』把进攻收束到三分线、篮下和罚球线，德安东尼的球队整个赛季都在为这一轮攒劲。另一边是卫冕冠军勇士——杜兰特加盟之后的『宇宙勇』，四位全明星，三年两冠。这一轮系列赛，被提前称作总决赛。今晚，你执火箭，先打第一幕。"],
+        realLine: "真实历史：火箭 85 : 126 惨败——半场只落后 11 分，第三节被库里单节 18 分的一波流带走，全场 19 次失误送给对手 28 分，41 分的分差是勇士队史季后赛最大胜分，系列赛 1 : 2 落后。", bridgeText: "",
+        scoreBefore: "1 : 1", realScoreAfter: "1 : 2",
+        hands: [
       { id: "borrow", verb: "借", title: "借一手招牌技术",
-        snapshot: "抢七开场。保罗穿着外套坐在替补席，第五场拉伤的右腿筋让他只能看着。真实历史里，火箭上半场靠拼劲和内线领先了 11 分——可外线的手感，从一开始就不对劲。",
+        snapshot: "开场。火箭带着第二场的方子走进甲骨文：无限换防，进攻端反复点名库里——系列赛前两场，库里三分球合计 13 投仅 2 中。火箭首节一度领先 4 分，势头正好。这一手，先借一招立住开局。",
+        options: [
+          { name: "借第二场的耐心：点名之前，先过一手传导", tier: "steady",
+            cond: "每次点名回合，先完成一次弱侧转移再落位", okDelta: 3, failDelta: -4, actor: "全队",
+            okText: "多过一手，勇士的协防被扯出半步，点名回合的出手不再仓促。火箭开局咬住比分，甲骨文没有像往常那样早早沸腾。",
+            failText: "传导多了一手，进攻时间也短了一截，几次回合最后还是仓促收尾。好在分差没有被拉开，只是开局的势头，没能攒下来。" },
+          { name: "借库里的无球跑动，装给塔克", tier: "risky",
+            cond: "塔克绕掩护兜出时，甩开格林半个身位", okDelta: 23, failDelta: -7, actor: "塔克",
+            okText: "塔克绕着卡佩拉的掩护兜出底角，接球、出手，一气呵成——第二场合砍 42 分的锋线，今晚在客场同样先开了火。",
+            failText: "跑位借来了，脚步却慢了一拍，出手被格林的长臂罩住，球砸在篮筐侧沿。好在退防及时，没让勇士打成转换。" },
+          { name: "借杜兰特的干拔，装给保罗，第一攻就立威", tier: "gamble",
+            cond: "保罗迎着长臂的第一次干拔，必须命中", okDelta: 27, failDelta: -7, actor: "保罗",
+            okText: "保罗迎着防守干拔命中，还带着标志性的摇头。客场开局先声夺人，火箭替补席全体起立——这一晚的对位，从第一攻就不一样。",
+            failText: "干拔偏出，第二次、第三次还是偏出。保罗的手感今晚来得格外晚，而勇士的反击，已经推过了半场。" }
+        ] },
+      { id: "swap", verb: "换", title: "换人调整",
+        snapshot: "上半场将尽，账本不对劲：保罗前六次出手全部落空，他的第一分，要等到半场前 2 分 39 秒的一次干扰球判罚才记上；而火箭上半场的失误已经攒到 10 次，追平了他们那年季后赛的半场纪录。这一手，先换口气。",
+        options: [
+          { name: "双核错峰：哈登与保罗轮流带队，全场不断电", tier: "steady",
+            cond: "错峰时段里，替补阵容不被拉开分差", okDelta: 3, failDelta: -4, actor: "德安东尼",
+            okText: "两个持球点错开使用，火箭的进攻再没有出现断档的那几分钟。失误的口子，先被轮换堵上了一半。",
+            failText: "错峰的几分钟里还是丢了两个球权，哈登提前披挂回来。喘息只喘了一半，好在没让分差失控。" },
+          { name: "提前换上杰拉德·格林，用乱战手感搅局", tier: "risky",
+            cond: "格林登场后的第一次出手，必须果断", okDelta: 22, failDelta: -7, actor: "杰拉德·格林",
+            okText: "格林上来就是一记追身三分，接着又冲抢下一个前场篮板。乱战里摸到的分数，把甲骨文的声浪压下去了一截。",
+            failText: "格林的热手今晚没开，第一投偏得离谱，还赔上一次回防漏人。德安东尼摆摆手，把他又按回了板凳。" },
+          { name: "卡佩拉提前下场，五小阵容提速对冲", tier: "gamble",
+            cond: "五小阵容先护住后场篮板，再推速度", okDelta: 27, failDelta: -7, actor: "卡佩拉",
+            okText: "卡佩拉今晚 9 投 6 中、效率不低，但五小跑起来之后，勇士的退防第一次跟不上了。塔克顶到五号位，寸土不让。",
+            failText: "篮板先丢了：格林连抢两个前场篮板，勇士二次进攻接连打成。提速的账没算平，卡佩拉只能提前回来。" }
+        ] },
+      { id: "tactics", verb: "改", title: "改打法",
+        snapshot: "中场 54 : 43，落后 11 分，还在可追的范围里。真实历史的下半场开局只有三分钟：库里和杜兰特各得 5 分，勇士一波 10 : 0，分差瞬间来到 21 分。『勇三疯』的剧本，就是从这一节的第一分钟开始写的。这一手，先改这三分钟。",
+        options: [
+          { name: "先停外线强投，下半场第一攻改打篮下", tier: "steady",
+            cond: "卡佩拉在篮下要住一次深位", okDelta: 3, failDelta: -4, actor: "卡佩拉",
+            okText: "第一攻喂到篮下，卡佩拉吃饼得手。对面那波 10 : 0，没能按时到来——第三节的开局，先被火箭抢回了手里。",
+            failText: "低位被提前绕前，球转了一圈又回到外线，出手还是铁。好在只耗掉一次进攻，真正的风暴，还没开始。" },
+          { name: "改换防为提前夹击库里，放格林处理球", tier: "risky",
+            cond: "夹击之后的第一轮转，不漏底角", okDelta: 22, failDelta: -7, actor: "全队",
+            okText: "库里一过半场就被双人合围，被迫提前出球。勇士的进攻第一次显得滞涩，火箭连着防下两个回合。",
+            failText: "格林在罚球线接球四打三，眼都不眨就分到底角——放他的代价，第一回合就付清了。夹击只能先收起来。" },
+          { name: "以攻对攻：提速抢投，和勇士对轰第三节", tier: "gamble",
+            cond: "提速后的前两记三分，至少命中一记", okDelta: 27, failDelta: -7, actor: "哈登",
+            okText: "哈登借掩护抢投命中，戈登下一回合再补一记——火箭用勇士的方式回敬勇士，甲骨文第一次安静了几秒。",
+            failText: "抢投接连打铁，篮板全是长篮板，勇士的转换一波接一波。对轰的回合数越多，输得越快——这一手，把风暴提前引来了。" }
+        ] },
+      { id: "pause", verb: "停", title: "叫暂停",
+        snapshot: "火箭一波 10 : 2 追到只差 13 分，比赛眼看要活过来。科尔先叫了暂停。真实历史里，暂停回来，库里在三分多钟里独得 13 分，勇士打出一波 18 : 3——84 : 56，整场球就此写完。而德安东尼的暂停，还攥在手里。这一手，决定停与不停。",
+        options: [
+          { name: "跟着叫暂停，把防守对位从头对一遍", tier: "steady",
+            cond: "五个人把对位听清，再上场", okDelta: 3, failDelta: -4, actor: "德安东尼",
+            okText: "暂停回来，火箭的换防交代得清清楚楚。库里的第一攻被逼成高难度后仰，偏出——那波 18 : 3 的洪流，源头先被堵住一道。",
+            failText: "对位是听清了，脚步却还是慢半拍，库里借一个掩护就甩开了身位。好在这次只丢了一个回合，不是整节。" },
+          { name: "暂停换塔克去顶库里，哈登错开保存体力", tier: "risky",
+            cond: "塔克顶防的第一个回合，不吃假动作", okDelta: 23, failDelta: -7, actor: "塔克",
+            okText: "塔克贴住库里的下盘，逼他把球分出去。火箭防成一攻，回过头哈登的腿明显轻快了——体力账和防守账，这一手一起算平。",
+            failText: "库里一个反跑就甩开了塔克，接球三分命中。顶防的人选被一眼看穿，这次暂停，只换来一次教训。" },
+          { name: "不叫暂停：趁追分的势头，一鼓作气", tier: "gamble",
+            cond: "不停球的第一攻，必须打成", okDelta: 27, failDelta: -7, actor: "全队",
+            okText: "不停表，不停势。火箭抢下篮板直接推反击，戈登追身三分命中，分差回到个位数边缘——科尔的那个暂停，白叫了。",
+            failText: "第一攻没打成，库里回过头来连得 5 分。势头这东西，断了就再也接不上——攥在手里的暂停，成了赛后所有人追问的那一个。" }
+        ] },
+      { id: "gamble", verb: "决", title: "最后一节",
+        snapshot: "三节打完，分差已近三十分。库里单节 7 投 7 中、独得 18 分，投进之后对着全场耸肩，喊出那句『这是我的地盘』。真实历史的第四节是 38 : 18，终场 85 : 126——勇士队史季后赛最大胜分，甲骨文主场季后赛 16 连胜的联盟纪录。但系列赛还没有结束。这一手改的不是胜负，是这支球队走出球馆时的样子。",
+        options: [
+          { name: "撤下双核，留着腿打第四场", tier: "steady",
+            cond: "替补阵容把分差守在三十分上下", okDelta: 3, failDelta: -4, actor: "德安东尼",
+            okText: "哈登和保罗裹着毛巾看完第四节——全场他俩都只打了 32 分钟出头。惨败还是惨败，但两天后第四场的腿，提前存下来了。",
+            failText: "替补阵容也没能止住分差，数字还是难看。好在主力的分钟数总算压了下来——今晚能带走的，只剩这点体力账。" },
+          { name: "双核再打半节，追进二十分以内再撤", tier: "risky",
+            cond: "双核回来后的第一波进攻，打出 6 : 0", okDelta: 23, failDelta: -7, actor: "哈登",
+            okText: "哈登连突带投带队打出一波小高潮，分差回到二十出头，甲骨文的庆祝声浪矮了一截。撤下主力时，火箭的头是抬着的。",
+            failText: "追分只持续了两个回合，勇士换回主力立刻还了一波。德安东尼只能提前认账——白多耗掉的，是双核的几分钟。" },
+          { name: "全场紧逼全开，把最后一节打成近身缠斗", tier: "gamble",
+            cond: "紧逼的前两个回合，至少断下一球", okDelta: 24, failDelta: -11, actor: "全队",
+            okText: "紧逼之下勇士连着两次运球过不了半场，火箭打出一波 8 : 0。比分改不了，但甲骨文最后几分钟，是站着看完的——这口气，留给了下一场。",
+            failText: "紧逼被两次长传打穿，空篮送分。阿里扎在一次死球里推了对手一把，双双吃到技术犯规——今晚输掉的，差点不只是比分。" }
+        ] }
+    ] },
+      { actId: "act2", label: "第二幕", title: "2018 西决抢七 · 火箭 vs 勇士",
+        sub: "抢七之夜 · 执火箭",
+        intro: [],
+        realLine: "", bridgeText: "这一页先合上。此后两场，火箭连扳第四场、第五场，把比分改写为 3 : 2——可第五场最后时刻，保罗拉伤了右腿筋。下一幕，休斯顿丰田中心，抢七之夜：保罗只能穿着外套，坐在替补席。",
+        scoreBefore: "", realScoreAfter: "",
+        hands: [
+      { id: "borrow", verb: "借", title: "借一手招牌技术",
+        snapshot: "抢七开场。保罗穿着外套坐在替补席，第五场拉伤的右腿筋让他只能看着。真实历史里，火箭上半场靠拼劲和内线领先了 11 分——可次节中段起，外线的手感就再也没有回来。",
         options: [
           { name: "借克莱的无球跑位，装给阿里扎", tier: "steady",
             cond: "阿里扎借掩护兜出时不被克莱贴身跟住", okDelta: 3, failDelta: -4, actor: "阿里扎",
@@ -524,7 +826,7 @@ const EPISODES = [
             failText: "强投偏出，勇士抓下篮板三线快攻——不叫的这个暂停，成了赛后所有人追问的那一个。" }
         ] },
       { id: "gamble", verb: "决", title: "最后一攻",
-        snapshot: "第四节，塔克的底角三分终于终结了连铁，火箭追到 83 : 89。可杜兰特刚又投进一记跳投，时间只剩最后几分钟。真实历史的终场比分，是 92 : 101。这一手，改写它。",
+        snapshot: "第四节，塔克的底角三分终于终结了连铁，火箭追到 79 : 89；戈登随后连得四分，一度追到 83 : 89，可杜兰特回身一记跳投，又把分差拉开。时间只剩最后几分钟。真实历史的终场比分，是 92 : 101。这一手，改写它。",
         options: [
           { name: "稳扎稳打，每回合打到 24 秒将尽，交给哈登单打", tier: "steady",
             cond: "哈登单打时弱侧不被提前包夹", okDelta: 3, failDelta: -4, actor: "哈登",
@@ -539,10 +841,40 @@ const EPISODES = [
             okText: "哈登三分、戈登三分、塔克底角再中！三记三分像三把刀，火箭反超——抢七之夜，休斯顿改写了结局。",
             failText: "第一记就砸在篮筐上。犯规、罚球、时间走完——27 连铁的剧本，在最后时刻合上了最后一页。" }
         ] }
+    ] }
     ]
   }
 ];
 /* ---------- 引擎：纯函数（无 DOM / 无存储依赖） ---------- */
+/* ---------- 双幕派生与幕工具（补遗 v1.5） ----------
+   ep.hands 为两幕 hands 的扁平拼接（派生值，勿在数据层手改）；
+   整轮手数 = 两幕之和（现行 5+5=10），引擎一律以 ep.hands.length 为界。 */
+for (const ep of EPISODES) {
+  ep.hands = (ep.acts || []).reduce((acc, act) => acc.concat(act.hands), []);
+}
+function actStartIdx(ep, actIdx) {
+  let s = 0;
+  for (let i = 0; i < actIdx; i++) s += ep.acts[i].hands.length;
+  return s;
+}
+function actOfHand(ep, handIdx) {
+  let acc = 0;
+  for (let i = 0; i < ep.acts.length; i++) {
+    acc += ep.acts[i].hands.length;
+    if (handIdx < acc) return i;
+  }
+  return ep.acts.length - 1;
+}
+/* 整轮终局优势可达范围（由数据推导，CAPS 与优势条共用）：
+   min = 开局 + Σ逐手最小 failDelta；max = 开局 + Σ逐手最大 okDelta（暗流不抬上限） */
+function advBounds(ep) {
+  let mn = ep.startAdv, mx = ep.startAdv;
+  for (const h of ep.hands) {
+    mn += Math.min.apply(null, h.options.map(o => o.failDelta));
+    mx += Math.max.apply(null, h.options.map(o => o.okDelta));
+  }
+  return { min: mn, max: mx };
+}
 function getEpisode(epId) { return EPISODES.find(e => e.id === epId) || null; }
 function tierOf(tierKey) { return TIERS.find(t => t.key === tierKey); }
 function tierProb(tierKey, modeKey) {
@@ -596,11 +928,27 @@ function handIntel(ep, run) {
   for (let i = 1; i < evs.length; i++) if (evs[i] > evs[best]) best = i;
   return { handIdx: run.handIdx, evs: evs, best: best };
 }
-/* 开局：抽暗流（rng 第一次调用决定词缀），建账本 */
+/* 开局：抽第一幕暗流（rng 第一次调用决定词缀），建账本。
+   双幕口径（补遗 v1.5）：adv 单账贯通两幕；actIdx 为当前幕；affixes 按幕收集；
+   affix 指针恒指向当前幕暗流（effectiveProb/effectiveDelta 只读 run.affix）。 */
 function newRun(ep, modeKey, rng) {
   rng = rng || Math.random;
-  const affix = AFFIXES[Math.floor(rng() * AFFIXES.length) % AFFIXES.length];
-  return { epId: ep.id, mode: modeKey, adv: ep.startAdv, handIdx: 0, affix: affix, log: [], rewound: false, finished: false };
+  const pool = affixPoolFor(ep); const affix = pool[Math.floor(rng() * pool.length) % pool.length];
+  return { epId: ep.id, mode: modeKey, adv: ep.startAdv, handIdx: 0, actIdx: 0,
+    affix: affix, affixes: [affix], act1EndAdv: null, log: [], rewound: false, finished: false };
+}
+/* 幕间推进：第一幕打完后抽第二幕暗流并切换当前幕。优势不清零、不重置——
+   第一幕终局优势即第二幕开局优势；act1EndAdv 落盘供幕间页小结。 */
+function advanceAct(ep, run, rng) {
+  rng = rng || Math.random;
+  const boundary = actStartIdx(ep, 1);
+  if (run.finished || run.actIdx !== 0 || run.handIdx !== boundary) throw new Error("advanceAct only at act boundary");
+  run.act1EndAdv = run.adv;
+  const pool = affixPoolFor(ep); const affix = pool[Math.floor(rng() * pool.length) % pool.length];
+  run.affixes.push(affix);
+  run.affix = affix;
+  run.actIdx = 1;
+  return affix;
 }
 function currentHand(ep, run) { return run.handIdx < ep.hands.length ? ep.hands[run.handIdx] : null; }
 /* 出一手：掷档 → 记账本（单点写入） → 返回本手记录 */
@@ -614,7 +962,8 @@ function choose(ep, run, optIdx, rng) {
   const success = rng() * 100 < prob;
   const eff = effectiveDelta(opt, hand, run, success);
   const entry = {
-    handIdx: run.handIdx, handId: hand.id, verb: hand.verb, title: hand.title,
+    handIdx: run.handIdx, actIdx: run.actIdx, actHandIdx: run.handIdx - actStartIdx(ep, run.actIdx),
+    handId: hand.id, verb: hand.verb, title: hand.title,
     optName: opt.name, tier: opt.tier, prob: prob, success: success,
     delta: eff.delta, advBefore: run.adv, advAfter: run.adv + eff.delta,
     text: success ? opt.okText : opt.failText, actor: opt.actor,
@@ -626,8 +975,8 @@ function choose(ep, run, optIdx, rng) {
   if (run.handIdx >= ep.hands.length) run.finished = true;
   return entry;
 }
-/* 续命：撤回第五手，回到出牌前状态。本局标记 rewound —— 成绩标记「续命完成」，
-   不计最佳评级（排行榜完整性红线，见 applyResultToRecords 与 BUILD_NOTES）。 */
+/* 续命：撤回整轮最后一手（第二幕第五手），回到出牌前状态。本局标记 rewound ——
+   成绩标记「续命完成」，不计最佳评级（排行榜完整性红线，见 applyResultToRecords 与 BUILD_NOTES）。 */
 function rewindRun(ep, run) {
   if (!run.finished || run.log.length !== ep.hands.length) throw new Error("rewind only at settlement");
   const last = run.log.pop();
@@ -667,20 +1016,29 @@ function rankFor(totalScore) {
 /* 双历史线「我的改写」栏文本 */
 function rewriteSummary(ep, run, j) {
   const k = j.keyHand;
+  const kWhere = k ? ((ep.acts[k.actIdx] ? ep.acts[k.actIdx].label : "") + "第" + ((k.actHandIdx != null ? k.actHandIdx : k.handIdx) + 1) + "手") : "";
   return {
     ending: ep.rewriteEndings[j.tier],
-    turning: k ? ("第" + (k.handIdx + 1) + "手「" + k.optName + "」" + (k.success ? "成功" : "关键手失手") + "，优势 " + (k.delta >= 0 ? "+" : "") + k.delta + "，是全场转折点。") : "",
+    turning: k ? (kWhere + "「" + k.optName + "」" + (k.success ? "成功" : "关键手失手") + "，优势 " + (k.delta >= 0 ? "+" : "") + k.delta + "，是全场转折点。") : "",
     hero: k ? (k.actor + " —— 本局改写功臣") : ""
   };
 }
-/* 结算归因：逐手 + 暗流单列一行 */
+/* 结算归因：按幕分组——逐手（幕内序号）+ 每幕暗流在本幕末尾单列一行 */
 function settlementLines(ep, run) {
-  const lines = run.log.map(e => ({
-    head: "第" + (e.handIdx + 1) + "手 · " + e.title + "：" + e.optName,
-    body: (e.success ? "成功" : "失败") + "（" + tierOf(e.tier).label + "档 " + e.prob + "%）优势 " + (e.delta >= 0 ? "+" : "") + e.delta + " → " + e.advAfter + "。" + e.text,
-    affixNote: e.affixNote || ""
-  }));
-  if (run.affix) lines.push({ head: "暗流 · " + run.affix.name, body: run.affix.affixLine || run.affix.desc, affixNote: "", isAffix: true });
+  const lines = [];
+  for (let a = 0; a < ep.acts.length; a++) {
+    for (const e of run.log) {
+      if (e.actIdx !== a) continue;
+      lines.push({
+        actIdx: a,
+        head: ep.acts[a].label + " · 第" + ((e.actHandIdx != null ? e.actHandIdx : e.handIdx - actStartIdx(ep, a)) + 1) + "手 · " + e.title + "：" + e.optName,
+        body: (e.success ? "成功" : "失败") + "（" + tierOf(e.tier).label + "档 " + e.prob + "%）优势 " + (e.delta >= 0 ? "+" : "") + e.delta + " → " + e.advAfter + "。" + e.text,
+        affixNote: e.affixNote || ""
+      });
+    }
+    const afx = run.affixes && run.affixes[a];
+    if (afx) lines.push({ actIdx: a, head: "暗流 · " + afx.name, body: afx.affixLine || afx.desc, affixNote: "", isAffix: true });
+  }
   return lines;
 }
 /* ---------- 记录层：纯函数（输入输出均为普通对象，存储由表现层负责） ---------- */
@@ -750,7 +1108,11 @@ function toast(msg) {
    同模块成对同 label，事件数据走 custom（施工书 §5.2 埋点表）。 */
 function trk(act, label, custom) { if (window.__yinanyiTrack) window.__yinanyiTrack(act, label, custom); }
 function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
-function advPct(v) { return Math.max(0, Math.min(100, (v + 24) / 72 * 100)); }
+function advPct(v) {
+  /* 量程按当前案卷整轮可达范围（advBounds 由数据推导，双幕口径） */
+  const b = state.ep ? advBounds(state.ep) : { min: -84, max: 252 };
+  return Math.max(0, Math.min(100, (v - b.min) / (b.max - b.min) * 100));
+}
 function topBar(no) {
   return '<div class="top"><span>改命一手 · 名局重写计划</span><span>案卷 No.' + esc(no || "---") + "</span></div>";
 }
@@ -778,7 +1140,7 @@ function renderHome() {
   let h = topBar("总卷") +
     '<h1>意难平：<span class="red">这一局</span>我改了</h1>' +
     '<div class="sub">历 史 名 局 · 由 你 重 审</div>' +
-    '<div class="tagline">五手牌改写一场真实名局，每手成败全明示</div>';
+    '<div class="tagline">双幕连改，十手改写一整个系列赛，每手成败全明示</div>';
   /* 改命者档案 */
   h += '<div class="profile"><div class="no">改命者档案</div>' +
     '<span class="nick">' + esc(store.nickname) + '</span><span class="nickEdit" id="nickEdit">改署名</span>' +
@@ -801,6 +1163,8 @@ function renderHome() {
     h += '<div class="epCard' + (locked ? " locked" : "") + '" data-ep="' + ep.id + '">' +
       (rec && rec.bestRating ? '<div class="estat">最佳评级 ' + rec.bestRating + "</div>" : (locked ? '<div class="estat">封存</div>' : "")) +
       '<div class="et">' + esc(ep.title) + '</div><div class="em">' + esc(ep.listDesc) + "</div>" +
+      '<div class="em" style="color:#b23a26;font-weight:700">双幕连改 · 约 8 分钟</div>' +
+      '<div class="em">' + ep.acts.map(a => esc(a.label) + "：" + esc(a.sub || a.title)).join("　→　") + "</div>" +
       (locked && ep.hands && ep.hands.length > 0 ? '<button class="hookBtn" data-hook="earlyEpisode" style="margin-top:10px">看广告抢先翻开此卷 · 每日 ' + AD_HOOKS.earlyEpisode.dailyLimit + " 次</button>" : "") +
       "</div>";
     /* 结局档案册 */
@@ -860,8 +1224,11 @@ function renderIntro(ep) {
     '<div class="case"><div class="no">本 期 案 卷</div><div class="t">' + esc(ep.title) + "</div>" +
     '<div class="m">' + ep.tags.map(t => '<span class="tag">' + esc(t) + "</span>").join("") + "</div></div>";
   h += ep.intro.map(p => '<p class="introText">' + esc(p) + "</p>").join("");
-  h += '<div class="goal">本局任务：<b>' + esc(ep.goal) + '</b><br><span style="font-size:12px;color:#5c543d">模式：' +
-    MODES[state.mode].label + " · 改命线 +" + MODES[state.mode].threshold + " · 开局优势 " + ep.startAdv + " · 开卷后抽取一条「暗流」全程生效</span></div>";
+  h += '<div class="case" style="margin-top:14px"><div class="no">双 幕 连 改 · 约 8 分 钟</div>' +
+    ep.acts.map(a => '<div class="m" style="margin-top:6px"><b>' + esc(a.label) + "</b> · " + esc(a.sub || a.title) + "</div>").join("") +
+    '<div class="m" style="margin-top:6px">优势值一本账贯通两幕，第一幕的结果直接带进第二幕；整轮只结算一次。</div></div>';
+  h += '<div class="goal">本轮任务：<b>' + esc(ep.goal) + '</b><br><span style="font-size:12px;color:#5c543d">模式：' +
+    MODES[state.mode].label + " · 改命线 +" + MODES[state.mode].threshold + " · 开局优势 " + ep.startAdv + " · 每一幕开幕各抽一条「暗流」，本幕内生效</span></div>";
   h += '<button class="btn red" id="startBtn">开 卷 改 命</button>' +
     '<button class="btn ghost" id="backBtn">回案卷列表</button>' +
     '<div class="foot">真实历史存档：' + esc(ep.realHistory.footnote) + "</div>";
@@ -874,14 +1241,17 @@ function renderIntro(ep) {
   });
   window.scrollTo(0, 0);
 }
-/* ================= 屏幕：暗流揭示 ================= */
+/* ================= 屏幕：开幕（第一幕：幕题 + 暗流揭示） ================= */
 function renderAffix(ep, run) {
   state.screen = "affix";
+  const act = ep.acts[0];
   const a = run.affix;
   app.innerHTML = topBar(ep.no) +
-    '<h2 class="sec" style="border-top:none;margin-top:10px">开 卷 抽 暗 流</h2>' +
-    '<div class="affixBanner"><div class="al">本 局 暗 流 · 全 程 生 效</div><div class="an2">' + esc(a.name) + '</div><div class="ad2">' + esc(a.desc) + "</div></div>" +
-    '<p class="introText">暗流不是惩罚也不是恩赐，它是这一局的天气。五手牌怎么打，由你；结算时，它会单独记上一笔。</p>' +
+    '<div class="case"><div class="no">' + esc(act.label) + '</div><div class="t">' + esc(act.sub || act.title) + "</div></div>" +
+    act.intro.map(p => '<p class="introText">' + esc(p) + "</p>").join("") +
+    '<h2 class="sec">开 幕 抽 暗 流</h2>' +
+    '<div class="affixBanner"><div class="al">本 幕 暗 流 · 本 幕 内 生 效</div><div class="an2">' + esc(a.name) + '</div><div class="ad2">' + esc(a.desc) + "</div></div>" +
+    '<p class="introText">暗流不是惩罚也不是恩赐，它是这一幕的天气。五手牌怎么打，由你；结算时，每一幕的暗流都会单独记上一笔。</p>' +
     '<button class="btn red" id="goBtn">进 入 第 一 手</button>';
   document.getElementById("goBtn").addEventListener("click", () => renderHand(ep, run));
   window.scrollTo(0, 0);
@@ -892,9 +1262,11 @@ function renderHand(ep, run) {
   const hand = currentHand(ep, run);
   if (!hand) { renderSettlement(ep, run); return; }
   const a = run.affix;
+  const actIdx = run.actIdx;
+  const actHandNo = run.handIdx - actStartIdx(ep, actIdx);
   let h = topBar(ep.no) + advBar(run);
-  h += '<div class="affixBanner" style="margin-top:12px;padding:8px 12px"><div class="al">暗流 · ' + esc(a.name) + '</div><div class="ad2" style="margin-top:1px">' + esc(a.desc) + "</div></div>";
-  h += '<div class="hand"><span class="n">第' + "一二三四五"[run.handIdx] + "手 · " + esc(hand.title) + '</span><span class="d">局势快照：' + esc(hand.snapshot) + "</span></div>";
+  h += '<div class="affixBanner" style="margin-top:12px;padding:8px 12px"><div class="al">' + esc(ep.acts[actIdx].label) + "暗流 · " + esc(a.name) + '</div><div class="ad2" style="margin-top:1px">' + esc(a.desc) + "</div></div>";
+  h += '<div class="hand"><span class="n">' + esc(ep.acts[actIdx].label) + " · 第" + "一二三四五"[actHandNo] + "手 · " + esc(hand.title) + '</span><span class="d">局势快照：' + esc(hand.snapshot) + "</span></div>";
   if (state.phase === "pick") {
     if (run.mode === "hard") h += '<div class="modeNote">困难：全档概率已下调</div>';
     const intelOn = !!(state.intel && state.intel.run === run && state.intel.handIdx === run.handIdx);
@@ -917,7 +1289,7 @@ function renderHand(ep, run) {
     h += '<div class="resultBox' + (e.success ? "" : " fail") + '"><div class="rh">' + (e.success ? "这一手，成了" : "这一手，没成") +
       ' <span class="' + (e.delta >= 0 ? "dpos" : "dneg") + '">优势 ' + (e.delta >= 0 ? "+" : "") + e.delta + " → " + e.advAfter + "</span></div>" +
       '<div class="rt">' + esc(e.text) + (e.affixNote ? '<br><span style="color:#b23a26">' + esc(e.affixNote) + "</span>" : "") + "</div></div>" +
-      '<button class="btn red" id="nextBtn">' + (run.finished ? "看 结 算" : "下 一 手") + "</button>";
+      '<button class="btn red" id="nextBtn">' + (run.finished ? "看 结 算" : (run.actIdx === 0 && run.handIdx === actStartIdx(ep, 1) ? "幕 间 · 第 一 幕 小 结" : "下 一 手")) + "</button>";
   }
   app.innerHTML = h;
   if (state.phase === "pick") {
@@ -943,9 +1315,40 @@ function renderHand(ep, run) {
   } else {
     document.getElementById("nextBtn").addEventListener("click", () => {
       state.phase = "pick"; state.lastEntry = null;
-      if (run.finished) renderSettlement(ep, run); else renderHand(ep, run);
+      if (run.finished) { renderSettlement(ep, run); return; }
+      if (run.actIdx === 0 && run.handIdx === actStartIdx(ep, 1)) {
+        advanceAct(ep, run, Math.random);
+        renderIntermission(ep, run);
+        return;
+      }
+      renderHand(ep, run);
     });
   }
+  window.scrollTo(0, 0);
+}
+/* ================= 屏幕：幕间（第一幕小结 + 第二幕开场） ================= */
+function renderIntermission(ep, run) {
+  state.screen = "intermission";
+  const act1 = ep.acts[0], act2 = ep.acts[1];
+  const delta = run.act1EndAdv - ep.startAdv;
+  const parts = (act1.scoreBefore || "").split(":").map(s => parseInt(s, 10));
+  let rewriteScore = act1.realScoreAfter || "";
+  if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+    rewriteScore = delta > 0 ? (parts[0] + 1) + " : " + parts[1] : parts[0] + " : " + (parts[1] + 1);
+  }
+  const a2 = run.affix;
+  let h = topBar(ep.no) + advBar(run);
+  h += '<h2 class="sec" style="border-top:none;margin-top:10px">幕 间 · 第 一 幕 小 结</h2>' +
+    '<div class="case"><div class="m">本幕优势变化：<b>' + ep.startAdv + " → " + run.act1EndAdv + "</b>（" + (delta >= 0 ? "+" : "") + delta + "）· 第一幕暗流「" + esc(run.affixes[0].name) + "」已记入卷宗</div>" +
+    '<div class="m" style="margin-top:6px">' + esc(act1.realLine) + "</div>" +
+    '<div class="m" style="margin-top:6px">真实线比分：' + esc(act1.scoreBefore) + " → <b>" + esc(act1.realScoreAfter) + "</b>　·　改写线比分：" + esc(act1.scoreBefore) + " → <b>" + esc(rewriteScore) + "</b></div></div>";
+  h += '<div class="case" style="margin-top:14px"><div class="no">' + esc(act2.label) + '</div><div class="t">' + esc(act2.sub || act2.title) + "</div></div>" +
+    '<p class="introText">' + esc(act2.bridgeText) + "</p>" +
+    '<div class="affixBanner"><div class="al">本 幕 暗 流 · 本 幕 内 生 效</div><div class="an2">' + esc(a2.name) + '</div><div class="ad2">' + esc(a2.desc) + "</div></div>" +
+    '<p class="introText">优势不清零——你带着第一幕的账，走进第二幕。</p>' +
+    '<button class="btn red" id="goBtn2">进 入 第 二 幕</button>';
+  app.innerHTML = h;
+  document.getElementById("goBtn2").addEventListener("click", () => renderHand(ep, run));
   window.scrollTo(0, 0);
 }
 /* ================= 屏幕：结算 ================= */
@@ -983,9 +1386,17 @@ function renderSettlement(ep, run) {
     (run.rewound ? ' · <span style="color:#b23a26;font-weight:700">续命完成（不计最佳评级）</span>' : "") +
     (pv.archiveNew ? '<br><span style="color:#b23a26">结局档案册新页：「' + ({ success: "改命成功", honor: "虽败犹荣", history: "历史照旧" })[pv.archiveNew] + "」已存档</span>" : "") + "</div>";
   h += "</div>"; /* /posterWrap */
-  /* 逐手归因 */
-  h += '<h2 class="sec">逐 手 归 因</h2><div class="logList">' +
-    lines.map(l => '<div class="logItem' + (l.isAffix ? "" : "") + '"><div class="lh">' + esc(l.head) + '</div>' + esc(l.body) + "</div>").join("") + "</div>";
+  /* 逐手归因（按幕分组，双幕口径） */
+  let lastAct = -1;
+  let logHtml = "";
+  for (const l of lines) {
+    if (l.actIdx !== lastAct) {
+      lastAct = l.actIdx;
+      logHtml += '<div class="arcEpName" style="margin-top:12px">' + esc(ep.acts[l.actIdx].label) + " · " + esc(ep.acts[l.actIdx].sub || ep.acts[l.actIdx].title) + "</div>";
+    }
+    logHtml += '<div class="logItem"><div class="lh">' + esc(l.head) + "</div>" + esc(l.body) + "</div>";
+  }
+  h += '<h2 class="sec">逐 手 归 因</h2><div class="logList">' + logHtml + "</div>";
   /* 赛后宣言 */
   h += '<h2 class="sec">赛 后 宣 言</h2><div class="pickRow">' +
     Object.keys(ep.declarations).map(k => {
@@ -999,7 +1410,7 @@ function renderSettlement(ep, run) {
   /* 广告钩子行 */
   h += '<div class="hookRow">' +
     '<button class="hookBtn" id="posterBtn">精装海报 · 今日剩 ' + (AD_HOOKS.posterDeluxe.dailyLimit - hookUsed("posterDeluxe")) + " 次</button>" +
-    (j.tier !== "success" && !run.rewound ? '<button class="hookBtn" id="rewindBtn">续命一手 · 重打第五手（今日剩 ' + (AD_HOOKS.rewindLastHand.dailyLimit - hookUsed("rewindLastHand")) + " 次）</button>" : "") +
+    (j.tier !== "success" && !run.rewound ? '<button class="hookBtn" id="rewindBtn">续命一手 · 重打最后一手（今日剩 ' + (AD_HOOKS.rewindLastHand.dailyLimit - hookUsed("rewindLastHand")) + " 次）</button>" : "") +
     "</div>";
   h += '<div id="statsLine" class="foot"></div>';
   h += '<button class="btn ghost" id="shareBtn">把 这 一 卷 发 到 虎 扑</button>';
@@ -1058,8 +1469,8 @@ function renderSettlement(ep, run) {
       consumeHook("rewindLastHand");
       rewindRun(ep, run);
       state.settle = null; state.phase = "pick"; state.lastEntry = null;
-      state.intel = null; /* 续命重打第五手：旧情报不带回，防同 run 同 handIdx 误命中 */
-      toast("续命一手：重打第五手。本局将标记「续命完成」");
+      state.intel = null; /* 续命重打最后一手：旧情报不带回，防同 run 同 handIdx 误命中 */
+      toast("续命一手：重打整轮最后一手。本局将标记「续命完成」");
       renderHand(ep, run);
     });
   });
@@ -1132,11 +1543,13 @@ const AD_BLOCK_MS = 180000; /* 未落定拦截上限 3 分钟（裁决 C-1 / v5.
 const AD_MAX_CHECKS = 2;    /* 未落定核对次数上限 */
 
 /* 分数上限（与 cloud/cloudfunctions/activity_api/caps.js 同值，
-   test.js 断言两份相等且与引擎数据推导值相等；逐局存表）。 */
+   test.js 断言两份相等且与引擎数据推导值相等；逐局存表）。
+   双幕口径（补遗 v1.5 §3）：maxFinalAdv = −12 + 两幕 Σ逐手最大 okDelta = 252；
+   普通 CAP = 252 + 20 = 272，困难 CAP = 252×2 + 20 = 524。 */
 const SCORE_CAPS = {
-  ep1: { normal: 140, hard: 260 },
-  ep2: { normal: 140, hard: 260 },
-  ep3: { normal: 140, hard: 260 }
+  ep1: { normal: 272, hard: 524 },
+  ep2: { normal: 272, hard: 524 },
+  ep3: { normal: 272, hard: 524 }
 };
 function scoreCapFor(epId, mode) {
   const row = SCORE_CAPS[epId];
@@ -1333,7 +1746,7 @@ function _freshAdFlow(hookKey, finish) {
 function buildPosterLines(data) {
   const ep = data.ep, j = data.j, rw = data.rw || {};
   const lines = data.lines || [];
-  const affix = lines.filter(l => l.isAffix)[0];
+  const affixes = lines.filter(l => l.isAffix);
   return {
     no: ep.no,
     title: ep.title,
@@ -1344,8 +1757,8 @@ function buildPosterLines(data) {
     rating: j.rating, adv: j.adv, gained: data.gained, nickname: data.nickname,
     rewound: !!(data.run && data.run.rewound),
     declaration: data.declaration || "",
-    hands: lines.filter(l => !l.isAffix).map(l => ({ head: l.head, body: l.body })),
-    affixBody: affix ? affix.body : "",
+    hands: lines.filter(l => !l.isAffix).map(l => ({ head: l.head, body: l.body, actIdx: l.actIdx, actLabel: (ep.acts[l.actIdx] || {}).label || "" })),
+    affixBody: affixes.map(l => ((ep.acts[l.actIdx] || {}).label || "") + "暗流：" + l.body).join(" "),
     footnote: ep.realHistory.footnote || ""
   };
 }
@@ -1375,7 +1788,7 @@ function _wrapText(ctx, text, maxWidth) {
 function drawPosterCanvas(data) {
   if (typeof document === "undefined" || typeof document.createElement !== "function") return null;
   const p = buildPosterLines(data);
-  const W = 750, H = 1240;
+  const W = 750, H = 1640; /* 双幕十手归因：画布加高，按幕分组渲染 */
   const cv = document.createElement("canvas");
   cv.width = W; cv.height = H;
   const ctx = cv.getContext("2d");
@@ -1443,8 +1856,16 @@ function drawPosterCanvas(data) {
   ctx.fillText("逐 手 归 因", 56, y);
   y += 36;
   ctx.font = "21px " + SANS;
+  let lastAct = -1;
   for (const hd of p.hands) {
     if (y > H - 190) break;
+    if (hd.actIdx != null && hd.actIdx !== lastAct) {
+      lastAct = hd.actIdx;
+      ctx.fillStyle = RED; ctx.font = '900 22px ' + SERIF;
+      ctx.fillText(hd.actLabel || "", 56, y);
+      y += 32;
+      ctx.font = "21px " + SANS;
+    }
     ctx.fillStyle = INK;
     ctx.fillText(hd.head, 56, y);
     y += 29;
