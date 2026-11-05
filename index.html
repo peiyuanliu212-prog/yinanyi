@@ -58,7 +58,6 @@ h2.sec{font-family:"Noto Serif CJK SC",serif;font-size:18px;font-weight:900;lett
 .profile{margin-top:18px;border:1.5px solid #262219;background:#f8f3e3;padding:13px 16px;position:relative}
 .profile .no{position:absolute;top:-10px;left:12px;background:#f4eedd;padding:0 8px;font-size:11px;letter-spacing:2px;color:#b23a26;font-weight:700}
 .profile .nick{font-family:"Noto Serif CJK SC",serif;font-size:18px;font-weight:900}
-.profile .nickEdit{font-size:11px;color:#b23a26;border:1px solid #b23a26;padding:0 6px;margin-left:8px;cursor:pointer;letter-spacing:1px}
 .profile .rankline{margin-top:5px;font-size:12.5px;color:#5c543d}
 .profile .rankline b{color:#b23a26}
 .rankTrack{height:8px;border:1.5px solid #262219;margin-top:8px;background:#efe7cf;position:relative}
@@ -132,7 +131,6 @@ h2.sec{font-family:"Noto Serif CJK SC",serif;font-size:18px;font-weight:900;lett
 .foot{margin-top:20px;font-size:11px;color:#8a7c58;letter-spacing:1px;line-height:1.8}
 .introText{font-size:13.5px;line-height:1.95;color:#3d382a;margin-top:12px}
 .goal{margin-top:14px;border:1.5px solid #b23a26;background:#fdf3e3;padding:11px 14px;font-size:13.5px}
-input.nickInput{width:100%;margin-top:10px;padding:10px 12px;font-size:15px;border:1.5px solid #262219;background:#fbf7ea;font-family:inherit;color:#262219}
 #toast{position:fixed;left:50%;bottom:38px;transform:translateX(-50%);background:#262219;color:#f4eedd;font-size:13px;
  padding:10px 18px;letter-spacing:1px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:99;max-width:86vw;text-align:center}
 #toast.show{opacity:.95}
@@ -1042,8 +1040,16 @@ function settlementLines(ep, run) {
   return lines;
 }
 /* ---------- 记录层：纯函数（输入输出均为普通对象，存储由表现层负责） ---------- */
+/* 显示名口径（二审整改，2026-11-05）：审核要求玩家不得手动输入昵称。
+   显示名只取平台登录昵称（引导脚本经 auth.getUserInfo 取得），取不到/未登录/无 SDK
+   时用默认名兜底；存档中遗留的旧自设名不再作为显示与上榜口径。 */
+const DEFAULT_NICKNAME = "改命人";
+function resolveDisplayName(profile) {
+  const n = profile && typeof profile.nickname === "string" ? profile.nickname.trim() : "";
+  return n || DEFAULT_NICKNAME;
+}
 function emptyRecords() {
-  return { nickname: "无名改命者", totalScore: 0, episodes: {}, votes: {},
+  return { nickname: DEFAULT_NICKNAME, totalScore: 0, episodes: {}, votes: {},
     daily: { date: "", firstDone: false, adHooks: {} } };
 }
 function normalizeDaily(records, todayStr) {
@@ -1089,11 +1095,15 @@ function todayStr() {
   return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
 }
 function loadStore() {
+  let rec = null;
   try {
     const raw = localStorage.getItem(LS_KEY);
-    if (raw) { const s = JSON.parse(raw); return normalizeDaily(Object.assign(emptyRecords(), s), todayStr()); }
+    if (raw) { const s = JSON.parse(raw); rec = normalizeDaily(Object.assign(emptyRecords(), s), todayStr()); }
   } catch (e) { /* 存档损坏时回落为空档，不阻塞游戏 */ }
-  return normalizeDaily(emptyRecords(), todayStr());
+  if (!rec) rec = normalizeDaily(emptyRecords(), todayStr());
+  /* 二审整改：存档里的旧自设名不作数，进档先落默认名，平台登录昵称由引导脚本异步覆盖 */
+  rec.nickname = DEFAULT_NICKNAME;
+  return rec;
 }
 function saveStore() { try { localStorage.setItem(LS_KEY, JSON.stringify(store)); } catch (e) {} }
 let store = loadStore();
@@ -1143,11 +1153,10 @@ function renderHome() {
     '<div class="tagline">双幕连改，十手改写一整个系列赛，每手成败全明示</div>';
   /* 改命者档案 */
   h += '<div class="profile"><div class="no">改命者档案</div>' +
-    '<span class="nick">' + esc(store.nickname) + '</span><span class="nickEdit" id="nickEdit">改署名</span>' +
+    '<span class="nick">' + esc(store.nickname) + '</span>' +
     '<div class="rankline">段位 <b>' + rk.current.name + '</b> · 累计改命分 <b>' + store.totalScore + '</b>' +
     (rk.next ? ' · 距「' + rk.next.name + '」还差 ' + (rk.next.min - store.totalScore) + " 分" : " · 已至绝巅") + '</div>' +
-    '<div class="rankTrack"><div class="rankFill" style="width:' + rankPct + '%"></div></div>' +
-    '<div id="nickEditor"></div></div>';
+    '<div class="rankTrack"><div class="rankFill" style="width:' + rankPct + '%"></div></div></div>';
   /* 模式 */
   h += '<div class="modeRow">' +
     ["normal", "hard"].map(k => {
@@ -1192,28 +1201,6 @@ function renderHome() {
       consumeHook("earlyEpisode"); toast("抢先翻卷即将开启，敬请期待");
     });
   }));
-  const ne = document.getElementById("nickEdit");
-  if (ne) ne.addEventListener("click", () => {
-    document.getElementById("nickEditor").innerHTML =
-      '<input class="nickInput" id="nickInput" maxlength="12" value="' + esc(store.nickname) + '">' +
-      '<button class="btn small" id="nickSave">存入档案</button>';
-    document.getElementById("nickSave").addEventListener("click", () => {
-      const input = document.getElementById("nickInput");
-      const saveBtn = document.getElementById("nickSave");
-      const candidate = (input && input.value.trim()) || "无名改命者";
-      if (saveBtn) saveBtn.disabled = true;
-      PlatformAdapter.checkAudit(candidate, result => {
-        if (!result || !result.ok) {
-          if (saveBtn) saveBtn.disabled = false;
-          if (result && result.blocked) toast("这个署名未通过内容安全检测，请换一个");
-          else if (result && result.loginRequired) toast("请先登录后再保存署名");
-          else toast("内容安全检测暂时不可用，请稍后再试");
-          return;
-        }
-        store.nickname = candidate; saveStore(); PlatformAdapter.cloudSaveMirror(); renderHome(); toast("署名已存档");
-      });
-    });
-  });
   trk("exposure", "案卷架-期数列表");
   window.scrollTo(0, 0);
 }
@@ -1523,8 +1510,10 @@ renderHome();
    · 云存档：本地 localStorage 第一写入，云端 SDK 键值异步镜像（≥3 秒节流合并），
      恢复只在云端时间戳更新时覆盖本地，失败不阻塞。
    · 投票：平台活动未配置（PLATFORM_CONFIG.vote 为空）时降级本地投票＋打点。
-   · 内容安全（checkAudit，R-01）：署名保存前先检测，通过才落盘；不通过保留旧值。
-     无 SDK 时降级放行（本地模式无平台风控可调），SDK 在场时 401/500/异常均拦截本次保存。
+   · 显示名（二审整改，2026-11-05）：审核要求玩家不得手动输入昵称——显示名一律取
+     平台登录昵称（auth.getUserInfo），取不到/未登录/无 SDK 时以默认名「改命人」兜底；
+     存档里的旧自设名不再作显示与上榜口径。内容安全 checkAudit 能力保留在适配器中，
+     游戏内已无自由文本输入、暂无调用点。
    · code 判定分链路：CloudBase 云函数成功 code 为 0（兼容 200），SDK 类为 200。
    ============================================================ */
 // === ADAPTER START ===
@@ -1933,8 +1922,8 @@ const PlatformAdapter = {
   _displayName: function () {
     try {
       const v = PlatformAdapter.displayNameProvider ? PlatformAdapter.displayNameProvider() : "";
-      return (v && String(v).trim()) || "无名改命者";
-    } catch (e) { return "无名改命者"; }
+      return (v && String(v).trim()) || DEFAULT_NICKNAME;
+    } catch (e) { return DEFAULT_NICKNAME; }
   },
 
   /* 1) 提交成绩：单局最佳分上榜；rewound 直接不调用；本地 CAPS 自检 */
@@ -2237,10 +2226,10 @@ const PlatformAdapter = {
     }).catch(() => cb(null));
   },
 
-  /* 11) 内容安全检测（R-01）：玩家自由文本落盘前必须先过检。
-     平台 SDK 或 security.checkAudit 不存在时降级放行：本地/断网模式没有可调用的
-     平台风控能力，不能因此让署名功能不可用；此降级只适用于无 SDK 环境。
-     SDK 已存在时，401 拦截并提示登录，500/异常/超时拦截本次保存并保留旧值。 */
+  /* 11) 内容安全检测（R-01，能力保留）：玩家自由文本落盘前过检的平台能力。
+     二审整改后显示名改取平台昵称、游戏内已无自由文本输入，本方法暂无调用点，
+     保留供后续如恢复自由文本功能时接入。无 SDK 时降级放行（无平台风控可调的环境）；
+     SDK 已存在时，401 拦截并提示登录，500/异常/超时拦截本次提交。 */
   checkAudit: function (content, cb) {
     cb = cb || function () {};
     const cbx = _cb();
@@ -2304,17 +2293,28 @@ const PlatformAdapter = {
   window.__yinanyiTrack = function (act, label, custom) {
     return PlatformAdapter.track(act, label, custom);
   };
-  PlatformAdapter.getUserProfile(function (p) {
-    if (p && p.nickname && store.nickname === "无名改命者") {
-      store.nickname = p.nickname;
+  /* 显示名合规（二审整改）：只认平台登录昵称、其次默认名，旧自设名一律不作数。
+     平台资料未回前先按默认名落定，回来后再覆盖；云档恢复后同样重定一遍，
+     保证首页/结算/海报/榜单提交四处口径一致。 */
+  let platformProfile = null;
+  function applyDisplayName() {
+    const n = resolveDisplayName(platformProfile);
+    if (store.nickname !== n) {
+      store.nickname = n;
       saveStore();
       if (state.screen === "home") renderHome();
     }
+  }
+  applyDisplayName();
+  PlatformAdapter.getUserProfile(function (p) {
+    platformProfile = p;
+    applyDisplayName();
   });
   PlatformAdapter.cloudSaveRestore(function (records, updatedAt) {
     if (!records || !updatedAt) return;
     if (updatedAt > PlatformAdapter.cloudSaveState().lastTs) {
       store = normalizeDaily(Object.assign(emptyRecords(), records), todayStr());
+      applyDisplayName();
       saveStore();
       PlatformAdapter.markRestored(updatedAt);
       if (state.screen === "home") renderHome();
