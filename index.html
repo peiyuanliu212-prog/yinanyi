@@ -5,6 +5,7 @@
   "skills": [
     "colorbox-auth-get-user-info",
     "colorbox-cloud-request",
+    "colorbox-fullscreen-safe-top",
     "colorbox-oss-upload-file",
     "colorbox-request-activity-get-vote-detail",
     "colorbox-request-activity-submit-vote",
@@ -91,6 +92,9 @@ h2.sec{font-family:"Noto Serif CJK SC",serif;font-size:18px;font-weight:900;lett
 .opt .eff{margin-top:5px;font-size:12.5px;color:#44402c}
 .opt .cond{margin-top:4px;font-size:11.5px;color:#8a7c58}
 .opt .cond b{color:#b23a26;font-weight:700}
+.opt .ev{margin-top:5px;font-size:12.5px;color:#44402c}
+.opt .ev b{font-family:"Noto Serif CJK SC",serif;color:#262219}
+.bestTag{display:inline-block;background:#b23a26;color:#f4eedd;font-size:10.5px;font-weight:800;letter-spacing:1px;padding:1px 6px;vertical-align:1px}
 .resultBox{margin-top:16px;border:2px solid #b23a26;background:#fdf3e3;padding:14px 16px}
 .resultBox.fail{border-color:#262219;background:#f8f3e3}
 .resultBox .rh{font-family:"Noto Serif CJK SC",serif;font-size:18px;font-weight:900}
@@ -574,6 +578,24 @@ function effectiveDelta(opt, hand, run, success) {
   }
   return { delta: d, affixNote: notes.join("；") };
 }
+/* 情报钩子权益（v1.4 定版）：单选项期望值 EV＝有效概率×成功优势＋(1−有效概率)×失败优势。
+   有效概率与成败优势一律经 effectiveProb / effectiveDelta 取值（含暗流修正），与界面
+   展示同一数据源，不另抄数字。情报只揭示信息，不改概率与 deltas 本身。 */
+function optionEV(opt, hand, run) {
+  const p = effectiveProb(opt, hand, run) / 100;
+  const okD = effectiveDelta(opt, hand, run, true).delta;
+  const failD = effectiveDelta(opt, hand, run, false).delta;
+  return p * okD + (1 - p) * failD;
+}
+/* 当前手情报汇总：{ handIdx, evs[与 options 同序], best=EV 最大项下标 }；无当前手返回 null */
+function handIntel(ep, run) {
+  const hand = currentHand(ep, run);
+  if (!hand) return null;
+  const evs = hand.options.map(opt => optionEV(opt, hand, run));
+  let best = 0;
+  for (let i = 1; i < evs.length; i++) if (evs[i] > evs[best]) best = i;
+  return { handIdx: run.handIdx, evs: evs, best: best };
+}
 /* 开局：抽暗流（rng 第一次调用决定词缀），建账本 */
 function newRun(ep, modeKey, rng) {
   rng = rng || Math.random;
@@ -647,7 +669,7 @@ function rewriteSummary(ep, run, j) {
   const k = j.keyHand;
   return {
     ending: ep.rewriteEndings[j.tier],
-    turning: k ? ("第" + (k.handIdx + 1) + "手「" + k.optName + "」" + (k.success ? "成功" : "虽败犹荣") + "，优势 " + (k.delta >= 0 ? "+" : "") + k.delta + "，是全场转折点。") : "",
+    turning: k ? ("第" + (k.handIdx + 1) + "手「" + k.optName + "」" + (k.success ? "成功" : "关键手失手") + "，优势 " + (k.delta >= 0 ? "+" : "") + k.delta + "，是全场转折点。") : "",
     hero: k ? (k.actor + " —— 本局改写功臣") : ""
   };
 }
@@ -718,7 +740,8 @@ function loadStore() {
 function saveStore() { try { localStorage.setItem(LS_KEY, JSON.stringify(store)); } catch (e) {} }
 let store = loadStore();
 const state = { screen: "home", mode: "normal", ep: null, run: null, phase: "pick",
-  lastEntry: null, settle: null, declaration: null, deluxe: false };
+  lastEntry: null, settle: null, declaration: null, deluxe: false,
+  intel: null }; /* intel: { run, handIdx } —— 情报权益仅对该 run 的该手有效，换手即失效 */
 function toast(msg) {
   toastEl.textContent = msg; toastEl.classList.add("show");
   clearTimeout(toast._t); toast._t = setTimeout(() => toastEl.classList.remove("show"), 2200);
@@ -874,14 +897,21 @@ function renderHand(ep, run) {
   h += '<div class="hand"><span class="n">第' + "一二三四五"[run.handIdx] + "手 · " + esc(hand.title) + '</span><span class="d">局势快照：' + esc(hand.snapshot) + "</span></div>";
   if (state.phase === "pick") {
     if (run.mode === "hard") h += '<div class="modeNote">困难：全档概率已下调</div>';
+    const intelOn = !!(state.intel && state.intel.run === run && state.intel.handIdx === run.handIdx);
+    const intel = intelOn ? handIntel(ep, run) : null;
     h += hand.options.map((opt, i) => {
       const prob = effectiveProb(opt, hand, run);
       return '<div class="opt" data-opt="' + i + '"><div class="r1"><span class="name">' + tierOf(opt.tier).label + " · " + esc(opt.name) + '</span>' +
         '<span class="rate ' + opt.tier + '">' + prob + '%</span></div>' +
         '<div class="eff">成功 优势 ' + (opt.okDelta >= 0 ? "+" : "") + opt.okDelta + " · 失败 " + (opt.failDelta >= 0 ? "+" : "") + opt.failDelta + (run.affix.mods && run.affix.mods.handDeltaScale && run.affix.mods.handDeltaScale[hand.id] ? "（暗流修正后结算）" : "") + "</div>" +
-        '<div class="cond">成立条件：<b>' + esc(opt.cond) + "</b></div></div>";
+        '<div class="cond">成立条件：<b>' + esc(opt.cond) + "</b></div>" +
+        (intel ? '<div class="ev">期望值 <b>' + (intel.evs[i] >= 0 ? "+" : "") + intel.evs[i].toFixed(1) + "</b>" + (i === intel.best ? ' <span class="bestTag">最优解</span>' : "") + "</div>" : "") + "</div>";
     }).join("");
-    h += '<button class="hookBtn" id="intelBtn" style="margin-top:14px;width:100%">情报 · 今日剩 ' + (AD_HOOKS.intel.dailyLimit - hookUsed("intel")) + ' 次</button>';
+    if (intelOn) {
+      h += '<button class="hookBtn" disabled style="margin-top:14px;width:100%">情报已揭示 · 本手期望值与最优解已标出</button>';
+    } else {
+      h += '<button class="hookBtn" id="intelBtn" style="margin-top:14px;width:100%">情报 · 显示本手期望值与最优解 · 今日剩 ' + (AD_HOOKS.intel.dailyLimit - hookUsed("intel")) + ' 次</button>';
+    }
   } else {
     const e = state.lastEntry;
     h += '<div class="resultBox' + (e.success ? "" : " fail") + '"><div class="rh">' + (e.success ? "这一手，成了" : "这一手，没成") +
@@ -903,7 +933,10 @@ function renderHand(ep, run) {
         trk("click", "出手页-情报入口", { ep: ep.id });
         PlatformAdapter.showRewardAd("intel", res => {
           if (!res || !res.ok) { toast((res && res.message) || "广告未完成，情报未发放"); return; }
-          consumeHook("intel"); toast("已领取情报：本局每手概率均为精确值，出手前看清成立条件");
+          consumeHook("intel");
+          state.intel = { run: run, handIdx: run.handIdx };
+          toast("情报到手：本手期望值已标出，最高的一项已打上「最优解」");
+          renderHand(ep, run);
         });
       });
     }
@@ -1025,6 +1058,7 @@ function renderSettlement(ep, run) {
       consumeHook("rewindLastHand");
       rewindRun(ep, run);
       state.settle = null; state.phase = "pick"; state.lastEntry = null;
+      state.intel = null; /* 续命重打第五手：旧情报不带回，防同 run 同 handIdx 误命中 */
       toast("续命一手：重打第五手。本局将标记「续命完成」");
       renderHand(ep, run);
     });
@@ -1043,6 +1077,19 @@ function renderSettlement(ep, run) {
   document.getElementById("homeBtn").addEventListener("click", () => { commitSettle(ep, run, j); renderHome(); });
   window.scrollTo(0, 0);
 }
+/* 全屏安全距（colorbox-fullscreen-safe-top）：启动时同步读一次，只在主容器 .page 的
+   顶部内边距这一处避让（基准 22px ＋ 安全距），全文不得有第二处叠加；SDK 不存在、
+   返回非数字或异常时降级为 0，本地无宿主时布局不变。 */
+(function applySafeTop() {
+  try {
+    const cb = window.ColorboxAI;
+    if (!cb || typeof cb.getFullscreenSafeTop !== "function") return;
+    const v = cb.getFullscreenSafeTop();
+    if (typeof v === "number" && isFinite(v) && v > 0) {
+      document.getElementById("app").style.paddingTop = (22 + Math.round(v)) + "px";
+    }
+  } catch (e) { /* 降级 0：不避让 */ }
+})();
 renderHome();
 </script>
 <script>
