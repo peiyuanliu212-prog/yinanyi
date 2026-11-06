@@ -153,6 +153,12 @@ h2.sec{font-family:var(--kai);font-size:19px;font-weight:900;letter-spacing:.12e
 .hookRow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
 .hookBtn{flex:1;min-width:100px;border:1px dashed rgba(38,34,25,.45);border-radius:3px;background:transparent;color:rgba(38,34,25,.62);font-size:12px;padding:9px 4px;cursor:pointer;font-family:inherit;letter-spacing:.06em}
 .hookBtn:disabled{opacity:.4}
+/* 广告卖相批：情报主按钮（朱红实心双行）＋续命近失描边＋精装海报独立行 */
+.intelMain{display:block;width:100%;margin-top:14px;padding:13px 12px;background:#b23a26;border:1px solid #9c3120;border-radius:3px;color:#faf0da;cursor:pointer;font-family:inherit;text-align:center;box-shadow:0 2px 6px -2px rgba(146,42,26,.45)}
+.intelMain .imT{display:block;font-size:15px;font-weight:700;letter-spacing:.06em;line-height:1.45}
+.intelMain .imS{display:block;margin-top:3px;font-size:11.5px;color:rgba(250,240,218,.88);letter-spacing:.03em}
+.hookBtn.rewindHot{border:1.5px solid #b23a26;color:#b23a26;font-weight:700;background:rgba(178,58,38,.07)}
+.hookBtn.solo{display:block;width:100%;margin-top:16px;flex:none}
 .foot{margin-top:22px;font-size:12px;color:rgba(38,34,25,.52);letter-spacing:.05em;line-height:1.8}
 .introText{font-size:15px;line-height:1.8;color:rgba(38,34,25,.85);margin-top:14px}
 .dual,.goal{margin-top:16px;border:1px solid rgba(178,58,38,.45);border-radius:3px;background:#fdf6e7;padding:15px 18px;font-size:14px;line-height:1.75}
@@ -2482,7 +2488,23 @@ function toast(msg) {
 }
 /* 打点转发（适配器脚本在后面接线；未接线/无平台时静默）。act 只用 click/exposure，
    同模块成对同 label，事件数据走 custom（施工书 §5.2 埋点表）。 */
-function trk(act, label, custom) { if (window.__yinanyiTrack) window.__yinanyiTrack(act, label, custom); }
+/* === TRACK QUEUE START === */
+/* 埋点时序修复：__yinanyiTrack 由文件末尾引导段才赋值，旧实现下首屏 renderHome 的
+   exposure 在赋值前触发即被静默吞掉。未就绪时先入队（上限 50，满则丢新保旧、优先
+   保住最早的首屏曝光），引导段赋值后调 __yinanyiFlushTrack 按 FIFO 全量补发
+   （不去重：每次 trk 调用即一条事件）；就绪后直发不入队；补发幂等（队列空时发 0 条）。 */
+const _trkQueue = [];
+function trk(act, label, custom) {
+  if (window.__yinanyiTrack) { window.__yinanyiTrack(act, label, custom); return; }
+  if (_trkQueue.length < 50) _trkQueue.push({ act: act, label: label, custom: custom });
+}
+window.__yinanyiFlushTrack = function () {
+  if (!window.__yinanyiTrack) return 0;
+  const q = _trkQueue.splice(0, _trkQueue.length);
+  for (const e of q) window.__yinanyiTrack(e.act, e.label, e.custom);
+  return q.length;
+};
+/* === TRACK QUEUE END === */
 function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
 function advPct(v) {
   /* 量程按当前案卷整轮可达范围（advBounds 由数据推导，双幕口径） */
@@ -2557,7 +2579,7 @@ function renderBoard() {
     '<button class="btn ghost" id="boardBack" style="margin-top:18px">归 档 · 回 案 卷 列 表</button>';
   app.innerHTML = h;
   document.getElementById("boardBack").addEventListener("click", renderHome);
-  trk("exposure", "改命榜");
+  trk("exposure", "改命榜-全站排名");
   let board = null, me = null, done = 0;
   const finish = () => { if (++done < 2) return; paintBoard(board, me); };
   PlatformAdapter.getBoard(d => { board = d; finish(); });
@@ -2666,7 +2688,7 @@ function renderHome() {
     });
   }));
   const bb = document.getElementById("boardBtn");
-  if (bb) bb.addEventListener("click", () => { trk("click", "改命榜"); renderBoard(); });
+  if (bb) bb.addEventListener("click", () => { trk("click", "改命榜-全站排名"); renderBoard(); });
   trk("exposure", "案卷架-期数列表");
   window.scrollTo(0, 0);
   if (onHomeShown) onHomeShown();
@@ -2680,7 +2702,8 @@ function renderIntro(ep) {
   h += ep.intro.map(p => '<p class="introText">' + esc(p) + "</p>").join("");
   h += '<div class="case" style="margin-top:14px"><div class="no">双 幕 连 改 · 约 8 分 钟</div>' +
     ep.acts.map(a => '<div class="m" style="margin-top:6px"><b>' + esc(a.label) + "</b> · " + esc(a.sub || a.title) + "</div>").join("") +
-    '<div class="m" style="margin-top:6px">优势值一本账贯通两幕，第一幕的结果直接带进第二幕；整轮只结算一次。</div></div>';
+    '<div class="m" style="margin-top:6px">优势值一本账贯通两幕，第一幕的结果直接带进第二幕；整轮只结算一次。</div>' +
+    '<div class="m" style="margin-top:6px">局内可看广告换情报，直接标出每手最优解</div></div>';
   h += '<div class="goal">本轮任务：<b>' + esc(ep.goal) + '</b><br><span style="font-size:12px;color:#5c543d">模式：' +
     MODES[state.mode].label + " · 改命线 +" + MODES[state.mode].threshold + " · 开局优势 " + ep.startAdv + " · 每一幕开幕各抽一条「暗流」，本幕内生效</span></div>";
   h += '<button class="btn red" id="startBtn">开 卷 改 命</button>' +
@@ -2725,6 +2748,12 @@ function renderHand(ep, run) {
     if (run.mode === "hard") h += '<div class="modeNote">困难：全档概率已下调</div>';
     const intelOn = !!(state.intel && state.intel.run === run && state.intel.handIdx === run.handIdx);
     const intel = intelOn ? handIntel(ep, run) : null;
+    /* 情报主按钮（广告卖相批）：置于选项上方、朱红实心整行，先把权益卖明白再让玩家决策 */
+    if (intelOn) {
+      h += '<button class="hookBtn" disabled style="margin-top:14px;width:100%">情报已揭示 · 本手期望值与最优解已标出</button>';
+    } else {
+      h += '<button class="intelMain" id="intelBtn"><span class="imT">看广告 · 揭晓这一手的最优解</span><span class="imS">标出每个选项的期望值，最优的一项直接打标 · ' + hookLeftText("intel") + '</span></button>';
+    }
     h += hand.options.map((opt, i) => {
       const prob = effectiveProb(opt, hand, run);
       return '<div class="opt" data-opt="' + i + '"><div class="r1"><span class="name"><span class="tierTag ' + opt.tier + '">' + tierOf(opt.tier).label + "</span>" + esc(opt.name) + '</span>' +
@@ -2733,17 +2762,24 @@ function renderHand(ep, run) {
         '<div class="cond">成立条件：<b>' + esc(opt.cond) + "</b></div>" +
         (intel ? '<div class="ev">期望值 <b>' + (intel.evs[i] >= 0 ? "+" : "") + intel.evs[i].toFixed(1) + "</b>" + (i === intel.best ? ' <span class="bestTag">最优解</span>' : "") + "</div>" : "") + "</div>";
     }).join("");
-    if (intelOn) {
-      h += '<button class="hookBtn" disabled style="margin-top:14px;width:100%">情报已揭示 · 本手期望值与最优解已标出</button>';
-    } else {
-      h += '<button class="hookBtn" id="intelBtn" style="margin-top:14px;width:100%">情报 · 显示本手期望值与最优解 · ' + hookLeftText("intel") + '</button>';
-    }
   } else {
     const e = state.lastEntry;
     h += '<div class="resultBox' + (e.success ? "" : " fail") + '"><div class="rh">' + (e.success ? "这一手，成了" : "这一手，没成") +
       ' <span class="' + (e.delta >= 0 ? "dpos" : "dneg") + '">优势 ' + (e.delta >= 0 ? "+" : "") + e.delta + " → " + e.advAfter + "</span></div>" +
-      '<div class="rt">' + esc(e.text) + (e.affixNote ? '<br><span style="color:#b23a26">' + esc(e.affixNote) + "</span>" : "") + "</div></div>" +
-      '<button class="btn red" id="nextBtn">' + (run.finished ? "看 结 算" : (run.actIdx === 0 && run.handIdx === actStartIdx(ep, 1) ? "幕 间 · 第 一 幕 小 结" : "下 一 手")) + "</button>";
+      '<div class="rt">' + esc(e.text) + (e.affixNote ? '<br><span style="color:#b23a26">' + esc(e.affixNote) + "</span>" : "") + "</div></div>";
+    /* 失败屏下一手情报钩子（广告卖相批）：本手失败且整轮未结束时，在「下一手」上方
+       预购下一手情报。choose() 已把 run.handIdx 推进到下一手，故 state.intel 钉当前
+       run.handIdx 即下一手坐标；跨幕时 advanceAct 不动 handIdx，第二幕第一手照样点亮。
+       终局（run.finished）不显示——结算页另有续命/海报钩子。 */
+    const nextIntelArmed = !!(state.intel && state.intel.run === run && state.intel.handIdx === run.handIdx);
+    if (!e.success && !run.finished) {
+      if (nextIntelArmed) {
+        h += '<button class="hookBtn" disabled style="margin-top:12px;width:100%">情报已备好 · 下一手将直接标出最优解</button>';
+      } else {
+        h += '<button class="intelMain" id="nextIntelBtn" style="margin-top:12px"><span class="imT">刚栽了一手？看广告，下一手直接给你最优解</span><span class="imS">下一手开启时生效 · ' + hookLeftText("intel") + '</span></button>';
+      }
+    }
+    h += '<button class="btn red" id="nextBtn">' + (run.finished ? "看 结 算" : (run.actIdx === 0 && run.handIdx === actStartIdx(ep, 1) ? "幕 间 · 第 一 幕 小 结" : "下 一 手")) + "</button>";
   }
   app.innerHTML = h;
   if (state.phase === "pick") {
@@ -2767,6 +2803,21 @@ function renderHand(ep, run) {
       });
     }
   } else {
+    const nib = document.getElementById("nextIntelBtn");
+    if (nib) {
+      trk("exposure", "失败屏-下一手情报", { ep: ep.id });
+      nib.addEventListener("click", () => {
+        if (!canUseHook("intel")) { toast("情报次数已用完（今日与福利都已用尽）"); return; }
+        trk("click", "失败屏-下一手情报", { ep: ep.id });
+        PlatformAdapter.showRewardAd("intel", res => {
+          if (!res || !res.ok) { toast((res && res.message) || "广告未完成，情报未发放"); return; }
+          applyHookConsume("intel", res);
+          state.intel = { run: run, handIdx: run.handIdx }; /* result 态 handIdx 已是下一手坐标，预购即钉下一手 */
+          toast("情报已备好：下一手将直接标出最优解");
+          renderHand(ep, run);
+        });
+      });
+    }
     document.getElementById("nextBtn").addEventListener("click", () => {
       state.phase = "pick"; state.lastEntry = null;
       if (run.finished) { renderSettlement(ep, run); return; }
@@ -2868,12 +2919,18 @@ function renderSettlement(ep, run) {
     '</div><div id="voteResults"></div>' +
     '<div class="foot" id="voteLine" style="margin-top:8px">' +
     (state.voteCloud ? "全站票数实时汇总，得票最高的案卷优先开卷。" : "投票记在本地档案，结果将在评价区公布，下期案卷按票数开卷。") + "</div>";
-  /* 广告钩子行 */
-  h += '<div class="hookRow">' +
-    '<button class="hookBtn" id="posterBtn">精装海报 · ' + hookLeftText("posterDeluxe") + "</button>" +
-    (j.tier !== "success" && !run.rewound ? '<button class="hookBtn" id="rewindBtn">续命一手 · 重打最后一手（' + hookLeftText("rewindLastHand") + "）</button>" : "") +
-    "</div>";
+  /* 广告钩子（广告卖相批）：续命近失单独成行——犹荣档换近失文案、照旧档加朱红描边
+     强化；精装海报移出钩子行、紧贴分享按钮上方成组（海报→发帖→再改一局）。
+     钩子逻辑与上限全不动。 */
+  h += (j.tier !== "success" && !run.rewound
+    ? '<div class="hookRow"><button class="hookBtn' + (j.tier === "history" ? " rewindHot" : "") + '" id="rewindBtn">' +
+      (j.tier === "honor"
+        ? "只差临门一脚！看广告续命一手 · 重打最后一手翻盘（" + hookLeftText("rewindLastHand") + "）"
+        : "续命一手 · 重打最后一手（" + hookLeftText("rewindLastHand") + "）") +
+      "</button></div>"
+    : "");
   h += '<div id="statsLine" class="foot"></div>';
+  h += '<button class="hookBtn solo" id="posterBtn">看广告 · 解锁精装海报（发帖更好看） · ' + hookLeftText("posterDeluxe") + '</button>';
   h += '<button class="btn ghost" id="shareBtn">把 这 一 卷 发 到 虎 扑</button>';
   h += '<button class="btn red" id="againBtn">再 改 一 局</button><button class="btn ghost" id="homeBtn">归 档 · 回 案 卷 列 表</button>';
   h += '<div class="foot">本作是模拟归因，不是真实预测。' + esc(ep.realHistory.footnote) + "</div>";
@@ -3113,6 +3170,16 @@ function _lsGet(k) {
 }
 function _lsSet(k, v) {
   try { localStorage.setItem(k, v); } catch (e) { _memStore[k] = v; }
+}
+/* 埋点本地诊断（页面不展示）：最近一次 track 调用的成败落 localStorage，
+   记 {at, act, label, ok, stage, n累计}，供真机回收后定性全灭根因；失败静默。 */
+const TRACK_DIAG_KEY = "yinanyi_track_diag_v1";
+function _trackDiag(act, label, ok, stage) {
+  try {
+    let prev = null;
+    try { prev = JSON.parse(_lsGet(TRACK_DIAG_KEY) || "null"); } catch (e) { prev = null; }
+    _lsSet(TRACK_DIAG_KEY, JSON.stringify({ at: Date.now(), act: act, label: label, ok: !!ok, stage: stage, n: (prev && prev.n ? prev.n : 0) + 1 }));
+  } catch (e) { /* 诊断写入失败不影响打点主流程 */ }
 }
 function _readJson(k, dflt) {
   try { const s = _lsGet(k); return s ? JSON.parse(s) : dflt; } catch (e) { return dflt; }
@@ -3854,15 +3921,22 @@ const PlatformAdapter = {
     });
   },
 
-  /* 12) 打点：act 只用白名单（click/exposure/videoact），事件走 ext.custom */
+  /* 12) 打点：act 只用白名单（click/exposure/videoact），事件走 ext.custom。
+     参数 shape 按 colorbox-track-report SKILL.md 原文逐字段对版（diff 表见 BUILD_NOTES）；
+     返回值 Promise<{ok}> 在此消费为本地诊断（见 _trackDiag），不阻塞业务流程。 */
   track: function (act, label, custom) {
-    if (["click", "exposure", "videoact"].indexOf(act) < 0) return false;
+    if (["click", "exposure", "videoact"].indexOf(act) < 0) { _trackDiag(act, label, false, "act"); return false; }
     const cbx = _cb();
-    if (!cbx || typeof cbx.track !== "function") return false;
+    if (!cbx || typeof cbx.track !== "function") { _trackDiag(act, label, false, "noSdk"); return false; }
     try {
-      cbx.track({ act: act, blk: "BMC001", pos: "T1", ext: { label: label, custom: custom || {} } });
+      const r = cbx.track({ act: act, blk: "BMC001", pos: "T1", ext: { label: label, custom: custom || {} } });
+      if (r && typeof r.then === "function") {
+        r.then(res => _trackDiag(act, label, !!(res && res.ok), "async"), () => _trackDiag(act, label, false, "reject"));
+      } else {
+        _trackDiag(act, label, true, "sync");
+      }
       return true;
-    } catch (e) { return false; }
+    } catch (e) { _trackDiag(act, label, false, "throw"); return false; }
   }
 };
 // === ADAPTER END ===
@@ -3890,6 +3964,8 @@ const PlatformAdapter = {
   window.__yinanyiTrack = function (act, label, custom) {
     return PlatformAdapter.track(act, label, custom);
   };
+  /* 埋点队列补发：把就绪前积压的事件（含首屏 exposure）按 FIFO 补出去 */
+  if (window.__yinanyiFlushTrack) window.__yinanyiFlushTrack();
   /* 首更批：首页每次展示后刷新云端态（钩子福利余额） */
   onHomeShown = function () { refreshCloudUi(false); };
   refreshCloudUi(true);
